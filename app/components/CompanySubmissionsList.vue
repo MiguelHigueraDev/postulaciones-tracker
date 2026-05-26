@@ -125,85 +125,89 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <section class="submissions-section">
-    <div class="submissions-header">
-      <h3 class="submissions-title">Registros</h3>
-      <span class="submissions-count">
+  <section class="flex min-w-0 flex-col gap-4">
+    <div class="flex items-baseline justify-between gap-4">
+      <h3 class="m-0 font-mono text-11 font-medium tracking-widest text-text-subtle uppercase">
+        Registros
+      </h3>
+      <span class="font-mono text-11 text-text-subtle">
         {{ submissions.length
         }}<template v-if="totalCount > submissions.length">
-          / {{ totalCount }}</template
-        >
+          / {{ totalCount }}</template>
       </span>
     </div>
 
-    <div
-      v-if="isLoading && submissions.length === 0"
-      class="submissions-state"
-      aria-live="polite"
-    >
-      <div class="state-dots">
-        <span class="sentinel-dot" />
-        <span class="sentinel-dot" />
-        <span class="sentinel-dot" />
+    <div v-if="isLoading && submissions.length === 0"
+      class="flex flex-col items-center gap-2 rounded-lg border border-border-subtle bg-surface px-4 py-10 text-center"
+      aria-live="polite">
+      <div class="flex gap-1.5">
+        <span class="size-1.5 rounded-full bg-border animate-loading-dot" />
+        <span class="size-1.5 rounded-full bg-border animate-loading-dot [animation-delay:0.2s]" />
+        <span class="size-1.5 rounded-full bg-border animate-loading-dot [animation-delay:0.4s]" />
       </div>
-      <p class="state-text">Cargando registros...</p>
+      <p class="m-0 text-sm text-text-subtle">Cargando registros...</p>
     </div>
 
-    <div v-else-if="loadError && submissions.length === 0" class="submissions-state">
-      <p class="state-text">No pudimos cargar los registros.</p>
-      <button type="button" class="state-retry" @click="resetAndLoad()">
+    <div v-else-if="loadError && submissions.length === 0"
+      class="flex flex-col items-center gap-2 rounded-lg border border-border-subtle bg-surface px-4 py-10 text-center">
+      <p class="m-0 text-sm text-text-subtle">No pudimos cargar los registros.</p>
+      <button type="button"
+        class="cursor-pointer border-0 bg-transparent p-0 text-sm text-accent hover:text-accent-hover"
+        @click="resetAndLoad()">
         Reintentar
       </button>
     </div>
 
-    <div
-      v-else
-      ref="scrollRoot"
-      class="submissions-track"
-      :class="{ 'submissions-track--desktop': isDesktop }"
-    >
-      <article
-        v-for="submission in submissions"
-        :key="submission.id"
-        class="submission-card"
-      >
-        <header class="card-header">
-          <h4 class="card-position">{{ submission.position }}</h4>
+    <div v-else ref="scrollRoot"
+      class="flex min-w-0 flex-col gap-3 md:flex-row md:snap-x md:snap-proximity md:overflow-x-auto md:overscroll-x-contain md:pb-2 md:[scrollbar-color:var(--color-border)_transparent] md:[-webkit-overflow-scrolling:touch] md:[&::-webkit-scrollbar]:h-1.5 md:[&::-webkit-scrollbar-thumb]:rounded-full md:[&::-webkit-scrollbar-thumb]:bg-border">
+      <article v-for="submission in submissions" :key="submission.id"
+        class="flex flex-col gap-3.5 rounded-lg border border-border-subtle bg-surface px-4.5 py-4 md:max-h-88 md:min-w-0 md:flex-[0_0_18.5rem] md:snap-start md:overflow-y-auto">
+        <header class="flex items-start justify-between gap-3">
+          <h4 class="m-0 text-15 leading-snug font-medium text-text">
+            {{ submission.position }}
+          </h4>
           <span
-            class="result-badge"
+            class="inline-flex shrink-0 items-center gap-1.5 rounded border px-2 py-0.5 font-mono text-11 font-medium whitespace-nowrap"
             :style="{
               color: getResultStyle(submission.result).color,
               backgroundColor: getResultStyle(submission.result).bg,
               borderColor: getResultStyle(submission.result).border,
-            }"
-          >
-            <span
-              class="result-dot"
-              :style="{
-                backgroundColor: getResultStyle(submission.result).dot,
-              }"
-              aria-hidden="true"
-            />
+            }">
+            <span class="size-1.25 shrink-0 rounded-full" :style="{
+              backgroundColor: getResultStyle(submission.result).dot,
+            }" aria-hidden="true" />
             {{ getResultStyle(submission.result).label }}
           </span>
         </header>
 
-        <dl class="card-meta">
-          <div class="meta-row">
-            <dt>Rubro</dt>
-            <dd>{{ submission.industry }}</dd>
+        <dl class="m-0 flex flex-col gap-1.5">
+          <div class="grid grid-cols-[4.75rem_1fr] gap-2 text-13">
+            <dt class="font-mono text-11 text-text-subtle lowercase">
+              Rubro
+            </dt>
+            <dd class="m-0 font-light text-text-muted">{{ submission.industry }}</dd>
           </div>
-          <div class="meta-row">
-            <dt>Período</dt>
-            <dd>{{ submission.application_month }}</dd>
+          <div class="grid grid-cols-[4.75rem_1fr] gap-2 text-13">
+            <dt class="font-mono text-11 text-text-subtle lowercase">
+              Período
+            </dt>
+            <dd class="m-0 font-light text-text-muted">
+              {{ submission.application_month }}
+            </dd>
           </div>
-          <div class="meta-row">
-            <dt>Respuesta</dt>
-            <dd>{{ submission.response_time }}</dd>
+          <div class="grid grid-cols-[4.75rem_1fr] gap-2 text-13">
+            <dt class="font-mono text-11 text-text-subtle lowercase">
+              Respuesta
+            </dt>
+            <dd class="m-0 font-light text-text-muted">
+              {{ submission.response_time }}
+            </dd>
           </div>
-          <div class="meta-row">
-            <dt>Etapas</dt>
-            <dd>
+          <div class="grid grid-cols-[4.75rem_1fr] gap-2 text-13">
+            <dt class="font-mono text-11 text-text-subtle lowercase">
+              Etapas
+            </dt>
+            <dd class="m-0 font-light text-text-muted">
               {{ submission.stages_reached }}
               <template v-if="submission.last_stage">
                 · {{ submission.last_stage }}
@@ -212,262 +216,28 @@ onUnmounted(() => {
           </div>
         </dl>
 
-        <p v-if="submission.comment" class="card-comment">
+        <p v-if="submission.comment"
+          class="m-0 border-t border-border-subtle pt-3 text-13 leading-relaxed font-light text-text-muted">
           {{ submission.comment }}
         </p>
       </article>
 
-      <div
-        v-if="hasMore || isLoading"
-        ref="sentinel"
-        class="submissions-sentinel"
-        aria-hidden="true"
-      >
-        <span class="sentinel-dot" />
-        <span class="sentinel-dot" />
-        <span class="sentinel-dot" />
+      <div v-if="hasMore || isLoading" ref="sentinel"
+        class="flex min-h-12 shrink-0 items-center justify-center gap-1.5 md:min-h-0 md:w-16 md:self-stretch"
+        aria-hidden="true">
+        <span class="size-1.5 rounded-full bg-border animate-loading-dot" />
+        <span class="size-1.5 rounded-full bg-border animate-loading-dot [animation-delay:0.2s]" />
+        <span class="size-1.5 rounded-full bg-border animate-loading-dot [animation-delay:0.4s]" />
       </div>
     </div>
 
-    <p v-if="loadError && submissions.length > 0" class="submissions-error">
+    <p v-if="loadError && submissions.length > 0" class="m-0 text-13 text-text-subtle">
       Error al cargar más registros.
-      <button type="button" class="state-retry" @click="loadMore()">
+      <button type="button"
+        class="cursor-pointer border-0 bg-transparent p-0 text-sm text-accent hover:text-accent-hover"
+        @click="loadMore()">
         Reintentar
       </button>
     </p>
   </section>
 </template>
-
-<style scoped>
-.submissions-section {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  min-width: 0;
-}
-
-.submissions-header {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-.submissions-title {
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-text-subtle);
-  margin: 0;
-}
-
-.submissions-count {
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  color: var(--color-text-subtle);
-}
-
-.submissions-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 2.5rem 1rem;
-  border: 1px solid var(--color-border-subtle);
-  border-radius: 0.5rem;
-  background-color: var(--color-surface);
-}
-
-.state-dots {
-  display: flex;
-  gap: 0.375rem;
-}
-
-.state-text {
-  margin: 0;
-  font-size: 0.875rem;
-  color: var(--color-text-subtle);
-}
-
-.state-retry {
-  border: none;
-  background: none;
-  padding: 0;
-  font-size: 0.875rem;
-  color: var(--color-accent);
-  cursor: pointer;
-}
-
-.state-retry:hover {
-  color: var(--color-accent-hover);
-}
-
-.submissions-error {
-  margin: 0;
-  font-size: 0.8125rem;
-  color: var(--color-text-subtle);
-}
-
-.submissions-track {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  min-width: 0;
-}
-
-.submissions-track--desktop {
-  flex-direction: row;
-  overflow-x: auto;
-  overscroll-behavior-x: contain;
-  scroll-snap-type: x proximity;
-  padding-bottom: 0.5rem;
-  scrollbar-width: thin;
-  scrollbar-color: var(--color-border) transparent;
-  -webkit-overflow-scrolling: touch;
-}
-
-.submissions-track--desktop::-webkit-scrollbar {
-  height: 0.375rem;
-}
-
-.submissions-track--desktop::-webkit-scrollbar-thumb {
-  background-color: var(--color-border);
-  border-radius: 999px;
-}
-
-.submission-card {
-  display: flex;
-  flex-direction: column;
-  gap: 0.875rem;
-  padding: 1rem 1.125rem;
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border-subtle);
-  border-radius: 0.5rem;
-}
-
-.submissions-track--desktop .submission-card {
-  flex: 0 0 18.5rem;
-  scroll-snap-align: start;
-  max-height: 22rem;
-  overflow-y: auto;
-}
-
-.card-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 0.75rem;
-}
-
-.card-position {
-  margin: 0;
-  font-size: 0.9375rem;
-  font-weight: 500;
-  color: var(--color-text);
-  line-height: 1.35;
-}
-
-.result-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.375rem;
-  padding: 0.1875rem 0.5rem;
-  border-radius: 0.25rem;
-  border: 1px solid;
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  font-weight: 500;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-.result-dot {
-  width: 0.3125rem;
-  height: 0.3125rem;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.card-meta {
-  display: flex;
-  flex-direction: column;
-  gap: 0.375rem;
-  margin: 0;
-}
-
-.meta-row {
-  display: grid;
-  grid-template-columns: 4.75rem 1fr;
-  gap: 0.5rem;
-  font-size: 0.8125rem;
-}
-
-.meta-row dt {
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  color: var(--color-text-subtle);
-  text-transform: lowercase;
-}
-
-.meta-row dd {
-  margin: 0;
-  color: var(--color-text-muted);
-  font-weight: 300;
-}
-
-.card-comment {
-  margin: 0;
-  padding-top: 0.75rem;
-  border-top: 1px solid var(--color-border-subtle);
-  font-size: 0.8125rem;
-  font-weight: 300;
-  color: var(--color-text-muted);
-  line-height: 1.55;
-}
-
-.submissions-sentinel {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.375rem;
-  min-height: 3rem;
-  flex-shrink: 0;
-}
-
-.submissions-track--desktop .submissions-sentinel {
-  width: 4rem;
-  min-height: auto;
-  align-self: stretch;
-}
-
-.sentinel-dot {
-  width: 0.375rem;
-  height: 0.375rem;
-  border-radius: 50%;
-  background-color: var(--color-border);
-  animation: pulse 1.2s ease-in-out infinite;
-}
-
-.sentinel-dot:nth-child(2) {
-  animation-delay: 0.2s;
-}
-
-.sentinel-dot:nth-child(3) {
-  animation-delay: 0.4s;
-}
-
-@keyframes pulse {
-  0%,
-  80%,
-  100% {
-    opacity: 0.3;
-    transform: scale(0.85);
-  }
-  40% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-</style>

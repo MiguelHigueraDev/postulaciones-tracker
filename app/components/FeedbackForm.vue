@@ -78,6 +78,10 @@ onMounted(async () => {
 const isFormValid = computed(() => feedbackSchema.safeParse(buildPayload()).success);
 const canSubmit = computed(() => isFormValid.value && !!turnstileToken.value && !isSubmitting.value);
 
+const fieldInput =
+  "block w-full appearance-none rounded-md border border-border bg-bg px-3.5 py-2.5 font-sans text-15 text-text transition-[border-color,box-shadow] duration-150 placeholder:text-text-subtle focus:border-accent focus:outline-none focus:shadow-[0_0_0_3px_rgba(129,140,248,0.15)]";
+const fieldSelect = `${fieldInput} cursor-pointer bg-[url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2344446a' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E\")] bg-auto bg-position-[right_0.875rem_center] bg-no-repeat pr-10`;
+
 function buildPayload() {
   return {
     p_company_name: form.companyName,
@@ -128,38 +132,50 @@ async function handleSubmit() {
 </script>
 
 <template>
-  <form @submit.prevent="handleSubmit" class="feedback-form">
+  <form class="flex flex-col" @submit.prevent="handleSubmit">
 
-    <div v-if="submitSuccess" class="alert alert--success" role="alert">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+    <div v-if="submitSuccess"
+      class="mb-6 flex items-center gap-2.5 rounded-md border border-positive-border bg-positive-bg px-4 py-3 text-sm text-positive"
+      role="alert">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polyline points="20 6 9 17 4 12" />
+      </svg>
       Feedback enviado. ¡Gracias por contribuir!
     </div>
 
-    <div v-if="submitError" class="alert alert--error" role="alert">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    <div v-if="submitError"
+      class="mb-6 flex items-center gap-2.5 rounded-md border border-negative-border bg-negative-bg px-4 py-3 text-sm text-negative"
+      role="alert">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="10" />
+        <line x1="12" y1="8" x2="12" y2="12" />
+        <line x1="12" y1="16" x2="12.01" y2="16" />
+      </svg>
       {{ submitError }}
     </div>
 
     <!-- Section: Empresa -->
-    <fieldset class="form-group">
-      <legend class="group-legend">
-        <span class="legend-prefix">01</span> Empresa
+    <fieldset class="m-0 mb-2 border-0 border-b border-border-subtle py-6 last:border-b-0">
+      <legend class="mb-5 flex w-full items-center gap-2.5 p-0 font-mono text-13 font-medium tracking-tight text-text">
+        <span class="font-mono text-11 tracking-wide text-accent">01</span>
+        Empresa
       </legend>
 
-      <div class="field">
-        <label for="company" class="field-label">empresa <span class="req">*</span></label>
-        <CompanySearch
-          v-model="form.companyName"
-          input-id="company"
-          :show-label="false"
-          required
-          placeholder="Nombre de la empresa"
-        />
+      <div class="relative mb-4 last:mb-0">
+        <label for="company" class="mb-2 block font-mono text-11 tracking-wide text-text-subtle lowercase">
+          empresa <span class="text-accent">*</span>
+        </label>
+        <CompanySearch v-model="form.companyName" input-id="company" :show-label="false" required
+          placeholder="Nombre de la empresa" />
       </div>
 
-      <div class="field">
-        <label for="industry" class="field-label">rubro <span class="req">*</span></label>
-        <select id="industry" v-model="form.industry" required class="field-input field-select">
+      <div class="relative mb-4 last:mb-0">
+        <label for="industry" class="mb-2 block font-mono text-11 tracking-wide text-text-subtle lowercase">
+          rubro <span class="text-accent">*</span>
+        </label>
+        <select id="industry" v-model="form.industry" required :class="fieldSelect">
           <option value="" disabled>Selecciona un rubro</option>
           <option v-for="opt in INDUSTRY_OPTIONS" :key="opt" :value="opt">{{ opt }}</option>
         </select>
@@ -167,34 +183,35 @@ async function handleSubmit() {
     </fieldset>
 
     <!-- Section: Postulación -->
-    <fieldset class="form-group">
-      <legend class="group-legend">
-        <span class="legend-prefix">02</span> Postulación
+    <fieldset class="m-0 mb-2 border-0 border-b border-border-subtle py-6 last:border-b-0">
+      <legend class="mb-5 flex w-full items-center gap-2.5 p-0 font-mono text-13 font-medium tracking-tight text-text">
+        <span class="font-mono text-11 tracking-wide text-accent">02</span>
+        Postulación
       </legend>
 
-      <div class="field">
-        <label for="position" class="field-label">cargo <span class="req">*</span></label>
-        <input
-          id="position"
-          v-model="form.position"
-          type="text"
-          required
-          placeholder="Backend Developer, Analista de datos..."
-          class="field-input"
-        />
+      <div class="relative mb-4 last:mb-0">
+        <label for="position" class="mb-2 block font-mono text-11 tracking-wide text-text-subtle lowercase">
+          cargo <span class="text-accent">*</span>
+        </label>
+        <input id="position" v-model="form.position" type="text" required
+          placeholder="Backend Developer, Analista de datos..." :class="fieldInput" />
       </div>
 
-      <div class="field-row">
-        <div class="field">
-          <label for="app-month" class="field-label">mes <span class="req">*</span></label>
-          <select id="app-month" v-model="form.applicationMonth" required class="field-input field-select">
+      <div class="mb-4 grid grid-cols-2 gap-3.5">
+        <div class="relative">
+          <label for="app-month" class="mb-2 block font-mono text-11 tracking-wide text-text-subtle lowercase">
+            mes <span class="text-accent">*</span>
+          </label>
+          <select id="app-month" v-model="form.applicationMonth" required :class="fieldSelect">
             <option value="" disabled>Mes</option>
             <option v-for="m in MONTHS" :key="m" :value="m">{{ m }}</option>
           </select>
         </div>
-        <div class="field">
-          <label for="app-year" class="field-label">año <span class="req">*</span></label>
-          <select id="app-year" v-model="form.applicationYear" required class="field-input field-select">
+        <div class="relative">
+          <label for="app-year" class="mb-2 block font-mono text-11 tracking-wide text-text-subtle lowercase">
+            año <span class="text-accent">*</span>
+          </label>
+          <select id="app-year" v-model="form.applicationYear" required :class="fieldSelect">
             <option v-for="y in YEARS" :key="y" :value="y">{{ y }}</option>
           </select>
         </div>
@@ -202,43 +219,46 @@ async function handleSubmit() {
     </fieldset>
 
     <!-- Section: Proceso -->
-    <fieldset class="form-group">
-      <legend class="group-legend">
-        <span class="legend-prefix">03</span> Proceso
+    <fieldset class="m-0 mb-2 border-0 border-b border-border-subtle py-6 last:border-b-0">
+      <legend class="mb-5 flex w-full items-center gap-2.5 p-0 font-mono text-13 font-medium tracking-tight text-text">
+        <span class="font-mono text-11 tracking-wide text-accent">03</span>
+        Proceso
       </legend>
 
-      <div class="field">
-        <label for="response-time" class="field-label">¿respondieron? <span class="req">*</span></label>
-        <select id="response-time" v-model="form.responseTime" required class="field-input field-select">
+      <div class="relative mb-4 last:mb-0">
+        <label for="response-time" class="mb-2 block font-mono text-11 tracking-wide text-text-subtle lowercase">
+          ¿respondieron? <span class="text-accent">*</span>
+        </label>
+        <select id="response-time" v-model="form.responseTime" required :class="fieldSelect">
           <option value="" disabled>Selecciona una opción</option>
           <option v-for="opt in RESPONSE_TIME_OPTIONS" :key="opt" :value="opt">{{ opt }}</option>
         </select>
       </div>
 
-      <div class="field-row">
-        <div class="field">
-          <label for="stages" class="field-label">etapas alcanzadas</label>
-          <input
-            id="stages"
-            v-model.number="form.stagesReached"
-            type="number"
-            min="0"
-            max="20"
-            class="field-input field-num"
-          />
+      <div class="mb-4 grid grid-cols-2 gap-3.5">
+        <div class="relative">
+          <label for="stages" class="mb-2 block font-mono text-11 tracking-wide text-text-subtle lowercase">
+            etapas alcanzadas
+          </label>
+          <input id="stages" v-model.number="form.stagesReached" type="number" min="0" max="20"
+            :class="`${fieldInput} max-w-28 font-mono`" />
         </div>
-        <div class="field">
-          <label for="last-stage" class="field-label">última etapa</label>
-          <select id="last-stage" v-model="form.lastStage" class="field-input field-select">
+        <div class="relative">
+          <label for="last-stage" class="mb-2 block font-mono text-11 tracking-wide text-text-subtle lowercase">
+            última etapa
+          </label>
+          <select id="last-stage" v-model="form.lastStage" :class="fieldSelect">
             <option value="">No aplica</option>
             <option v-for="opt in LAST_STAGE_OPTIONS" :key="opt" :value="opt">{{ opt }}</option>
           </select>
         </div>
       </div>
 
-      <div class="field">
-        <label for="result" class="field-label">resultado <span class="req">*</span></label>
-        <select id="result" v-model="form.result" required class="field-input field-select">
+      <div class="relative mb-4 last:mb-0">
+        <label for="result" class="mb-2 block font-mono text-11 tracking-wide text-text-subtle lowercase">
+          resultado <span class="text-accent">*</span>
+        </label>
+        <select id="result" v-model="form.result" required :class="fieldSelect">
           <option value="" disabled>Selecciona un resultado</option>
           <option v-for="opt in RESULT_OPTIONS" :key="opt" :value="opt">{{ opt }}</option>
         </select>
@@ -246,251 +266,46 @@ async function handleSubmit() {
     </fieldset>
 
     <!-- Section: Comentario -->
-    <fieldset class="form-group">
-      <legend class="group-legend">
-        <span class="legend-prefix">04</span> Comentario <span class="legend-optional">(opcional)</span>
+    <fieldset class="m-0 mb-2 border-0 border-b border-border-subtle py-6 last:border-b-0">
+      <legend class="mb-5 flex w-full items-center gap-2.5 p-0 font-mono text-13 font-medium tracking-tight text-text">
+        <span class="font-mono text-11 tracking-wide text-accent">04</span>
+        Comentario
+        <span class="text-xs font-normal text-text-subtle">(opcional)</span>
       </legend>
 
-      <div class="field">
-        <label for="comment" class="field-label">comentario</label>
-        <textarea
-          id="comment"
-          v-model="form.comment"
-          rows="3"
-          maxlength="280"
+      <div class="relative mb-4 last:mb-0">
+        <label for="comment" class="mb-2 block font-mono text-11 tracking-wide text-text-subtle lowercase">
+          comentario
+        </label>
+        <textarea id="comment" v-model="form.comment" rows="3" maxlength="280"
           placeholder="Describe brevemente tu experiencia..."
-          class="field-input field-textarea"
-        />
-        <div class="char-count">
-          <span :class="{ 'char-over': form.comment.length > 240 }">{{ form.comment.length }}/280</span>
+          :class="`${fieldInput} min-h-22 resize-y text-14 leading-relaxed`" />
+        <div class="mt-1.5 text-right font-mono text-11 text-text-subtle">
+          <span :class="{ 'text-yield': form.comment.length > 240 }">
+            {{ form.comment.length }}/280
+          </span>
         </div>
       </div>
     </fieldset>
 
     <!-- Honeypot -->
-    <div style="position:absolute;left:-9999px;opacity:0" aria-hidden="true">
+    <div class="absolute -left-[9999px] opacity-0" aria-hidden="true">
       <input id="website" v-model="honeypot" type="text" tabindex="-1" autocomplete="off" />
     </div>
 
     <!-- Turnstile -->
-    <div ref="turnstileContainer" class="turnstile-wrap" />
+    <div ref="turnstileContainer" class="flex justify-center py-5" />
 
-    <button type="submit" :disabled="!canSubmit" class="submit-btn">
-      <span v-if="isSubmitting" class="spinner" aria-hidden="true"></span>
-      <svg v-else width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+    <button type="submit" :disabled="!canSubmit"
+      class="submit-btn flex w-full cursor-pointer items-center justify-center gap-2 rounded-md border-0 bg-accent px-6 py-3 font-sans text-15 font-medium tracking-tight text-bg transition-colors duration-150 hover:enabled:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-35">
+      <span v-if="isSubmitting" class="size-3.5 animate-spin rounded-full border-2 border-bg/30 border-t-bg"
+        aria-hidden="true" />
+      <svg v-else width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <line x1="22" y1="2" x2="11" y2="13" />
+        <polygon points="22 2 15 22 11 13 2 9 22 2" />
       </svg>
       {{ isSubmitting ? "Enviando..." : "Enviar feedback" }}
     </button>
   </form>
 </template>
-
-<style scoped>
-.feedback-form {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-}
-
-/* ─── Alerts ─── */
-.alert {
-  display: flex;
-  align-items: center;
-  gap: 0.625rem;
-  padding: 0.75rem 1rem;
-  border-radius: 0.375rem;
-  font-size: 0.875rem;
-  margin-bottom: 1.5rem;
-  font-weight: 400;
-}
-
-.alert--success {
-  background-color: var(--color-positive-bg);
-  color: var(--color-positive);
-  border: 1px solid var(--color-positive-border);
-}
-
-.alert--error {
-  background-color: var(--color-negative-bg);
-  color: var(--color-negative);
-  border: 1px solid var(--color-negative-border);
-}
-
-/* ─── Form groups ─── */
-.form-group {
-  border: none;
-  padding: 0;
-  margin: 0 0 0.5rem;
-  padding: 1.5rem 0;
-  border-bottom: 1px solid var(--color-border-subtle);
-}
-
-.form-group:last-of-type {
-  border-bottom: none;
-}
-
-.group-legend {
-  display: flex;
-  align-items: center;
-  gap: 0.625rem;
-  font-family: var(--font-mono);
-  font-size: 0.8125rem;
-  color: var(--color-text);
-  font-weight: 500;
-  letter-spacing: -0.01em;
-  margin-bottom: 1.25rem;
-  padding: 0;
-  width: 100%;
-}
-
-.legend-prefix {
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  color: var(--color-accent);
-  letter-spacing: 0.04em;
-}
-
-.legend-optional {
-  font-size: 0.75rem;
-  color: var(--color-text-subtle);
-  font-weight: 400;
-}
-
-/* ─── Fields ─── */
-.field {
-  margin-bottom: 1rem;
-  position: relative;
-}
-
-.field:last-child {
-  margin-bottom: 0;
-}
-
-.field-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.875rem;
-  margin-bottom: 1rem;
-}
-
-.field-label {
-  display: block;
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  letter-spacing: 0.04em;
-  color: var(--color-text-subtle);
-  text-transform: lowercase;
-  margin-bottom: 0.5rem;
-}
-
-.req {
-  color: var(--color-accent);
-}
-
-.field-input {
-  display: block;
-  width: 100%;
-  border-radius: 0.375rem;
-  border: 1px solid var(--color-border);
-  background-color: var(--color-bg);
-  padding: 0.625rem 0.875rem;
-  font-size: 0.9375rem;
-  font-family: var(--font-sans);
-  color: var(--color-text);
-  transition: border-color 0.12s ease, box-shadow 0.12s ease;
-  appearance: none;
-  -webkit-appearance: none;
-}
-
-.field-input::placeholder {
-  color: var(--color-text-subtle);
-}
-
-.field-input:focus {
-  outline: none;
-  border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.15);
-}
-
-.field-select {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2344446a' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 0.875rem center;
-  padding-right: 2.5rem;
-  cursor: pointer;
-}
-
-.field-num {
-  max-width: 7rem;
-  font-family: var(--font-mono);
-}
-
-.field-textarea {
-  resize: vertical;
-  min-height: 5.5rem;
-  line-height: 1.6;
-  font-size: 0.9rem;
-}
-
-/* ─── Char count ─── */
-.char-count {
-  margin-top: 0.375rem;
-  text-align: right;
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  color: var(--color-text-subtle);
-}
-
-.char-over {
-  color: var(--color-yield);
-}
-
-/* ─── Turnstile ─── */
-.turnstile-wrap {
-  display: flex;
-  justify-content: center;
-  padding: 1.25rem 0;
-}
-
-/* ─── Submit ─── */
-.submit-btn {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  border-radius: 0.375rem;
-  background-color: var(--color-accent);
-  border: none;
-  padding: 0.75rem 1.5rem;
-  font-size: 0.9375rem;
-  font-weight: 500;
-  font-family: var(--font-sans);
-  color: var(--color-bg);
-  letter-spacing: -0.01em;
-  cursor: pointer;
-  transition: background-color 0.12s ease;
-}
-
-.submit-btn:hover:not(:disabled) {
-  background-color: var(--color-accent-hover);
-}
-
-.submit-btn:disabled {
-  opacity: 0.35;
-  cursor: not-allowed;
-}
-
-.spinner {
-  width: 0.875rem;
-  height: 0.875rem;
-  border: 2px solid rgba(9, 9, 13, 0.3);
-  border-top-color: var(--color-bg);
-  border-radius: 50%;
-  animation: spin 0.6s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-</style>

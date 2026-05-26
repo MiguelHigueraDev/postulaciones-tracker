@@ -1,26 +1,36 @@
 <template>
-  <div class="page-enviar">
-    <div class="page-header">
-      <div class="page-breadcrumb">
-        <NuxtLink to="/" class="breadcrumb-link">inicio</NuxtLink>
-        <span class="breadcrumb-sep">/</span>
-        <span class="breadcrumb-current">enviar</span>
+  <div class="mx-auto max-w-304 px-6 pt-10 pb-24">
+    <div class="mb-10">
+      <div class="mb-5 flex items-center gap-1.5 font-mono text-xs">
+        <NuxtLink to="/" class="text-text-muted no-underline transition-colors duration-150 hover:text-text">
+          inicio
+        </NuxtLink>
+        <span class="text-text-subtle">/</span>
+        <span class="text-accent">enviar</span>
       </div>
-      <h1 class="page-title">Enviar feedback</h1>
+      <h1 class="m-0 mb-2 font-display text-32 font-extrabold tracking-tight text-text">
+        Enviar feedback
+      </h1>
     </div>
 
-    <div class="form-layout">
-      <div class="form-sidebar">
-        <div class="sidebar-block">
-          <div class="sidebar-label">// privacidad</div>
-          <p class="sidebar-text">
+    <div class="grid grid-cols-1 items-start gap-8 900:grid-cols-[16rem_1fr] 900:gap-12">
+      <div class="flex flex-col gap-7 900:sticky 900:top-20">
+        <div class="flex flex-col gap-2.5">
+          <div class="font-mono text-xs tracking-wide text-text-subtle">// privacidad</div>
+          <p class="m-0 text-sm leading-relaxed font-light text-text-muted">
             No pedimos cuenta ni datos que te identifiquen.
-            <NuxtLink target="_blank" to="/privacidad" class="sidebar-link">Política de privacidad</NuxtLink>
+            <NuxtLink target="_blank" to="/privacidad"
+              class="mt-2 inline-block text-13 text-accent no-underline hover:underline">
+              Política de privacidad
+            </NuxtLink>
           </p>
         </div>
-        <div class="sidebar-block">
-          <div class="sidebar-label">// qué datos pedimos</div>
-          <ul class="sidebar-list">
+        <div class="flex flex-col gap-2.5">
+          <div class="font-mono text-xs tracking-wide text-text-subtle">
+            // qué datos pedimos
+          </div>
+          <ul
+            class="m-0 flex list-none flex-col gap-1.5 p-0 [&_li]:flex [&_li]:items-center [&_li]:gap-2 [&_li]:text-sm [&_li]:font-light [&_li]:text-text-muted [&_li]:before:font-mono [&_li]:before:text-xs [&_li]:before:text-text-subtle [&_li]:before:content-['—']">
             <li>Empresa y rubro</li>
             <li>Cargo postulado</li>
             <li>Mes de postulación</li>
@@ -31,152 +41,9 @@
         </div>
       </div>
 
-      <div class="form-main">
+      <div class="rounded-card border border-border bg-surface p-8">
         <FeedbackForm />
       </div>
     </div>
   </div>
 </template>
-
-<style scoped>
-.page-enviar {
-  max-width: 76rem;
-  margin: 0 auto;
-  padding: 2.5rem 1.5rem 6rem;
-}
-
-.page-header {
-  margin-bottom: 2.5rem;
-}
-
-.page-breadcrumb {
-  display: flex;
-  align-items: center;
-  gap: 0.375rem;
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  margin-bottom: 1.25rem;
-}
-
-.breadcrumb-link {
-  color: var(--color-text-muted);
-  text-decoration: none;
-  transition: color 0.12s ease;
-}
-
-.breadcrumb-link:hover {
-  color: var(--color-text);
-}
-
-.breadcrumb-sep {
-  color: var(--color-text-subtle);
-}
-
-.breadcrumb-current {
-  color: var(--color-accent);
-}
-
-.page-title {
-  font-family: var(--font-display);
-  font-size: 2rem;
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  color: var(--color-text);
-  margin: 0 0 0.5rem;
-}
-
-/* ─── Layout ─── */
-.form-layout {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 2rem;
-}
-
-@media (min-width: 900px) {
-  .form-layout {
-    grid-template-columns: 16rem 1fr;
-    align-items: start;
-    gap: 3rem;
-  }
-}
-
-/* ─── Sidebar ─── */
-.form-sidebar {
-  display: flex;
-  flex-direction: column;
-  gap: 1.75rem;
-}
-
-@media (min-width: 900px) {
-  .form-sidebar {
-    position: sticky;
-    top: 5rem;
-  }
-}
-
-.sidebar-block {
-  display: flex;
-  flex-direction: column;
-  gap: 0.625rem;
-}
-
-.sidebar-label {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  color: var(--color-text-subtle);
-  letter-spacing: 0.02em;
-}
-
-.sidebar-text {
-  font-size: 0.875rem;
-  line-height: 1.65;
-  color: var(--color-text-muted);
-  margin: 0;
-  font-weight: 300;
-}
-
-.sidebar-link {
-  display: inline-block;
-  margin-top: 0.5rem;
-  color: var(--color-accent);
-  text-decoration: none;
-  font-size: 0.8125rem;
-}
-
-.sidebar-link:hover {
-  text-decoration: underline;
-}
-
-.sidebar-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.375rem;
-}
-
-.sidebar-list li {
-  font-size: 0.875rem;
-  color: var(--color-text-muted);
-  font-weight: 300;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.sidebar-list li::before {
-  content: "—";
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  color: var(--color-text-subtle);
-}
-
-/* ─── Form card ─── */
-.form-main {
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 0.625rem;
-  padding: 2rem;
-}
-</style>

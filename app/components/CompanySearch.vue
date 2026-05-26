@@ -164,17 +164,18 @@ function onBlur() {
 </script>
 
 <template>
-  <div class="company-search">
-    <label v-if="showLabel" :for="inputId" class="company-search-label">
-      {{ label }}
-      <span v-if="required" class="req">*</span>
-    </label>
-    <div
-      class="company-search-field"
-      :class="{ 'company-search-field--open': dropdownOpen }"
+  <div class="flex flex-col gap-2">
+    <label
+      v-if="showLabel"
+      :for="inputId"
+      class="font-mono text-xs font-medium tracking-wider text-text-muted lowercase"
     >
+      {{ label }}
+      <span v-if="required" class="text-accent">*</span>
+    </label>
+    <div class="relative" :class="{ 'z-50': dropdownOpen }">
       <svg
-        class="search-icon"
+        class="pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 text-text-subtle"
         width="14"
         height="14"
         viewBox="0 0 24 24"
@@ -193,7 +194,7 @@ function onBlur() {
         v-model="query"
         type="text"
         :placeholder="placeholder"
-        class="company-search-input"
+        class="w-full rounded-md border border-border bg-surface py-2.5 pr-10 pl-9.5 font-mono text-sm text-text transition-[border-color,box-shadow] duration-150 placeholder:text-text-subtle focus:border-accent focus:outline-none focus:shadow-[0_0_0_3px_rgba(129,140,248,0.12)]"
         autocomplete="off"
         :required="required"
         @input="onInput"
@@ -204,7 +205,7 @@ function onBlur() {
       <button
         v-if="query"
         type="button"
-        class="search-clear"
+        class="absolute top-1/2 right-2.5 flex size-5 -translate-y-1/2 cursor-pointer items-center justify-center rounded border-0 bg-surface-alt text-text-muted transition-colors duration-100 hover:bg-border hover:text-text"
         aria-label="Limpiar"
         @click="query = ''"
       >
@@ -224,15 +225,15 @@ function onBlur() {
       </button>
       <ul
         v-if="dropdownOpen"
-        class="suggestions"
+        class="absolute top-[calc(100%+4px)] right-0 left-0 z-50 m-0 list-none overflow-hidden rounded-lg border border-border bg-surface-alt p-1 shadow-[0_12px_32px_rgba(0,0,0,0.5)]"
         role="listbox"
       >
         <li
           v-for="(company, index) in suggestions"
           :key="company.id"
           role="option"
-          class="suggestion-item"
-          :class="{ 'suggestion-item--active': index === activeIndex }"
+          class="cursor-pointer rounded px-3 py-2 text-15 text-text transition-colors duration-100 hover:bg-surface-hover"
+          :class="{ 'bg-surface-hover': index === activeIndex }"
           :aria-selected="index === activeIndex"
           @mousedown.prevent="selectCompany(company)"
           @mouseenter="activeIndex = index"
@@ -242,139 +243,10 @@ function onBlur() {
       </ul>
       <p
         v-else-if="showSuggestions && query.length >= 2 && !isSearching"
-        class="suggestions-empty"
+        class="absolute top-[calc(100%+4px)] right-0 left-0 z-50 m-0 rounded-lg border border-border bg-surface-alt px-3 py-2.5 font-mono text-xs text-text-subtle"
       >
         Sin coincidencias
       </p>
     </div>
   </div>
 </template>
-
-<style scoped>
-.company-search {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.company-search-label {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  text-transform: lowercase;
-  color: var(--color-text-muted);
-}
-
-.req {
-  color: var(--color-accent);
-}
-
-.company-search-field {
-  position: relative;
-}
-
-.company-search-field--open {
-  z-index: 50;
-}
-
-.search-icon {
-  position: absolute;
-  left: 0.875rem;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--color-text-subtle);
-  pointer-events: none;
-}
-
-.company-search-input {
-  width: 100%;
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 0.375rem;
-  padding: 0.625rem 2.5rem 0.625rem 2.375rem;
-  font-family: var(--font-mono);
-  font-size: 0.875rem;
-  color: var(--color-text);
-  transition: border-color 0.12s ease, box-shadow 0.12s ease;
-}
-
-.company-search-input::placeholder {
-  color: var(--color-text-subtle);
-}
-
-.company-search-input:focus {
-  outline: none;
-  border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.12);
-}
-
-.search-clear {
-  position: absolute;
-  right: 0.625rem;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 1.25rem;
-  height: 1.25rem;
-  border-radius: 0.25rem;
-  border: none;
-  background-color: var(--color-surface-alt);
-  color: var(--color-text-muted);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background-color 0.1s ease, color 0.1s ease;
-}
-
-.search-clear:hover {
-  background-color: var(--color-border);
-  color: var(--color-text);
-}
-
-.suggestions-empty {
-  position: absolute;
-  z-index: 50;
-  top: calc(100% + 4px);
-  left: 0;
-  right: 0;
-  margin: 0;
-  padding: 0.625rem 0.75rem;
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  color: var(--color-text-subtle);
-  background-color: var(--color-surface-alt);
-  border: 1px solid var(--color-border);
-  border-radius: 0.5rem;
-}
-
-.suggestions {
-  position: absolute;
-  z-index: 50;
-  top: calc(100% + 4px);
-  left: 0;
-  right: 0;
-  background-color: var(--color-surface-alt);
-  border: 1px solid var(--color-border);
-  border-radius: 0.5rem;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
-  overflow: hidden;
-  list-style: none;
-  margin: 0;
-  padding: 0.25rem;
-}
-
-.suggestion-item {
-  cursor: pointer;
-  padding: 0.5rem 0.75rem;
-  font-size: 0.9375rem;
-  border-radius: 0.25rem;
-  transition: background-color 0.1s ease;
-  color: var(--color-text);
-}
-
-.suggestion-item:hover,
-.suggestion-item--active {
-  background-color: var(--color-surface-hover);
-}
-</style>

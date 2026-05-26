@@ -7,22 +7,27 @@ useSeoMeta({
 </script>
 
 <template>
-  <div class="page-legal">
-    <div class="page-header">
-      <div class="page-breadcrumb">
-        <NuxtLink to="/" class="breadcrumb-link">inicio</NuxtLink>
-        <span class="breadcrumb-sep">/</span>
-        <span class="breadcrumb-current">privacidad</span>
+  <div class="mx-auto max-w-184 px-6 pt-10 pb-24">
+    <div class="mb-10">
+      <div class="mb-5 flex items-center gap-1.5 font-mono text-xs">
+        <NuxtLink to="/" class="text-text-muted no-underline transition-colors duration-150 hover:text-text">
+          inicio
+        </NuxtLink>
+        <span class="text-text-subtle">/</span>
+        <span class="text-accent">privacidad</span>
       </div>
-      <h1 class="page-title">Política de privacidad</h1>
-      <p class="page-lead">
+      <h1 class="m-0 mb-3 font-display text-32 font-extrabold tracking-tight text-text">
+        Política de privacidad
+      </h1>
+      <p class="m-0 text-15 leading-relaxed font-light text-text-muted">
         Última actualización: mayo de 2026. Este sitio opera en Chile y está pensado para
         compartir experiencias de postulación de forma anónima.
       </p>
     </div>
 
-    <article class="legal-content">
-      <section class="legal-section">
+    <article
+      class="flex flex-col gap-8 [&_a]:text-accent [&_a]:underline [&_a]:underline-offset-2 [&_a]:transition-colors [&_a]:duration-150 [&_a:hover]:text-accent-hover [&_h2]:m-0 [&_h2]:mb-3 [&_h2]:font-display [&_h2]:text-lg [&_h2]:font-bold [&_h2]:tracking-tight [&_h2]:text-text [&_li]:mb-2 [&_li]:text-15 [&_li]:leading-relaxed [&_li]:font-light [&_li]:text-text-muted [&_p]:m-0 [&_p]:mb-3 [&_p]:text-15 [&_p]:leading-relaxed [&_p]:font-light [&_p]:text-text-muted [&_p:last-child]:mb-0 [&_ul]:m-0 [&_ul]:mb-3 [&_ul]:list-disc [&_ul]:pl-5 [&_ul:last-child]:mb-0">
+      <section>
         <h2>1. Responsable</h2>
         <p>
           <strong>postulaciones-tracker</strong> es un proyecto comunitario sin registro de
@@ -31,7 +36,7 @@ useSeoMeta({
         </p>
       </section>
 
-      <section class="legal-section">
+      <section>
         <h2>2. Qué recopilamos</h2>
         <p>
           Al enviar feedback solo pedimos información sobre tu experiencia de postulación:
@@ -47,7 +52,7 @@ useSeoMeta({
         </p>
       </section>
 
-      <section class="legal-section">
+      <section>
         <h2>3. Datos técnicos y anti-abuso</h2>
         <p>
           Para limitar envíos automatizados y spam aplicamos medidas en el servidor:
@@ -71,7 +76,7 @@ useSeoMeta({
         </ul>
       </section>
 
-      <section class="legal-section">
+      <section>
         <h2>4. Cookies y almacenamiento local</h2>
         <p>
           No usamos cookies de sesión ni de analítica propias. Turnstile, operado por Cloudflare,
@@ -83,7 +88,7 @@ useSeoMeta({
         </p>
       </section>
 
-      <section class="legal-section">
+      <section>
         <h2>5. Finalidad y base de tratamiento</h2>
         <p>
           Usamos los datos del formulario para publicar estadísticas agregadas y experiencias
@@ -93,7 +98,7 @@ useSeoMeta({
         </p>
       </section>
 
-      <section class="legal-section">
+      <section>
         <h2>6. Conservación</h2>
         <p>
           Los registros de feedback se conservan mientras el proyecto los mantenga publicados en
@@ -102,7 +107,7 @@ useSeoMeta({
         </p>
       </section>
 
-      <section class="legal-section">
+      <section>
         <h2>7. Tus derechos</h2>
         <p>
           Dado que no vinculamos envíos a identidades, no podemos localizar “tu” registro sin
@@ -114,7 +119,7 @@ useSeoMeta({
         </p>
       </section>
 
-      <section class="legal-section">
+      <section>
         <h2>8. Enlaces externos</h2>
         <p>
           Las páginas de terceros (Cloudflare, Supabase) tienen sus propias políticas. No somos
@@ -122,10 +127,10 @@ useSeoMeta({
         </p>
       </section>
 
-      <section class="legal-section legal-section--embed">
-        <div class="embed-header">
+      <section class="mt-4">
+        <div class="mb-5">
           <h2>9. Cloudflare Turnstile — Privacy Addendum</h2>
-          <p class="embed-note">
+          <p class="font-mono text-xs leading-relaxed text-text-subtle">
             El texto siguiente reproduce el addendum publicado por Cloudflare (en inglés, idioma
             oficial del documento). Fuente:
             <a href="https://www.cloudflare.com/en-gb/turnstile-privacy-policy/" target="_blank"
@@ -134,9 +139,12 @@ useSeoMeta({
           </p>
         </div>
 
-        <div class="turnstile-addendum">
+        <div
+          class="rounded-card border border-border bg-surface px-6 py-7 [&_h3]:m-0 [&_h3]:mb-1 [&_h3]:font-display [&_h3]:text-xl [&_h3]:font-bold [&_h3]:text-text [&_h4]:mt-6 [&_h4]:mb-2 [&_h4]:font-mono [&_h4]:text-11 [&_h4]:font-medium [&_h4]:tracking-wide [&_h4]:text-accent [&_h4]:uppercase [&_h4:first-of-type]:mt-0 [&_li]:text-sm [&_p]:text-sm">
           <h3>Turnstile Privacy Addendum</h3>
-          <p class="addendum-meta"><em>Last updated: JUNE 18, 2025</em></p>
+          <p class="!mb-6 text-13 text-text-subtle">
+            <em>Last updated: JUNE 18, 2025</em>
+          </p>
 
           <h4>1. INTRODUCTION</h4>
           <p>
@@ -255,168 +263,3 @@ useSeoMeta({
     </article>
   </div>
 </template>
-
-<style scoped>
-.page-legal {
-  max-width: 46rem;
-  margin: 0 auto;
-  padding: 2.5rem 1.5rem 6rem;
-}
-
-.page-header {
-  margin-bottom: 2.5rem;
-}
-
-.page-breadcrumb {
-  display: flex;
-  align-items: center;
-  gap: 0.375rem;
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  margin-bottom: 1.25rem;
-}
-
-.breadcrumb-link {
-  color: var(--color-text-muted);
-  text-decoration: none;
-  transition: color 0.12s ease;
-}
-
-.breadcrumb-link:hover {
-  color: var(--color-text);
-}
-
-.breadcrumb-sep {
-  color: var(--color-text-subtle);
-}
-
-.breadcrumb-current {
-  color: var(--color-accent);
-}
-
-.page-title {
-  font-family: var(--font-display);
-  font-size: 2rem;
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  color: var(--color-text);
-  margin: 0 0 0.75rem;
-}
-
-.page-lead {
-  font-size: 0.9375rem;
-  line-height: 1.65;
-  color: var(--color-text-muted);
-  font-weight: 300;
-  margin: 0;
-}
-
-.legal-content {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-
-.legal-section h2 {
-  font-family: var(--font-display);
-  font-size: 1.125rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: var(--color-text);
-  margin: 0 0 0.75rem;
-}
-
-.legal-section p,
-.legal-section li {
-  font-size: 0.9375rem;
-  line-height: 1.7;
-  color: var(--color-text-muted);
-  font-weight: 300;
-  margin: 0 0 0.75rem;
-}
-
-.legal-section p:last-child,
-.legal-section ul:last-child {
-  margin-bottom: 0;
-}
-
-.legal-section ul {
-  margin: 0 0 0.75rem;
-  padding-left: 1.25rem;
-}
-
-.legal-section li {
-  margin-bottom: 0.5rem;
-}
-
-.legal-section a {
-  color: var(--color-accent);
-  text-decoration: underline;
-  text-underline-offset: 2px;
-  transition: color 0.12s ease;
-}
-
-.legal-section a:hover {
-  color: var(--color-accent-hover);
-}
-
-.legal-section--embed {
-  margin-top: 1rem;
-}
-
-.embed-header {
-  margin-bottom: 1.25rem;
-}
-
-.embed-note {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  line-height: 1.6;
-  color: var(--color-text-subtle);
-}
-
-.turnstile-addendum {
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 0.625rem;
-  padding: 1.75rem 1.5rem;
-}
-
-.turnstile-addendum h3 {
-  font-family: var(--font-display);
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: var(--color-text);
-  margin: 0 0 0.25rem;
-}
-
-.addendum-meta {
-  font-size: 0.8125rem;
-  color: var(--color-text-subtle);
-  margin-bottom: 1.5rem !important;
-}
-
-.turnstile-addendum h4 {
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--color-accent);
-  margin: 1.5rem 0 0.5rem;
-}
-
-.turnstile-addendum h4:first-of-type {
-  margin-top: 0;
-}
-
-.turnstile-addendum p,
-.turnstile-addendum li {
-  font-size: 0.875rem;
-}
-
-.turnstile-addendum ul {
-  padding-left: 1.25rem;
-  margin: 0 0 0.75rem;
-}
-</style>

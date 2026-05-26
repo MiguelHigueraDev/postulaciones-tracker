@@ -39,24 +39,36 @@ function onSelect(selected: CompanyOption) {
 </script>
 
 <template>
-  <div class="page-resultados">
-    <div class="page-header">
-      <div class="page-breadcrumb">
-        <NuxtLink to="/" class="breadcrumb-link">inicio</NuxtLink>
-        <span class="breadcrumb-sep">/</span>
-        <NuxtLink to="/resultados" class="breadcrumb-link">resultados</NuxtLink>
+  <div class="mx-auto max-w-3xl overflow-x-clip px-6 pt-10 pb-24">
+    <div class="mb-8">
+      <div class="mb-5 flex flex-wrap items-center gap-1.5 font-mono text-xs">
+        <NuxtLink
+          to="/"
+          class="text-text-muted no-underline transition-colors duration-150 hover:text-text"
+        >
+          inicio
+        </NuxtLink>
+        <span class="text-text-subtle">/</span>
+        <NuxtLink
+          to="/resultados"
+          class="text-text-muted no-underline transition-colors duration-150 hover:text-text"
+        >
+          resultados
+        </NuxtLink>
         <template v-if="company">
-          <span class="breadcrumb-sep">/</span>
-          <span class="breadcrumb-current">{{ company.name }}</span>
+          <span class="text-text-subtle">/</span>
+          <span class="text-accent">{{ company.name }}</span>
         </template>
       </div>
-      <h1 class="page-title">Resultados</h1>
-      <p class="page-subtitle">
+      <h1 class="m-0 mb-2 font-display text-32 font-extrabold tracking-tight text-text">
+        Resultados
+      </h1>
+      <p class="m-0 font-mono text-13 tracking-wide text-text-subtle">
         Estadísticas por empresa · feedback anónimo
       </p>
     </div>
 
-    <div class="search-block">
+    <div class="relative z-40 mb-8">
       <CompanySearch
         :model-value="company?.name ?? ''"
         label="Buscar empresa"
@@ -65,27 +77,58 @@ function onSelect(selected: CompanyOption) {
       />
     </div>
 
-    <div v-if="pending" class="state-loading">
-      <div class="loading-row">
-        <span class="loading-dot" />
-        <span class="loading-dot" />
-        <span class="loading-dot" />
+    <div
+      v-if="pending"
+      class="flex flex-col items-center gap-2 rounded-lg border border-border-subtle bg-surface px-4 py-16 text-center"
+    >
+      <div class="mb-2 flex gap-1.5">
+        <span
+          class="size-1.75 rounded-full bg-border animate-loading-dot"
+        />
+        <span
+          class="size-1.75 rounded-full bg-border animate-loading-dot [animation-delay:0.2s]"
+        />
+        <span
+          class="size-1.75 rounded-full bg-border animate-loading-dot [animation-delay:0.4s]"
+        />
       </div>
-      <p class="state-text">Cargando datos...</p>
+      <p class="m-0 text-sm text-text-subtle">Cargando datos...</p>
     </div>
 
-    <div v-else-if="error" class="state-error">
-      <p class="state-title">Error al cargar</p>
-      <p class="state-text">No pudimos obtener los datos. Intenta de nuevo.</p>
-      <NuxtLink to="/resultados" class="state-link">← Volver a resultados</NuxtLink>
+    <div
+      v-else-if="error"
+      class="flex flex-col items-center gap-2 rounded-lg border border-border-subtle bg-surface px-4 py-16 text-center"
+    >
+      <p class="m-0 font-display text-base font-bold text-text-muted">
+        Error al cargar
+      </p>
+      <p class="m-0 text-sm text-text-subtle">
+        No pudimos obtener los datos. Intenta de nuevo.
+      </p>
+      <NuxtLink
+        to="/resultados"
+        class="mt-3 text-sm text-accent no-underline hover:text-accent-hover"
+      >
+        ← Volver a resultados
+      </NuxtLink>
     </div>
 
-    <div v-else-if="!company || !stats" class="state-error">
-      <p class="state-title">Empresa no encontrada</p>
-      <p class="state-text">
+    <div
+      v-else-if="!company || !stats"
+      class="flex flex-col items-center gap-2 rounded-lg border border-border-subtle bg-surface px-4 py-16 text-center"
+    >
+      <p class="m-0 font-display text-base font-bold text-text-muted">
+        Empresa no encontrada
+      </p>
+      <p class="m-0 text-sm text-text-subtle">
         No hay datos para «{{ slug }}». Prueba buscando otra empresa.
       </p>
-      <NuxtLink to="/resultados" class="state-link">← Volver a resultados</NuxtLink>
+      <NuxtLink
+        to="/resultados"
+        class="mt-3 text-sm text-accent no-underline hover:text-accent-hover"
+      >
+        ← Volver a resultados
+      </NuxtLink>
     </div>
 
     <CompanyStatsPanel
@@ -97,140 +140,3 @@ function onSelect(selected: CompanyOption) {
     />
   </div>
 </template>
-
-<style scoped>
-.page-resultados {
-  max-width: 48rem;
-  margin: 0 auto;
-  padding: 2.5rem 1.5rem 6rem;
-  overflow-x: clip;
-}
-
-.page-header {
-  margin-bottom: 2rem;
-}
-
-.page-breadcrumb {
-  display: flex;
-  align-items: center;
-  gap: 0.375rem;
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  margin-bottom: 1.25rem;
-  flex-wrap: wrap;
-}
-
-.breadcrumb-link {
-  color: var(--color-text-muted);
-  text-decoration: none;
-  transition: color 0.12s ease;
-}
-
-.breadcrumb-link:hover {
-  color: var(--color-text);
-}
-
-.breadcrumb-sep {
-  color: var(--color-text-subtle);
-}
-
-.breadcrumb-current {
-  color: var(--color-accent);
-}
-
-.page-title {
-  font-family: var(--font-display);
-  font-size: 2rem;
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  color: var(--color-text);
-  margin: 0 0 0.5rem;
-}
-
-.page-subtitle {
-  font-family: var(--font-mono);
-  font-size: 0.8125rem;
-  color: var(--color-text-subtle);
-  margin: 0;
-  letter-spacing: 0.01em;
-}
-
-.search-block {
-  position: relative;
-  z-index: 40;
-  margin-bottom: 2rem;
-}
-
-.state-loading,
-.state-error {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 0.5rem;
-  padding: 4rem 1rem;
-  border: 1px solid var(--color-border-subtle);
-  border-radius: 0.5rem;
-  background-color: var(--color-surface);
-}
-
-.state-title {
-  font-family: var(--font-display);
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--color-text-muted);
-  margin: 0;
-}
-
-.state-text {
-  font-size: 0.875rem;
-  color: var(--color-text-subtle);
-  margin: 0;
-}
-
-.state-link {
-  margin-top: 0.75rem;
-  font-size: 0.875rem;
-  color: var(--color-accent);
-  text-decoration: none;
-}
-
-.state-link:hover {
-  color: var(--color-accent-hover);
-}
-
-.loading-row {
-  display: flex;
-  gap: 0.375rem;
-  margin-bottom: 0.5rem;
-}
-
-.loading-dot {
-  width: 0.4375rem;
-  height: 0.4375rem;
-  border-radius: 50%;
-  background-color: var(--color-border);
-  animation: pulse 1.2s ease-in-out infinite;
-}
-
-.loading-dot:nth-child(2) {
-  animation-delay: 0.2s;
-}
-
-.loading-dot:nth-child(3) {
-  animation-delay: 0.4s;
-}
-
-@keyframes pulse {
-  0%,
-  80%,
-  100% {
-    opacity: 0.3;
-    transform: scale(0.85);
-  }
-  40% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-</style>
