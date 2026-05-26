@@ -116,3 +116,18 @@ export interface PaginatedSubmissions {
 }
 
 export const SUBMISSIONS_PAGE_SIZE = 8;
+
+export interface GlobalSubmission extends CompanySubmission {
+  company_name: string;
+  company_slug: string;
+}
+
+export interface PaginatedAllSubmissions {
+  submissions: GlobalSubmission[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+}
+
+export const ALL_SUBMISSIONS_PAGE_SIZE = 20;
