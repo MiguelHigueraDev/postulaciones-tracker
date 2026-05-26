@@ -9,6 +9,7 @@ import {
 } from "~~/shared/schemas/feedback";
 
 const supabase = useSupabaseClient();
+const config = useRuntimeConfig();
 
 const currentYear = new Date().getFullYear();
 const YEARS = Array.from({ length: 3 }, (_, i) => currentYear - i);
@@ -31,6 +32,67 @@ const showSuggestions = ref(false);
 const isSubmitting = ref(false);
 const submitSuccess = ref(false);
 const submitError = ref("");
+const honeypot = ref("");
+const formStartedAt = ref(Date.now());
+const turnstileContainer = ref<HTMLElement | null>(null);
+const turnstileToken = ref("");
+let turnstileWidgetId: string | undefined;
+
+function loadTurnstileScript(): Promise<void> {
+  if (window.turnstile) {
+    return Promise.resolve();
+  }
+
+  return new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
+    script.async = true;
+    script.defer = true;
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error("Turnstile failed to load"));
+    document.head.appendChild(script);
+  });
+}
+
+function renderTurnstile() {
+  if (!turnstileContainer.value || !window.turnstile || !config.public.turnstileSiteKey) {
+    return;
+  }
+
+  turnstileWidgetId = window.turnstile.render(turnstileContainer.value, {
+    sitekey: config.public.turnstileSiteKey,
+    callback: (token: string) => {
+      turnstileToken.value = token;
+    },
+    "expired-callback": () => {
+      turnstileToken.value = "";
+    },
+    "error-callback": () => {
+      turnstileToken.value = "";
+    },
+  });
+}
+
+function resetTurnstile() {
+  if (window.turnstile && turnstileWidgetId) {
+    window.turnstile.reset(turnstileWidgetId);
+  }
+  turnstileToken.value = "";
+}
+
+onMounted(async () => {
+  if (!config.public.turnstileSiteKey) {
+    return;
+  }
+
+  try {
+    await loadTurnstileScript();
+    renderTurnstile();
+  } catch {
+    submitError.value =
+      "No pudimos cargar la verificación de seguridad. Recarga la página e intenta de nuevo.";
+  }
+});
 
 async function searchCompanies(query: string) {
   if (query.length < 2) {
@@ -68,6 +130,13 @@ const isFormValid = computed(() => {
   return feedbackSchema.safeParse(payload).success;
 });
 
+const canSubmit = computed(
+  () =>
+    isFormValid.value &&
+    !!turnstileToken.value &&
+    !isSubmitting.value,
+);
+
 function buildPayload() {
   return {
     p_company_name: form.companyName,
@@ -83,7 +152,7 @@ function buildPayload() {
 }
 
 async function handleSubmit() {
-  if (!isFormValid.value || isSubmitting.value) return;
+  if (!canSubmit.value) return;
 
   isSubmitting.value = true;
   submitError.value = "";
@@ -92,10 +161,16 @@ async function handleSubmit() {
   try {
     await $fetch("/api/submit-feedback", {
       method: "POST",
-      body: buildPayload(),
+      body: {
+        ...buildPayload(),
+        turnstileToken: turnstileToken.value,
+        _hp: honeypot.value,
+        _formElapsedMs: Date.now() - formStartedAt.value,
+      },
     });
   } catch (err: any) {
     isSubmitting.value = false;
+    resetTurnstile();
     submitError.value =
       err?.data?.message ||
       "Hubo un error al enviar tu feedback. Por favor intenta de nuevo.";
@@ -105,6 +180,8 @@ async function handleSubmit() {
   isSubmitting.value = false;
 
   submitSuccess.value = true;
+  formStartedAt.value = Date.now();
+  resetTurnstile();
   Object.assign(form, {
     companyName: "",
     industry: "",
@@ -258,7 +335,14 @@ async function handleSubmit() {
       </p>
     </div>
 
-    <button type="submit" :disabled="!isFormValid || isSubmitting"
+    <div class="absolute left-[-9999px] opacity-0" aria-hidden="true">
+      <label for="website">Website</label>
+      <input id="website" v-model="honeypot" type="text" tabindex="-1" autocomplete="off" />
+    </div>
+
+    <div ref="turnstileContainer" class="flex justify-center" />
+
+    <button type="submit" :disabled="!canSubmit"
       class="w-full rounded-lg bg-slate-900 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-50">
       {{ isSubmitting ? "Enviando..." : "Enviar feedback" }}
     </button>

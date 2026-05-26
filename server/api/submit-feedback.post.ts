@@ -1,6 +1,7 @@
 import { createError, defineEventHandler, getRequestIP, readBody } from "h3";
 import { serverSupabaseServiceRole } from "#supabase/server";
-import { feedbackSchema } from "~~/shared/schemas/feedback";
+import { feedbackSubmitSchema } from "~~/shared/schemas/feedback";
+import { verifyTurnstileToken } from "~~/server/utils/verifyTurnstile";
 
 const rateLimit = new Map<string, { count: number; resetAt: number }>();
 
@@ -33,7 +34,7 @@ export default defineEventHandler(async (event) => {
   }
 
   const body = await readBody(event);
-  const parsed = feedbackSchema.safeParse(body);
+  const parsed = feedbackSubmitSchema.safeParse(body);
 
   if (!parsed.success) {
     throw createError({
@@ -42,7 +43,29 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const input = parsed.data;
+  const { turnstileToken, _hp, ...input } = parsed.data;
+
+  if (_hp) {
+    throw createError({
+      statusCode: 400,
+      message: "Datos inválidos",
+    });
+  }
+
+  const config = useRuntimeConfig(event);
+  const turnstileValid = await verifyTurnstileToken(
+    config.turnstileSecretKey,
+    turnstileToken,
+    ip,
+  );
+
+  if (!turnstileValid) {
+    throw createError({
+      statusCode: 403,
+      message: "No pudimos verificar el envío. Por favor intenta de nuevo.",
+    });
+  }
+
   const client = serverSupabaseServiceRole(event);
 
   const { data, error } = await client.rpc("submit_feedback", {

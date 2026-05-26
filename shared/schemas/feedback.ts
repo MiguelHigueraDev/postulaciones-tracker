@@ -65,3 +65,11 @@ export const feedbackSchema = z.object({
 });
 
 export type FeedbackInput = z.infer<typeof feedbackSchema>;
+
+export const feedbackSubmitSchema = feedbackSchema.extend({
+  turnstileToken: z.string().min(1),
+  _hp: z.string().max(0).optional(),
+  _formElapsedMs: z.number().int().min(2000),
+});
+
+export type FeedbackSubmitInput = z.infer<typeof feedbackSubmitSchema>;
