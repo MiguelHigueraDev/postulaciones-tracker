@@ -12,6 +12,12 @@
           class="text-text-muted no-underline transition-colors duration-150 hover:text-accent">
           Privacidad
         </NuxtLink>
+        <span class="text-border">/</span>
+        <a href="https://github.com/MiguelHigueraDev/postulaciones-tracker" target="_blank"
+          rel="noopener noreferrer"
+          class="text-text-muted no-underline transition-colors duration-150 hover:text-accent">
+          GitHub
+        </a>
       </div>
     </footer>
   </div>

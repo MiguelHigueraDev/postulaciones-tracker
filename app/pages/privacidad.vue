@@ -32,7 +32,9 @@ useSeoMeta({
         <p>
           <strong>postulaciones-tracker</strong> es un proyecto comunitario sin registro de
           usuarios. Si tienes dudas sobre esta política, puedes contactarnos a través de los
-          canales publicados en el repositorio del proyecto.
+          canales publicados en el
+          <a href="https://github.com/MiguelHigueraDev/postulaciones-tracker" target="_blank"
+            rel="noopener noreferrer">repositorio del proyecto en GitHub</a>.
         </p>
       </section>
 
@@ -113,7 +115,9 @@ useSeoMeta({
           Dado que no vinculamos envíos a identidades, no podemos localizar “tu” registro sin
           información adicional que nos proporciones. Si crees que un envío incluye datos
           personales indebidos o deseas ejercer derechos sobre datos procesados por Turnstile en
-          nombre de este sitio, escríbenos por los canales del proyecto; para el tratamiento que
+          nombre de este sitio, escríbenos por el
+          <a href="https://github.com/MiguelHigueraDev/postulaciones-tracker" target="_blank"
+            rel="noopener noreferrer">repositorio en GitHub</a>; para el tratamiento que
           Cloudflare realiza como responsable independiente (mejora del servicio), contacta a
           Cloudflare según el addendum siguiente.
         </p>
@@ -123,7 +127,9 @@ useSeoMeta({
         <h2>8. Enlaces externos</h2>
         <p>
           Las páginas de terceros (Cloudflare, Supabase) tienen sus propias políticas. No somos
-          responsables de su contenido.
+          responsables de su contenido. El código fuente de este sitio está en
+          <a href="https://github.com/MiguelHigueraDev/postulaciones-tracker" target="_blank"
+            rel="noopener noreferrer">GitHub</a>.
         </p>
       </section>
 
