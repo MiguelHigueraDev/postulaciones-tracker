@@ -50,7 +50,12 @@ export const MONTHS = [
 
 export const MAX_COMPANY_NAME_LENGTH = 120;
 export const MAX_POSITION_LENGTH = 120;
-export const MAX_COMMENT_LENGTH = 280;
+export const MAX_COMMENT_LENGTH = 1000;
+export const COMMENT_LENGTH_WARNING_OFFSET = 40;
+
+function maxLengthMessage(label: string, max: number) {
+  return `El ${label} no puede exceder ${max} caracteres`;
+}
 
 const monthPattern = MONTHS.map((m) =>
   m.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
@@ -60,11 +65,16 @@ const APPLICATION_MONTH_REGEX = new RegExp(
   `^(${monthPattern}) (20\\d{2})$`,
 );
 
-function sanitizedPlainText(max: number, requiredMessage: string) {
+function sanitizedPlainText(max: number, requiredMessage: string, label: string) {
   return z
     .string()
     .transform(sanitizePlainText)
-    .pipe(z.string().min(1, requiredMessage).max(max));
+    .pipe(
+      z
+        .string()
+        .min(1, requiredMessage)
+        .max(max, maxLengthMessage(label, max)),
+    );
 }
 
 const applicationMonthSchema = z
@@ -93,10 +103,7 @@ const commentSchema = z
       z.null(),
       z
         .string()
-        .max(
-          MAX_COMMENT_LENGTH,
-          "El comentario no puede exceder 280 caracteres",
-        ),
+        .max(MAX_COMMENT_LENGTH, maxLengthMessage("comentario", MAX_COMMENT_LENGTH)),
     ]),
   )
   .default(null);
@@ -105,11 +112,13 @@ export const feedbackSchema = z.object({
   p_company_name: sanitizedPlainText(
     MAX_COMPANY_NAME_LENGTH,
     "El nombre de empresa es requerido",
+    "nombre de empresa",
   ),
   p_industry: z.enum(INDUSTRY_OPTIONS),
   p_position: sanitizedPlainText(
     MAX_POSITION_LENGTH,
     "El cargo es requerido",
+    "cargo",
   ),
   p_application_month: applicationMonthSchema,
   p_response_time: z.enum(RESPONSE_TIME_OPTIONS),

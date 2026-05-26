@@ -8,6 +8,7 @@ import {
   MAX_COMMENT_LENGTH,
   MAX_COMPANY_NAME_LENGTH,
   MAX_POSITION_LENGTH,
+  COMMENT_LENGTH_WARNING_OFFSET,
   feedbackSchema,
 } from "~~/shared/schemas/feedback";
 
@@ -280,7 +281,7 @@ async function handleSubmit() {
           placeholder="Describe brevemente tu experiencia..."
           :class="`${fieldInput} min-h-22 resize-y text-14 leading-relaxed`" />
         <div class="mt-1.5 text-right font-mono text-11 text-text-subtle">
-          <span :class="{ 'text-yield': form.comment.length > MAX_COMMENT_LENGTH - 40 }">
+          <span :class="{ 'text-yield': form.comment.length > MAX_COMMENT_LENGTH - COMMENT_LENGTH_WARNING_OFFSET }">
             {{ form.comment.length }}/{{ MAX_COMMENT_LENGTH }}
           </span>
         </div>
