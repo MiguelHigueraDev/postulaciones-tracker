@@ -33,53 +33,7 @@
         </div>
       </div>
 
-      <!-- Terminal decoration -->
-      <div
-        class="overflow-hidden rounded-card border border-border bg-surface font-mono text-13 shadow-[0_24px_48px_rgba(0,0,0,0.5)]"
-        aria-hidden="true">
-        <div class="flex items-center gap-1.5 border-b border-border bg-surface-alt px-3.5 py-2.5">
-          <span class="size-2.75 rounded-full bg-[#ff5f57]" />
-          <span class="size-2.75 rounded-full bg-[#ffbd2e]" />
-          <span class="size-2.75 rounded-full bg-[#28c941]" />
-          <span class="mx-auto text-11 tracking-wide text-text-subtle">
-            pt — query
-          </span>
-        </div>
-        <div class="flex flex-col gap-1 px-5 pt-5 pb-6">
-          <div class="flex items-baseline gap-3 leading-relaxed">
-            <span class="font-medium text-accent">$</span>
-            <span class="text-text">pt query</span>
-            <span class="text-text-muted">--company</span>
-            <span class="text-[#86efac]">"Buk"</span>
-          </div>
-          <div class="h-2" />
-          <div class="flex items-baseline gap-3 leading-relaxed">
-            <span class="min-w-22 text-xs text-text-subtle">empresa</span>
-            <span class="text-text">Buk</span>
-          </div>
-          <div class="flex items-baseline gap-3 leading-relaxed">
-            <span class="min-w-22 text-xs text-text-subtle">cargo </span>
-            <span class="text-text">Fullstack Dev</span>
-          </div>
-          <div class="flex items-baseline gap-3 leading-relaxed">
-            <span class="min-w-22 text-xs text-text-subtle">etapas </span>
-            <span class="text-accent">3</span>
-          </div>
-          <div class="flex items-baseline gap-3 leading-relaxed">
-            <span class="min-w-22 text-xs text-text-subtle">resultado</span>
-            <span class="font-medium text-positive">Oferta ✓</span>
-          </div>
-          <div class="flex items-baseline gap-3 leading-relaxed">
-            <span class="min-w-22 text-xs text-text-subtle">respuesta</span>
-            <span class="text-text">1–2 semanas</span>
-          </div>
-          <div class="h-2" />
-          <div class="flex items-baseline gap-3 leading-relaxed">
-            <span class="font-medium text-accent">$</span>
-            <span class="animate-terminal-blink text-accent">▋</span>
-          </div>
-        </div>
-      </div>
+      <HeroTerminal />
     </section>
 
 
