@@ -14,9 +14,8 @@
         <div class="sidebar-block">
           <div class="sidebar-label">// privacidad</div>
           <p class="sidebar-text">
-            No pedimos cuenta ni datos que te identifiquen. La IP solo se usa de forma
-            temporal para limitar abuso y para Turnstile; no la guardamos en la base de datos.
-            <NuxtLink to="/privacidad" class="sidebar-link">Política de privacidad</NuxtLink>
+            No pedimos cuenta ni datos que te identifiquen.
+            <NuxtLink target="_blank" to="/privacidad" class="sidebar-link">Política de privacidad</NuxtLink>
           </p>
         </div>
         <div class="sidebar-block">
