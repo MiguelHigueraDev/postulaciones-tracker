@@ -1,5 +1,8 @@
 <template>
-  <div>
-    <p class="text-slate-600 font-bold">Hello Tailwind!</p>
+  <div class="min-h-screen bg-slate-50 text-slate-900">
+    <AppHeader />
+    <main>
+      <NuxtPage />
+    </main>
   </div>
 </template>
