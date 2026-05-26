@@ -157,8 +157,8 @@ async function handleSubmit() {
     </div>
 
     <!-- Section: Empresa -->
-    <fieldset class="m-0 mb-2 border-0 border-b border-border-subtle py-6 last:border-b-0">
-      <legend class="mb-5 flex w-full items-center gap-2.5 p-0 font-mono text-13 font-medium tracking-tight text-text">
+    <fieldset class="m-0 mb-4 border-0 border-b border-border-subtle py-6 last:border-b-0">
+      <legend class="mb-1 flex w-full items-center gap-2.5 p-0 font-mono text-13 font-medium tracking-tight text-text">
         <span class="font-mono text-11 tracking-wide text-accent">01</span>
         Empresa
       </legend>
@@ -183,8 +183,8 @@ async function handleSubmit() {
     </fieldset>
 
     <!-- Section: Postulación -->
-    <fieldset class="m-0 mb-2 border-0 border-b border-border-subtle py-6 last:border-b-0">
-      <legend class="mb-5 flex w-full items-center gap-2.5 p-0 font-mono text-13 font-medium tracking-tight text-text">
+    <fieldset class="m-0 mb-4 border-0 border-b border-border-subtle py-6 last:border-b-0">
+      <legend class="flex w-full items-center gap-2.5 p-0 font-mono text-13 font-medium tracking-tight text-text">
         <span class="font-mono text-11 tracking-wide text-accent">02</span>
         Postulación
       </legend>
@@ -219,8 +219,8 @@ async function handleSubmit() {
     </fieldset>
 
     <!-- Section: Proceso -->
-    <fieldset class="m-0 mb-2 border-0 border-b border-border-subtle py-6 last:border-b-0">
-      <legend class="mb-5 flex w-full items-center gap-2.5 p-0 font-mono text-13 font-medium tracking-tight text-text">
+    <fieldset class="m-0 mb-4 border-0 border-b border-border-subtle py-6 last:border-b-0">
+      <legend class="flex w-full items-center gap-2.5 p-0 font-mono text-13 font-medium tracking-tight text-text">
         <span class="font-mono text-11 tracking-wide text-accent">03</span>
         Proceso
       </legend>
@@ -267,7 +267,7 @@ async function handleSubmit() {
 
     <!-- Section: Comentario -->
     <fieldset class="m-0 mb-2 border-0 border-b border-border-subtle py-6 last:border-b-0">
-      <legend class="mb-5 flex w-full items-center gap-2.5 p-0 font-mono text-13 font-medium tracking-tight text-text">
+      <legend class="flex w-full items-center gap-2.5 p-0 font-mono text-13 font-medium tracking-tight text-text">
         <span class="font-mono text-11 tracking-wide text-accent">04</span>
         Comentario
         <span class="text-xs font-normal text-text-subtle">(opcional)</span>
@@ -289,7 +289,7 @@ async function handleSubmit() {
     </fieldset>
 
     <!-- Honeypot -->
-    <div class="absolute -left-[9999px] opacity-0" aria-hidden="true">
+    <div class="absolute left-[-9999px] opacity-0" aria-hidden="true">
       <input id="website" v-model="honeypot" type="text" tabindex="-1" autocomplete="off" />
     </div>
 
