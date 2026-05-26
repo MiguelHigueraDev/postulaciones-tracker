@@ -1,1 +1,98 @@
 @import "tailwindcss";
+
+@theme {
+  --font-display: "Syne", system-ui, sans-serif;
+  --font-sans: "IBM Plex Sans", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "Courier New", monospace;
+
+  /* Dark tech palette */
+  --color-bg: #09090d;
+  --color-surface: #111118;
+  --color-surface-alt: #1a1a24;
+  --color-surface-hover: #1e1e2c;
+
+  --color-border: #26263a;
+  --color-border-subtle: #1c1c2c;
+
+  --color-text: #e2e2ee;
+  --color-text-muted: #7878a0;
+  --color-text-subtle: #44446a;
+
+  /* Electric indigo accent */
+  --color-accent: #818cf8;
+  --color-accent-hover: #6366f1;
+  --color-accent-dim: rgba(129, 140, 248, 0.1);
+  --color-accent-glow: 0 0 0 3px rgba(129, 140, 248, 0.2);
+
+  /* Status colors on dark */
+  --color-positive: #34d399;
+  --color-positive-bg: rgba(52, 211, 153, 0.1);
+  --color-positive-border: rgba(52, 211, 153, 0.2);
+
+  --color-negative: #f87171;
+  --color-negative-bg: rgba(248, 113, 113, 0.1);
+  --color-negative-border: rgba(248, 113, 113, 0.2);
+
+  --color-ghost: #94a3b8;
+  --color-ghost-bg: rgba(148, 163, 184, 0.08);
+  --color-ghost-border: rgba(148, 163, 184, 0.15);
+
+  --color-yield: #fbbf24;
+  --color-yield-bg: rgba(251, 191, 36, 0.1);
+  --color-yield-border: rgba(251, 191, 36, 0.2);
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    font-family: var(--font-sans);
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-size: 15px;
+  }
+
+  body {
+    background-color: var(--color-bg);
+  }
+
+  ::selection {
+    background-color: var(--color-accent-dim);
+    color: var(--color-accent);
+  }
+
+  :focus-visible {
+    outline: none;
+    box-shadow: var(--color-accent-glow);
+    border-radius: 4px;
+  }
+
+  a:focus-visible {
+    border-radius: 4px;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--color-bg);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-text-subtle);
+  }
+}
