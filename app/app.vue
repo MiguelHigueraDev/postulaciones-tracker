@@ -8,8 +8,6 @@
       <div class="footer-inner">
         <span class="footer-mono">postulaciones-tracker</span>
         <span class="footer-sep">/</span>
-        <span class="footer-tag">sin datos personales · anónimo · Chile</span>
-        <span class="footer-sep">/</span>
         <NuxtLink to="/privacidad" class="footer-link">Privacidad</NuxtLink>
       </div>
     </footer>
