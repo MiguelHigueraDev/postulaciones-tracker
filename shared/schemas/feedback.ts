@@ -1,4 +1,5 @@
 import { z } from "zod/v4";
+import { sanitizeComment, sanitizePlainText } from "~~/shared/utils/sanitizeInput";
 
 export const INDUSTRY_OPTIONS = [
   "Tech",
@@ -47,29 +48,87 @@ export const MONTHS = [
   "Diciembre",
 ] as const;
 
+export const MAX_COMPANY_NAME_LENGTH = 120;
+export const MAX_POSITION_LENGTH = 120;
+export const MAX_COMMENT_LENGTH = 280;
+
+const monthPattern = MONTHS.map((m) =>
+  m.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
+).join("|");
+
+const APPLICATION_MONTH_REGEX = new RegExp(
+  `^(${monthPattern}) (20\\d{2})$`,
+);
+
+function sanitizedPlainText(max: number, requiredMessage: string) {
+  return z
+    .string()
+    .transform(sanitizePlainText)
+    .pipe(z.string().min(1, requiredMessage).max(max));
+}
+
+const applicationMonthSchema = z
+  .string()
+  .transform(sanitizePlainText)
+  .pipe(
+    z
+      .string()
+      .regex(APPLICATION_MONTH_REGEX, "El mes de postulación es inválido")
+      .refine((val) => {
+        const year = Number(val.split(" ").pop());
+        const current = new Date().getFullYear();
+        return year >= current - 2 && year <= current;
+      }, "El año de postulación es inválido"),
+  );
+
+const commentSchema = z
+  .union([z.string(), z.null()])
+  .transform((val) => {
+    if (val === null || val === "") return null;
+    const cleaned = sanitizeComment(val);
+    return cleaned === "" ? null : cleaned;
+  })
+  .pipe(
+    z.union([
+      z.null(),
+      z
+        .string()
+        .max(
+          MAX_COMMENT_LENGTH,
+          "El comentario no puede exceder 280 caracteres",
+        ),
+    ]),
+  )
+  .default(null);
+
 export const feedbackSchema = z.object({
-  p_company_name: z.string().trim().min(1, "El nombre de empresa es requerido"),
+  p_company_name: sanitizedPlainText(
+    MAX_COMPANY_NAME_LENGTH,
+    "El nombre de empresa es requerido",
+  ),
   p_industry: z.enum(INDUSTRY_OPTIONS),
-  p_position: z.string().trim().min(1, "El cargo es requerido"),
-  p_application_month: z.string().trim().min(1, "El mes de postulación es requerido"),
+  p_position: sanitizedPlainText(
+    MAX_POSITION_LENGTH,
+    "El cargo es requerido",
+  ),
+  p_application_month: applicationMonthSchema,
   p_response_time: z.enum(RESPONSE_TIME_OPTIONS),
   p_stages_reached: z.number().int().min(0).max(20).default(0),
   p_last_stage: z.enum(LAST_STAGE_OPTIONS).nullable().default(null),
   p_result: z.enum(RESULT_OPTIONS),
-  p_comment: z
-    .string()
-    .trim()
-    .max(280, "El comentario no puede exceder 280 caracteres")
-    .nullable()
-    .default(null),
+  p_comment: commentSchema,
 });
 
 export type FeedbackInput = z.infer<typeof feedbackSchema>;
 
 export const feedbackSubmitSchema = feedbackSchema.extend({
-  turnstileToken: z.string().min(1),
-  _hp: z.string().max(0).optional(),
-  _formElapsedMs: z.number().int().min(2000),
+  turnstileToken: z.string().min(1).max(2048),
+  _hp: z
+    .string()
+    .optional()
+    .transform((val) => (val === undefined ? "" : sanitizePlainText(val)))
+    .pipe(z.string().max(0)),
+  _formElapsedMs: z.number().int().min(2000).max(3_600_000),
 });
 
 export type FeedbackSubmitInput = z.infer<typeof feedbackSubmitSchema>;

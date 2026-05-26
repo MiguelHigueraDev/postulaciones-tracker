@@ -5,6 +5,9 @@ import {
   LAST_STAGE_OPTIONS,
   RESULT_OPTIONS,
   MONTHS,
+  MAX_COMMENT_LENGTH,
+  MAX_COMPANY_NAME_LENGTH,
+  MAX_POSITION_LENGTH,
   feedbackSchema,
 } from "~~/shared/schemas/feedback";
 
@@ -163,7 +166,7 @@ async function handleSubmit() {
           empresa <span class="text-accent">*</span>
         </label>
         <CompanySearch v-model="form.companyName" input-id="company" :show-label="false" required
-          placeholder="Nombre de la empresa" />
+          :maxlength="MAX_COMPANY_NAME_LENGTH" placeholder="Nombre de la empresa" />
       </div>
 
       <div class="relative mb-4 last:mb-0">
@@ -189,6 +192,7 @@ async function handleSubmit() {
           cargo <span class="text-accent">*</span>
         </label>
         <input id="position" v-model="form.position" type="text" required
+          :maxlength="MAX_POSITION_LENGTH"
           placeholder="Backend Developer, Analista de datos..." :class="fieldInput" />
       </div>
 
@@ -272,12 +276,12 @@ async function handleSubmit() {
         <label for="comment" class="mb-2 block font-mono text-11 tracking-wide text-text-subtle lowercase">
           comentario
         </label>
-        <textarea id="comment" v-model="form.comment" rows="3" maxlength="280"
+        <textarea id="comment" v-model="form.comment" rows="3" :maxlength="MAX_COMMENT_LENGTH"
           placeholder="Describe brevemente tu experiencia..."
           :class="`${fieldInput} min-h-22 resize-y text-14 leading-relaxed`" />
         <div class="mt-1.5 text-right font-mono text-11 text-text-subtle">
-          <span :class="{ 'text-yield': form.comment.length > 240 }">
-            {{ form.comment.length }}/280
+          <span :class="{ 'text-yield': form.comment.length > MAX_COMMENT_LENGTH - 40 }">
+            {{ form.comment.length }}/{{ MAX_COMMENT_LENGTH }}
           </span>
         </div>
       </div>

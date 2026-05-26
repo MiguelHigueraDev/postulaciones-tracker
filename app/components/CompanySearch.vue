@@ -13,6 +13,7 @@ const props = withDefaults(
     label?: string;
     showLabel?: boolean;
     required?: boolean;
+    maxlength?: number;
   }>(),
   {
     modelValue: "",
@@ -21,6 +22,7 @@ const props = withDefaults(
     label: "empresa",
     showLabel: true,
     required: false,
+    maxlength: undefined,
   },
 );
 
@@ -193,6 +195,7 @@ function onBlur() {
         :id="inputId"
         v-model="query"
         type="text"
+        :maxlength="maxlength"
         :placeholder="placeholder"
         class="w-full rounded-md border border-border bg-surface py-2.5 pr-10 pl-9.5 font-mono text-sm text-text transition-[border-color,box-shadow] duration-150 placeholder:text-text-subtle focus:border-accent focus:outline-none focus:shadow-[0_0_0_3px_rgba(129,140,248,0.12)]"
         autocomplete="off"
