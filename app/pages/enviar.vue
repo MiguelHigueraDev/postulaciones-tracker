@@ -14,7 +14,9 @@
         <div class="sidebar-block">
           <div class="sidebar-label">// privacidad</div>
           <p class="sidebar-text">
-            No guardamos tu IP, no usamos cookies de sesión, no requiere cuenta.
+            No pedimos cuenta ni datos que te identifiquen. La IP solo se usa de forma
+            temporal para limitar abuso y para Turnstile; no la guardamos en la base de datos.
+            <NuxtLink to="/privacidad" class="sidebar-link">Política de privacidad</NuxtLink>
           </p>
         </div>
         <div class="sidebar-block">
@@ -132,6 +134,18 @@
   color: var(--color-text-muted);
   margin: 0;
   font-weight: 300;
+}
+
+.sidebar-link {
+  display: inline-block;
+  margin-top: 0.5rem;
+  color: var(--color-accent);
+  text-decoration: none;
+  font-size: 0.8125rem;
+}
+
+.sidebar-link:hover {
+  text-decoration: underline;
 }
 
 .sidebar-list {

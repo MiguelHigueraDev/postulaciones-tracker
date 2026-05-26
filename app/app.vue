@@ -9,6 +9,8 @@
         <span class="footer-mono">postulaciones-tracker</span>
         <span class="footer-sep">/</span>
         <span class="footer-tag">sin datos personales · anónimo · Chile</span>
+        <span class="footer-sep">/</span>
+        <NuxtLink to="/privacidad" class="footer-link">Privacidad</NuxtLink>
       </div>
     </footer>
   </div>
@@ -55,5 +57,15 @@
 .footer-tag {
   color: var(--color-text-subtle);
   letter-spacing: 0.02em;
+}
+
+.footer-link {
+  color: var(--color-text-muted);
+  text-decoration: none;
+  transition: color 0.12s ease;
+}
+
+.footer-link:hover {
+  color: var(--color-accent);
 }
 </style>
