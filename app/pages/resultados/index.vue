@@ -34,6 +34,13 @@ watch(
 function onSelect(company: CompanyOption) {
   return navigateTo(`/resultados/${encodeURIComponent(company.name_normalized)}`);
 }
+
+useSeoMeta({
+  title: () =>
+    showAllSubmissions.value ? "Todos los registros" : "Resultados",
+  description:
+    "Feedback colectivo anónimo sobre procesos de selección en empresas tech de Chile.",
+});
 </script>
 
 <template>

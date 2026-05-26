@@ -1,3 +1,11 @@
+<script setup lang="ts">
+useSeoMeta({
+  title: "Enviar feedback",
+  description:
+    "Comparte tu experiencia de postulación de forma anónima. Sin cuenta ni datos personales.",
+});
+</script>
+
 <template>
   <div class="mx-auto max-w-304 px-6 pt-10 pb-24">
     <div class="mb-10">

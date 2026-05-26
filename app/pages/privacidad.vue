@@ -1,6 +1,6 @@
 <script setup lang="ts">
 useSeoMeta({
-  title: "Política de privacidad — postulaciones-tracker",
+  title: "Política de privacidad",
   description:
     "Cómo tratamos los datos en postulaciones-tracker, incluido el uso de Cloudflare Turnstile.",
 });

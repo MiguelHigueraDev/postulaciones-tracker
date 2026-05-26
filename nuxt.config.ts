@@ -6,6 +6,14 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   app: {
     head: {
+      title: "postulaciones-tracker",
+      meta: [
+        {
+          name: "description",
+          content:
+            "Datos reales de procesos de selección en empresas tech de Chile. Tiempos de respuesta, etapas y resultados, aportados de forma anónima.",
+        },
+      ],
       link: [
         { rel: "preconnect", href: "https://fonts.googleapis.com" },
         { rel: "preconnect", href: "https://fonts.gstatic.com", crossorigin: "" },

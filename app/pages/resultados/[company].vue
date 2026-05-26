@@ -36,6 +36,20 @@ function onSelect(selected: CompanyOption) {
     `/resultados/${encodeURIComponent(selected.name_normalized)}`,
   );
 }
+
+useSeoMeta({
+  title: () => {
+    if (pending.value) return "Resultados";
+    if (error.value || !company.value) return "Empresa no encontrada";
+    return company.value.name;
+  },
+  description: () => {
+    if (!company.value) {
+      return "Estadísticas de procesos de selección por empresa en Chile.";
+    }
+    return `Estadísticas de postulación en ${company.value.name}: tiempos de respuesta, etapas y resultados.`;
+  },
+});
 </script>
 
 <template>

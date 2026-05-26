@@ -1,3 +1,11 @@
+<script setup lang="ts">
+useSeoMeta({
+  title: "Transparencia en el hiring",
+  description:
+    "Datos reales de procesos de selección en empresas tech de Chile. Tiempos de respuesta, etapas y resultados, aportados de forma anónima.",
+});
+</script>
+
 <template>
   <div class="mx-auto max-w-304 px-6">
 

@@ -1,3 +1,10 @@
+<script setup lang="ts">
+useHead({
+  titleTemplate: (title) =>
+    title ? `${title} — postulaciones-tracker` : "postulaciones-tracker",
+});
+</script>
+
 <template>
   <div class="flex min-h-screen flex-col bg-bg text-text">
     <AppHeader />
