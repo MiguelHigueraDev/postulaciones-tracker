@@ -27,8 +27,7 @@ const form = reactive({
 });
 
 const isSubmitting = ref(false);
-const submitSuccess = ref(false);
-const submitError = ref("");
+const resultModal = ref<{ type: "success" | "error"; message: string } | null>(null);
 const honeypot = ref("");
 const formStartedAt = ref(Date.now());
 const turnstileContainer = ref<HTMLElement | null>(null);
@@ -71,9 +70,22 @@ onMounted(async () => {
     await loadTurnstileScript();
     renderTurnstile();
   } catch {
-    submitError.value = "No pudimos cargar la verificación de seguridad. Recarga la página.";
+    resultModal.value = {
+      type: "error",
+      message: "No pudimos cargar la verificación de seguridad. Recarga la página.",
+    };
   }
 });
+
+function showResult(type: "success" | "error", message: string) {
+  resultModal.value = { type, message };
+}
+
+function closeResultModal() {
+  const wasSuccess = resultModal.value?.type === "success";
+  resultModal.value = null;
+  if (wasSuccess) navigateTo("/");
+}
 
 const isFormValid = computed(() => feedbackSchema.safeParse(buildPayload()).success);
 const canSubmit = computed(() => isFormValid.value && !!turnstileToken.value && !isSubmitting.value);
@@ -99,8 +111,7 @@ function buildPayload() {
 async function handleSubmit() {
   if (!canSubmit.value) return;
   isSubmitting.value = true;
-  submitError.value = "";
-  submitSuccess.value = false;
+  resultModal.value = null;
 
   try {
     await $fetch("/api/submit-feedback", {
@@ -115,12 +126,12 @@ async function handleSubmit() {
   } catch (err: any) {
     isSubmitting.value = false;
     resetTurnstile();
-    submitError.value = err?.data?.message || "Error al enviar. Intenta de nuevo.";
+    showResult("error", err?.data?.message || "Error al enviar. Intenta de nuevo.");
     return;
   }
 
   isSubmitting.value = false;
-  submitSuccess.value = true;
+  showResult("success", "Feedback enviado. ¡Gracias por contribuir!");
   formStartedAt.value = Date.now();
   resetTurnstile();
   Object.assign(form, {
@@ -133,28 +144,12 @@ async function handleSubmit() {
 
 <template>
   <form class="flex flex-col" @submit.prevent="handleSubmit">
-
-    <div v-if="submitSuccess"
-      class="mb-6 flex items-center gap-2.5 rounded-md border border-positive-border bg-positive-bg px-4 py-3 text-sm text-positive"
-      role="alert">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <polyline points="20 6 9 17 4 12" />
-      </svg>
-      Feedback enviado. ¡Gracias por contribuir!
-    </div>
-
-    <div v-if="submitError"
-      class="mb-6 flex items-center gap-2.5 rounded-md border border-negative-border bg-negative-bg px-4 py-3 text-sm text-negative"
-      role="alert">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <circle cx="12" cy="12" r="10" />
-        <line x1="12" y1="8" x2="12" y2="12" />
-        <line x1="12" y1="16" x2="12.01" y2="16" />
-      </svg>
-      {{ submitError }}
-    </div>
+    <SubmitResultModal
+      v-if="resultModal"
+      :type="resultModal.type"
+      :message="resultModal.message"
+      @close="closeResultModal"
+    />
 
     <!-- Section: Empresa -->
     <fieldset class="m-0 mb-4 border-0 border-b border-border-subtle py-6 last:border-b-0">
