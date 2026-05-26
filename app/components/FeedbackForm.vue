@@ -1,52 +1,14 @@
 <script setup lang="ts">
+import {
+  INDUSTRY_OPTIONS,
+  RESPONSE_TIME_OPTIONS,
+  LAST_STAGE_OPTIONS,
+  RESULT_OPTIONS,
+  MONTHS,
+  feedbackSchema,
+} from "~~/shared/schemas/feedback";
+
 const supabase = useSupabaseClient();
-
-const INDUSTRY_OPTIONS = [
-  "Tech",
-  "Finanzas",
-  "Retail",
-  "Industrial",
-  "Salud",
-  "Educación",
-  "Otro",
-];
-
-const RESPONSE_TIME_OPTIONS = [
-  "Sí - en menos de 1 semana",
-  "Sí - en 1-2 semanas",
-  "Sí - en más de 2 semanas",
-  "Nunca (ghost)",
-];
-
-const LAST_STAGE_OPTIONS = [
-  "Después de filtro RRHH",
-  "Después de prueba o assessment",
-  "Después de entrevista técnica",
-  "Después de entrevista final",
-  "Tuve respuesta hasta el final",
-];
-
-const RESULT_OPTIONS = [
-  "Ghost",
-  "Rechazo formal",
-  "Oferta",
-  "Desistí",
-];
-
-const MONTHS = [
-  "Enero",
-  "Febrero",
-  "Marzo",
-  "Abril",
-  "Mayo",
-  "Junio",
-  "Julio",
-  "Agosto",
-  "Septiembre",
-  "Octubre",
-  "Noviembre",
-  "Diciembre",
-];
 
 const currentYear = new Date().getFullYear();
 const YEARS = Array.from({ length: 3 }, (_, i) => currentYear - i);
@@ -102,15 +64,23 @@ function onCompanyBlur() {
 }
 
 const isFormValid = computed(() => {
-  return (
-    form.companyName.trim() !== "" &&
-    form.industry !== "" &&
-    form.position.trim() !== "" &&
-    form.applicationMonth !== "" &&
-    form.responseTime !== "" &&
-    form.result !== ""
-  );
+  const payload = buildPayload();
+  return feedbackSchema.safeParse(payload).success;
 });
+
+function buildPayload() {
+  return {
+    p_company_name: form.companyName,
+    p_industry: form.industry,
+    p_position: form.position,
+    p_application_month: `${form.applicationMonth} ${form.applicationYear}`,
+    p_response_time: form.responseTime,
+    p_stages_reached: form.stagesReached,
+    p_last_stage: form.lastStage || null,
+    p_result: form.result,
+    p_comment: form.comment || null,
+  };
+}
 
 async function handleSubmit() {
   if (!isFormValid.value || isSubmitting.value) return;
@@ -119,27 +89,20 @@ async function handleSubmit() {
   submitError.value = "";
   submitSuccess.value = false;
 
-  const applicationMonth = `${form.applicationMonth} ${form.applicationYear}`;
-
-  const { error } = await supabase.rpc("submit_feedback", {
-    p_company_name: form.companyName.trim(),
-    p_industry: form.industry,
-    p_position: form.position.trim(),
-    p_application_month: applicationMonth,
-    p_response_time: form.responseTime,
-    p_stages_reached: form.stagesReached,
-    p_last_stage: form.lastStage || undefined,
-    p_result: form.result,
-    p_comment: form.comment.trim() || undefined,
-  });
-
-  isSubmitting.value = false;
-
-  if (error) {
+  try {
+    await $fetch("/api/submit-feedback", {
+      method: "POST",
+      body: buildPayload(),
+    });
+  } catch (err: any) {
+    isSubmitting.value = false;
     submitError.value =
+      err?.data?.message ||
       "Hubo un error al enviar tu feedback. Por favor intenta de nuevo.";
     return;
   }
+
+  isSubmitting.value = false;
 
   submitSuccess.value = true;
   Object.assign(form, {
