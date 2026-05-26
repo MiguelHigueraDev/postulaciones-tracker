@@ -8,7 +8,6 @@ import {
   feedbackSchema,
 } from "~~/shared/schemas/feedback";
 
-const supabase = useSupabaseClient();
 const config = useRuntimeConfig();
 
 const currentYear = new Date().getFullYear();
@@ -27,8 +26,6 @@ const form = reactive({
   comment: "",
 });
 
-const companySuggestions = ref<string[]>([]);
-const showSuggestions = ref(false);
 const isSubmitting = ref(false);
 const submitSuccess = ref(false);
 const submitError = ref("");
@@ -77,30 +74,6 @@ onMounted(async () => {
     submitError.value = "No pudimos cargar la verificación de seguridad. Recarga la página.";
   }
 });
-
-async function searchCompanies(query: string) {
-  if (query.length < 2) { companySuggestions.value = []; return; }
-  const { data } = await supabase
-    .from("companies")
-    .select("name")
-    .ilike("name_normalized", `%${query.toLowerCase()}%`)
-    .limit(5);
-  companySuggestions.value = data?.map((c) => c.name) ?? [];
-}
-
-function selectCompany(name: string) {
-  form.companyName = name;
-  showSuggestions.value = false;
-}
-
-function onCompanyInput() {
-  showSuggestions.value = true;
-  searchCompanies(form.companyName);
-}
-
-function onCompanyBlur() {
-  setTimeout(() => { showSuggestions.value = false; }, 200);
-}
 
 const isFormValid = computed(() => feedbackSchema.safeParse(buildPayload()).success);
 const canSubmit = computed(() => isFormValid.value && !!turnstileToken.value && !isSubmitting.value);
@@ -173,28 +146,15 @@ async function handleSubmit() {
         <span class="legend-prefix">01</span> Empresa
       </legend>
 
-      <div class="field relative">
+      <div class="field">
         <label for="company" class="field-label">empresa <span class="req">*</span></label>
-        <input
-          id="company"
+        <CompanySearch
           v-model="form.companyName"
-          type="text"
+          input-id="company"
+          :show-label="false"
           required
           placeholder="Nombre de la empresa"
-          class="field-input"
-          autocomplete="off"
-          @input="onCompanyInput"
-          @focus="onCompanyInput"
-          @blur="onCompanyBlur"
         />
-        <ul v-if="showSuggestions && companySuggestions.length > 0" class="suggestions">
-          <li
-            v-for="name in companySuggestions"
-            :key="name"
-            class="suggestion-item"
-            @mousedown.prevent="selectCompany(name)"
-          >{{ name }}</li>
-        </ul>
       </div>
 
       <div class="field">
@@ -470,36 +430,6 @@ async function handleSubmit() {
   min-height: 5.5rem;
   line-height: 1.6;
   font-size: 0.9rem;
-}
-
-/* ─── Autocomplete ─── */
-.suggestions {
-  position: absolute;
-  z-index: 20;
-  top: calc(100% + 4px);
-  left: 0;
-  right: 0;
-  background-color: var(--color-surface-alt);
-  border: 1px solid var(--color-border);
-  border-radius: 0.5rem;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
-  overflow: hidden;
-  list-style: none;
-  margin: 0;
-  padding: 0.25rem;
-}
-
-.suggestion-item {
-  cursor: pointer;
-  padding: 0.5rem 0.75rem;
-  font-size: 0.9375rem;
-  border-radius: 0.25rem;
-  transition: background-color 0.1s ease;
-  color: var(--color-text);
-}
-
-.suggestion-item:hover {
-  background-color: var(--color-surface-hover);
 }
 
 /* ─── Char count ─── */

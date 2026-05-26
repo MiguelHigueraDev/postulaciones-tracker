@@ -90,6 +90,31 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_company_stats: {
+        Args: {
+          p_name_normalized: string
+        }
+        Returns: {
+          company: {
+            id: string
+            name: string
+            name_normalized: string
+          }
+          stats: {
+            total: number
+            results: { key: string; count: number }[]
+            response_times: { key: string; count: number }[]
+            stages: {
+              average: number | string
+              min: number
+              max: number
+            }
+            last_stages: { key: string; count: number }[]
+            industries: { key: string; count: number }[]
+            positions: { key: string; count: number }[]
+          }
+        } | null
+      }
       submit_feedback: {
         Args: {
           p_application_month: string
