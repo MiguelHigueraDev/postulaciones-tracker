@@ -1,75 +1,51 @@
-# Nuxt Minimal Starter
+# Postulaciones Tracker
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Plataforma comunitaria para compartir y consultar datos reales de procesos de selección en empresas tech de Chile.
 
-## Setup
+## Requisitos
 
-Make sure to install dependencies:
+- Node.js 20+
+- [pnpm](https://pnpm.io/)
+
+## Instalación
 
 ```bash
-# npm
-npm install
-
-# pnpm
 pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
 ```
 
-## Development Server
+Crea un archivo `.env` con las variables de Supabase:
 
-Start the development server on `http://localhost:3000`:
+```env
+SUPABASE_URL=
+SUPABASE_KEY=
+```
+
+Opcional, para Cloudflare Turnstile:
+
+```env
+NUXT_PUBLIC_TURNSTILE_SITE_KEY=
+NUXT_TURNSTILE_SECRET_KEY=
+```
+
+## Desarrollo
 
 ```bash
-# npm
-npm run dev
-
-# pnpm
 pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
-## Production
+La app corre en [http://localhost:3000](http://localhost:3000).
 
-Build the application for production:
+## Producción
 
 ```bash
-# npm
-npm run build
-
-# pnpm
 pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
 pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
 ```
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+## Contribuciones
+
+Las contribuciones son bienvenidas. Abre un issue o envía un pull request.
+
+## Licencia
+
+[MIT](LICENSE)
