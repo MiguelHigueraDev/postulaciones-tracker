@@ -18,6 +18,8 @@ ALTER TABLE public.workplace_profiles ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Allow anon read" ON public.workplace_profiles
   FOR SELECT TO anon, authenticated USING (true);
 
+GRANT SELECT ON public.workplace_profiles TO anon, authenticated;
+
 -- Update submit_feedback to accept optional workplace profile fields
 CREATE OR REPLACE FUNCTION public.submit_feedback(
   p_company_name text,
