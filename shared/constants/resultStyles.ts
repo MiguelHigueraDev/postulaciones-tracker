@@ -1,11 +1,17 @@
-export type ResultKey = "Oferta" | "Rechazo formal" | "Ghost" | "Desistí";
+export type ResultKey =
+  | "Oferta - Aceptada"
+  | "Oferta - Rechazada"
+  | "Rechazo formal"
+  | "Ghost"
+  | "Desistí";
 
-/** Display order for stats charts: ghost → rechazo → desistí → oferta */
+/** Display order for stats charts: ghost → rechazo → desistí → oferta rechazada → oferta aceptada */
 export const RESULT_STATS_ORDER: readonly ResultKey[] = [
   "Ghost",
   "Rechazo formal",
   "Desistí",
-  "Oferta",
+  "Oferta - Rechazada",
+  "Oferta - Aceptada",
 ];
 
 export interface ResultStyle {
@@ -17,12 +23,19 @@ export interface ResultStyle {
 }
 
 export const RESULT_STYLES: Record<ResultKey, ResultStyle> = {
-  Oferta: {
-    label: "Oferta",
+  "Oferta - Aceptada": {
+    label: "Oferta aceptada",
     color: "var(--color-positive)",
     bg: "var(--color-positive-bg)",
     border: "var(--color-positive-border)",
     dot: "#34d399",
+  },
+  "Oferta - Rechazada": {
+    label: "Oferta rechazada",
+    color: "var(--color-yield)",
+    bg: "var(--color-yield-bg)",
+    border: "var(--color-yield-border)",
+    dot: "#fb923c",
   },
   "Rechazo formal": {
     label: "Rechazo",
@@ -47,9 +60,14 @@ export const RESULT_STYLES: Record<ResultKey, ResultStyle> = {
   },
 };
 
+const LEGACY_ALIASES: Record<string, ResultKey> = {
+  Oferta: "Oferta - Aceptada",
+};
+
 export function getResultStyle(result: string): ResultStyle {
+  const key = LEGACY_ALIASES[result] ?? result;
   return (
-    RESULT_STYLES[result as ResultKey] ?? {
+    RESULT_STYLES[key as ResultKey] ?? {
       label: result,
       color: "var(--color-text-muted)",
       bg: "var(--color-surface-alt)",

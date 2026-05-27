@@ -64,7 +64,7 @@ function onKeydown(e: KeyboardEvent) {
       </div>
       <div class="flex items-baseline gap-3 leading-relaxed">
         <span class="min-w-22 text-xs text-text-subtle">resultado</span>
-        <span class="font-medium text-positive">Oferta ✓</span>
+        <span class="font-medium text-positive">Oferta aceptada ✓</span>
       </div>
       <div class="flex items-baseline gap-3 leading-relaxed">
         <span class="min-w-22 text-xs text-text-subtle">respuesta</span>

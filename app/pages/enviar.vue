@@ -22,7 +22,7 @@ useSeoMeta({
     </div>
 
     <div class="grid grid-cols-1 items-start gap-8 900:grid-cols-[16rem_1fr] 900:gap-12">
-      <div class="flex flex-col gap-7 900:sticky 900:top-20">
+      <div class="hidden flex-col gap-7 900:flex 900:sticky 900:top-20">
         <div class="flex flex-col gap-2.5">
           <div class="font-mono text-xs tracking-wide text-text-subtle">// privacidad</div>
           <p class="m-0 text-sm leading-relaxed font-light text-text-muted">
@@ -45,6 +45,23 @@ useSeoMeta({
             <li>Respuesta recibida</li>
             <li>Etapas del proceso</li>
             <li>Resultado final</li>
+          </ul>
+        </div>
+        <div class="flex flex-col gap-2.5">
+          <div class="font-mono text-xs tracking-wide text-text-subtle">
+            // perfil laboral (opcional)
+          </div>
+          <p class="m-0 text-sm leading-relaxed font-light text-text-muted">
+            Si aceptaste la oferta, puedes agregar datos extra sobre tu puesto.
+
+          </p>
+          <ul
+            class="m-0 flex list-none flex-col gap-1.5 p-0 [&_li]:flex [&_li]:items-center [&_li]:gap-2 [&_li]:text-sm [&_li]:font-light [&_li]:text-text-muted [&_li]:before:font-mono [&_li]:before:text-xs [&_li]:before:text-text-subtle [&_li]:before:content-['—']">
+            <li>Sueldo líquido (CLP)</li>
+            <li>Aspectos positivos</li>
+            <li>Aspectos negativos</li>
+            <li>Beneficios</li>
+            <li>Valoraciones 1–5 (ambiente, equilibrio, carrera, compensación)</li>
           </ul>
         </div>
       </div>

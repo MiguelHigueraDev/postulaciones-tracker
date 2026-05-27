@@ -1,6 +1,17 @@
 import { RESULT_STATS_ORDER } from "~~/shared/constants/resultStyles";
 import { RESPONSE_TIME_OPTIONS } from "~~/shared/schemas/feedback";
 
+export interface WorkplaceProfile {
+  salary: number | null;
+  good_things: string | null;
+  bad_things: string | null;
+  benefits: string | null;
+  rating_work_environment: number | null;
+  rating_work_life_balance: number | null;
+  rating_career_opportunities: number | null;
+  rating_compensation_benefits: number | null;
+}
+
 export interface CompanySubmission {
   id: string;
   industry: string;
@@ -12,6 +23,7 @@ export interface CompanySubmission {
   result: string;
   comment: string | null;
   created_at: string;
+  workplace_profile?: WorkplaceProfile | null;
 }
 
 export interface CountEntry {

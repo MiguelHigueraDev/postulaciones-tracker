@@ -1,5 +1,8 @@
 import { z } from "zod/v4";
-import { sanitizeComment, sanitizePlainText } from "~~/shared/utils/sanitizeInput";
+import {
+  sanitizeComment,
+  sanitizePlainText,
+} from "~~/shared/utils/sanitizeInput";
 
 export const INDUSTRY_OPTIONS = [
   "Tech",
@@ -29,8 +32,9 @@ export const LAST_STAGE_OPTIONS = [
 export const RESULT_OPTIONS = [
   "Ghost",
   "Rechazo formal",
-  "Oferta",
   "Desistí",
+  "Oferta - Aceptada",
+  "Oferta - Rechazada",
 ] as const;
 
 export const MONTHS = [
@@ -51,6 +55,8 @@ export const MONTHS = [
 export const MAX_COMPANY_NAME_LENGTH = 120;
 export const MAX_POSITION_LENGTH = 120;
 export const MAX_COMMENT_LENGTH = 1000;
+export const MAX_SALARY_VALUE = 100_000_000;
+export const MAX_PROFILE_TEXT_LENGTH = 500;
 export const COMMENT_LENGTH_WARNING_OFFSET = 40;
 
 function maxLengthMessage(label: string, max: number) {
@@ -61,19 +67,18 @@ const monthPattern = MONTHS.map((m) =>
   m.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
 ).join("|");
 
-const APPLICATION_MONTH_REGEX = new RegExp(
-  `^(${monthPattern}) (20\\d{2})$`,
-);
+const APPLICATION_MONTH_REGEX = new RegExp(`^(${monthPattern}) (20\\d{2})$`);
 
-function sanitizedPlainText(max: number, requiredMessage: string, label: string) {
+function sanitizedPlainText(
+  max: number,
+  requiredMessage: string,
+  label: string,
+) {
   return z
     .string()
     .transform(sanitizePlainText)
     .pipe(
-      z
-        .string()
-        .min(1, requiredMessage)
-        .max(max, maxLengthMessage(label, max)),
+      z.string().min(1, requiredMessage).max(max, maxLengthMessage(label, max)),
     );
 }
 
@@ -103,30 +108,96 @@ const commentSchema = z
       z.null(),
       z
         .string()
-        .max(MAX_COMMENT_LENGTH, maxLengthMessage("comentario", MAX_COMMENT_LENGTH)),
+        .max(
+          MAX_COMMENT_LENGTH,
+          maxLengthMessage("comentario", MAX_COMMENT_LENGTH),
+        ),
     ]),
   )
   .default(null);
 
-export const feedbackSchema = z.object({
-  p_company_name: sanitizedPlainText(
-    MAX_COMPANY_NAME_LENGTH,
-    "El nombre de empresa es requerido",
-    "nombre de empresa",
-  ),
-  p_industry: z.enum(INDUSTRY_OPTIONS),
-  p_position: sanitizedPlainText(
-    MAX_POSITION_LENGTH,
-    "El cargo es requerido",
-    "cargo",
-  ),
-  p_application_month: applicationMonthSchema,
-  p_response_time: z.enum(RESPONSE_TIME_OPTIONS),
-  p_stages_reached: z.number().int().min(0).max(20).default(0),
-  p_last_stage: z.enum(LAST_STAGE_OPTIONS).nullable().default(null),
-  p_result: z.enum(RESULT_OPTIONS),
-  p_comment: commentSchema,
-});
+const optionalSanitizedText = (max: number, label: string) =>
+  z
+    .union([z.string(), z.null()])
+    .transform((val) => {
+      if (val === null || val === "") return null;
+      const cleaned = sanitizePlainText(val);
+      return cleaned === "" ? null : cleaned;
+    })
+    .pipe(
+      z.union([z.null(), z.string().max(max, maxLengthMessage(label, max))]),
+    )
+    .default(null);
+
+const ratingSchema = z.number().int().min(1).max(5).nullable().default(null);
+
+export const RATING_LABELS = {
+  p_rating_work_environment: "Ambiente laboral",
+  p_rating_work_life_balance: "Equilibrio vida-trabajo",
+  p_rating_career_opportunities: "Oportunidades de carrera",
+  p_rating_compensation_benefits: "Compensación y beneficios",
+} as const;
+
+export type RatingKey = keyof typeof RATING_LABELS;
+
+const PROFILE_REQUIRED_MSG = "Este campo es requerido para el perfil laboral";
+
+export const feedbackSchema = z
+  .object({
+    p_company_name: sanitizedPlainText(
+      MAX_COMPANY_NAME_LENGTH,
+      "El nombre de empresa es requerido",
+      "nombre de empresa",
+    ),
+    p_industry: z.enum(INDUSTRY_OPTIONS),
+    p_position: sanitizedPlainText(
+      MAX_POSITION_LENGTH,
+      "El cargo es requerido",
+      "cargo",
+    ),
+    p_application_month: applicationMonthSchema,
+    p_response_time: z.enum(RESPONSE_TIME_OPTIONS),
+    p_stages_reached: z.number().int().min(0).max(20).default(0),
+    p_last_stage: z.enum(LAST_STAGE_OPTIONS).nullable().default(null),
+    p_result: z.enum(RESULT_OPTIONS),
+    p_comment: commentSchema,
+    p_include_profile: z.boolean().default(false),
+    p_salary: z
+      .number()
+      .int()
+      .min(0)
+      .max(MAX_SALARY_VALUE)
+      .nullable()
+      .default(null),
+    p_good_things: optionalSanitizedText(
+      MAX_PROFILE_TEXT_LENGTH,
+      "aspectos positivos",
+    ),
+    p_bad_things: optionalSanitizedText(
+      MAX_PROFILE_TEXT_LENGTH,
+      "aspectos negativos",
+    ),
+    p_benefits: optionalSanitizedText(MAX_PROFILE_TEXT_LENGTH, "beneficios"),
+    p_rating_work_environment: ratingSchema,
+    p_rating_work_life_balance: ratingSchema,
+    p_rating_career_opportunities: ratingSchema,
+    p_rating_compensation_benefits: ratingSchema,
+  })
+  .check(
+    z.refine((data) => {
+      if (!data.p_include_profile) return true;
+      return (
+        data.p_salary != null &&
+        data.p_good_things != null &&
+        data.p_bad_things != null &&
+        data.p_benefits != null &&
+        data.p_rating_work_environment != null &&
+        data.p_rating_work_life_balance != null &&
+        data.p_rating_career_opportunities != null &&
+        data.p_rating_compensation_benefits != null
+      );
+    }, PROFILE_REQUIRED_MSG),
+  );
 
 export type FeedbackInput = z.infer<typeof feedbackSchema>;
 

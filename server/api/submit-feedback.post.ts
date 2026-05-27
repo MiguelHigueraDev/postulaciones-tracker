@@ -43,7 +43,7 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const { turnstileToken, _hp, ...input } = parsed.data;
+  const { turnstileToken, _hp, p_include_profile: _, ...input } = parsed.data;
 
   if (_hp) {
     throw createError({
@@ -78,6 +78,14 @@ export default defineEventHandler(async (event) => {
     p_last_stage: input.p_last_stage ?? undefined,
     p_result: input.p_result,
     p_comment: input.p_comment ?? undefined,
+    p_salary: input.p_salary ?? undefined,
+    p_good_things: input.p_good_things ?? undefined,
+    p_bad_things: input.p_bad_things ?? undefined,
+    p_benefits: input.p_benefits ?? undefined,
+    p_rating_work_environment: input.p_rating_work_environment ?? undefined,
+    p_rating_work_life_balance: input.p_rating_work_life_balance ?? undefined,
+    p_rating_career_opportunities: input.p_rating_career_opportunities ?? undefined,
+    p_rating_compensation_benefits: input.p_rating_compensation_benefits ?? undefined,
   });
 
   if (error) {

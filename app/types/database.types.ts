@@ -85,6 +85,56 @@ export type Database = {
           },
         ]
       }
+      workplace_profiles: {
+        Row: {
+          id: string
+          submission_id: string
+          salary: number | null
+          good_things: string | null
+          bad_things: string | null
+          benefits: string | null
+          rating_work_environment: number | null
+          rating_work_life_balance: number | null
+          rating_career_opportunities: number | null
+          rating_compensation_benefits: number | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          submission_id: string
+          salary?: number | null
+          good_things?: string | null
+          bad_things?: string | null
+          benefits?: string | null
+          rating_work_environment?: number | null
+          rating_work_life_balance?: number | null
+          rating_career_opportunities?: number | null
+          rating_compensation_benefits?: number | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          submission_id?: string
+          salary?: number | null
+          good_things?: string | null
+          bad_things?: string | null
+          benefits?: string | null
+          rating_work_environment?: number | null
+          rating_work_life_balance?: number | null
+          rating_career_opportunities?: number | null
+          rating_compensation_benefits?: number | null
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workplace_profiles_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: true
+            referencedRelation: "submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -126,6 +176,14 @@ export type Database = {
           p_response_time: string
           p_result: string
           p_stages_reached: number
+          p_salary?: number
+          p_good_things?: string
+          p_bad_things?: string
+          p_benefits?: string
+          p_rating_work_environment?: number
+          p_rating_work_life_balance?: number
+          p_rating_career_opportunities?: number
+          p_rating_compensation_benefits?: number
         }
         Returns: string
       }

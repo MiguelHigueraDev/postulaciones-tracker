@@ -1,10 +1,42 @@
 <script setup lang="ts">
 import { getResultStyle } from "~~/shared/constants/resultStyles";
+import { RATING_LABELS, type RatingKey } from "~~/shared/schemas/feedback";
 import type { GlobalSubmission } from "~~/shared/utils/companyStats";
 
 const props = defineProps<{
   submission: GlobalSubmission | null;
 }>();
+
+function formatSalary(value: number): string {
+  return `$${value.toLocaleString("es-CL")}`;
+}
+
+const profileFields = computed(() => {
+  const wp = props.submission?.workplace_profile;
+  if (!wp) return [];
+  return [
+    { label: "Salario", value: wp.salary != null ? formatSalary(wp.salary) : null },
+    { label: "Aspectos positivos", value: wp.good_things },
+    { label: "Aspectos negativos", value: wp.bad_things },
+    { label: "Beneficios", value: wp.benefits },
+  ].filter((f) => f.value);
+});
+
+const profileRatings = computed(() => {
+  const wp = props.submission?.workplace_profile;
+  if (!wp) return [];
+  const keys: { key: RatingKey; field: keyof typeof wp }[] = [
+    { key: "p_rating_work_environment", field: "rating_work_environment" },
+    { key: "p_rating_work_life_balance", field: "rating_work_life_balance" },
+    { key: "p_rating_career_opportunities", field: "rating_career_opportunities" },
+    { key: "p_rating_compensation_benefits", field: "rating_compensation_benefits" },
+  ];
+  return keys
+    .filter((k) => wp[k.field] != null)
+    .map((k) => ({ label: RATING_LABELS[k.key], value: wp[k.field] as number }));
+});
+
+const hasProfile = computed(() => profileFields.value.length > 0 || profileRatings.value.length > 0);
 
 const emit = defineEmits<{
   close: [];
@@ -164,6 +196,49 @@ const fields = computed(() => {
             <p class="m-0 text-14 leading-relaxed font-light whitespace-pre-wrap text-text-muted">
               {{ submission.comment }}
             </p>
+          </div>
+
+          <div
+            v-if="hasProfile"
+            class="mt-4 border-t border-border-subtle pt-4"
+          >
+            <p class="m-0 mb-3 font-mono text-11 tracking-widest text-text-subtle uppercase">
+              Perfil laboral
+            </p>
+
+            <dl v-if="profileFields.length" class="m-0 mb-3 flex flex-col gap-2.5">
+              <div
+                v-for="pf in profileFields"
+                :key="pf.label"
+                class="text-13"
+              >
+                <dt class="mb-0.5 font-mono text-11 text-text-subtle lowercase">
+                  {{ pf.label }}
+                </dt>
+                <dd class="m-0 font-light whitespace-pre-wrap text-text-muted">
+                  {{ pf.value }}
+                </dd>
+              </div>
+            </dl>
+
+            <div v-if="profileRatings.length" class="flex flex-col gap-2">
+              <div
+                v-for="pr in profileRatings"
+                :key="pr.label"
+                class="flex items-center justify-between gap-3 text-13"
+              >
+                <span class="font-light text-text-muted">{{ pr.label }}</span>
+                <div class="flex gap-0.5">
+                  <span
+                    v-for="n in 5" :key="n"
+                    class="inline-flex size-5 items-center justify-center rounded text-11 font-medium"
+                    :class="n <= pr.value
+                      ? 'bg-accent/15 text-accent'
+                      : 'bg-surface-alt text-text-subtle/40'"
+                  >{{ n }}</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

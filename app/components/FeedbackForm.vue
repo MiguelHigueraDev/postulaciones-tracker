@@ -8,8 +8,11 @@ import {
   MAX_COMMENT_LENGTH,
   MAX_COMPANY_NAME_LENGTH,
   MAX_POSITION_LENGTH,
+  MAX_PROFILE_TEXT_LENGTH,
   COMMENT_LENGTH_WARNING_OFFSET,
+  RATING_LABELS,
   feedbackSchema,
+  type RatingKey,
 } from "~~/shared/schemas/feedback";
 
 const config = useRuntimeConfig();
@@ -28,7 +31,61 @@ const form = reactive({
   lastStage: "",
   result: "",
   comment: "",
+  salary: null as number | null,
+  goodThings: "",
+  badThings: "",
+  benefits: "",
+  ratingWorkEnvironment: null as number | null,
+  ratingWorkLifeBalance: null as number | null,
+  ratingCareerOpportunities: null as number | null,
+  ratingCompensationBenefits: null as number | null,
 });
+
+const isOfertaAceptada = computed(() => form.result === "Oferta - Aceptada");
+const profileExpanded = ref(false);
+
+watch(isOfertaAceptada, (val) => {
+  if (!val) profileExpanded.value = false;
+});
+
+const ratingKeys: RatingKey[] = [
+  "p_rating_work_environment",
+  "p_rating_work_life_balance",
+  "p_rating_career_opportunities",
+  "p_rating_compensation_benefits",
+];
+
+const ratingFormMap: Record<RatingKey, keyof typeof form> = {
+  p_rating_work_environment: "ratingWorkEnvironment",
+  p_rating_work_life_balance: "ratingWorkLifeBalance",
+  p_rating_career_opportunities: "ratingCareerOpportunities",
+  p_rating_compensation_benefits: "ratingCompensationBenefits",
+};
+
+function formatSalaryDisplay(value: number | null): string {
+  if (value === null) return "";
+  return value.toLocaleString("es-CL");
+}
+
+const salaryDisplay = ref("");
+
+function onSalaryInput(event: Event) {
+  const raw = (event.target as HTMLInputElement).value.replace(/\D/g, "");
+  if (raw === "") {
+    form.salary = null;
+    salaryDisplay.value = "";
+    return;
+  }
+  const num = parseInt(raw, 10);
+  if (Number.isNaN(num) || num > 100_000_000) return;
+  form.salary = num;
+  salaryDisplay.value = formatSalaryDisplay(num);
+}
+
+function setRating(key: RatingKey, value: number) {
+  const formKey = ratingFormMap[key];
+  (form as any)[formKey] = (form as any)[formKey] === value ? null : value;
+}
 
 const isSubmitting = ref(false);
 const resultModal = ref<{ type: "success" | "error"; message: string } | null>(null);
@@ -98,7 +155,10 @@ const fieldInput =
   "block w-full appearance-none rounded-md border border-border bg-bg px-3.5 py-2.5 font-sans text-15 text-text transition-[border-color,box-shadow] duration-150 placeholder:text-text-subtle focus:border-accent focus:outline-none focus:shadow-[0_0_0_3px_rgba(129,140,248,0.15)]";
 const fieldSelect = `${fieldInput} cursor-pointer bg-[url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2344446a' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E\")] bg-auto bg-position-[right_0.875rem_center] bg-no-repeat pr-10`;
 
+const includeProfile = computed(() => isOfertaAceptada.value && profileExpanded.value);
+
 function buildPayload() {
+  const profile = includeProfile.value;
   return {
     p_company_name: form.companyName,
     p_industry: form.industry,
@@ -109,6 +169,15 @@ function buildPayload() {
     p_last_stage: form.lastStage || null,
     p_result: form.result,
     p_comment: form.comment || null,
+    p_include_profile: profile,
+    p_salary: profile ? form.salary : null,
+    p_good_things: profile ? form.goodThings || null : null,
+    p_bad_things: profile ? form.badThings || null : null,
+    p_benefits: profile ? form.benefits || null : null,
+    p_rating_work_environment: profile ? form.ratingWorkEnvironment : null,
+    p_rating_work_life_balance: profile ? form.ratingWorkLifeBalance : null,
+    p_rating_career_opportunities: profile ? form.ratingCareerOpportunities : null,
+    p_rating_compensation_benefits: profile ? form.ratingCompensationBenefits : null,
   };
 }
 
@@ -138,22 +207,23 @@ async function handleSubmit() {
   showResult("success", "Feedback enviado. ¡Gracias por contribuir!");
   formStartedAt.value = Date.now();
   resetTurnstile();
+  salaryDisplay.value = "";
+  profileExpanded.value = false;
   Object.assign(form, {
     companyName: "", industry: "", position: "",
     applicationMonth: "", applicationYear: currentYear,
     responseTime: "", stagesReached: 0, lastStage: "", result: "", comment: "",
+    salary: null, goodThings: "", badThings: "", benefits: "",
+    ratingWorkEnvironment: null, ratingWorkLifeBalance: null,
+    ratingCareerOpportunities: null, ratingCompensationBenefits: null,
   });
 }
 </script>
 
 <template>
   <form class="flex flex-col" @submit.prevent="handleSubmit">
-    <SubmitResultModal
-      v-if="resultModal"
-      :type="resultModal.type"
-      :message="resultModal.message"
-      @close="closeResultModal"
-    />
+    <SubmitResultModal v-if="resultModal" :type="resultModal.type" :message="resultModal.message"
+      @close="closeResultModal" />
 
     <!-- Section: Empresa -->
     <fieldset class="m-0 mb-4 border-0 border-b border-border-subtle py-6 last:border-b-0">
@@ -192,8 +262,7 @@ async function handleSubmit() {
         <label for="position" class="mb-2 block font-mono text-11 tracking-wide text-text-subtle lowercase">
           cargo <span class="text-accent">*</span>
         </label>
-        <input id="position" v-model="form.position" type="text" required
-          :maxlength="MAX_POSITION_LENGTH"
+        <input id="position" v-model="form.position" type="text" required :maxlength="MAX_POSITION_LENGTH"
           placeholder="Backend Developer, Analista de datos..." :class="fieldInput" />
       </div>
 
@@ -284,6 +353,98 @@ async function handleSubmit() {
           <span :class="{ 'text-yield': form.comment.length > MAX_COMMENT_LENGTH - COMMENT_LENGTH_WARNING_OFFSET }">
             {{ form.comment.length }}/{{ MAX_COMMENT_LENGTH }}
           </span>
+        </div>
+      </div>
+    </fieldset>
+
+    <!-- Section: Perfil laboral CTA (only when Oferta - Aceptada and not yet expanded) -->
+    <div v-if="isOfertaAceptada && !profileExpanded"
+      class="my-4 rounded-lg border border-accent/30 bg-accent/5 px-5 py-5">
+      <p class="m-0 mb-1 font-mono text-11 tracking-widest text-accent uppercase">
+        Datos extra
+      </p>
+      <p class="m-0 mb-3 text-14 leading-relaxed font-light text-text-muted">
+        Agrega información sobre tu nuevo puesto: sueldo, beneficios y valoraciones.
+        Estos datos ayudan a otros postulantes a tomar mejores decisiones.
+      </p>
+      <button type="button"
+        class="flex cursor-pointer items-center gap-2 rounded-md border border-accent/40 bg-accent/10 px-4 py-2.5 font-sans text-14 font-medium text-accent transition-colors duration-150 hover:bg-accent/20"
+        @click="profileExpanded = true">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="12" y1="5" x2="12" y2="19" />
+          <line x1="5" y1="12" x2="19" y2="12" />
+        </svg>
+        Agregar perfil laboral
+      </button>
+    </div>
+
+    <fieldset v-if="isOfertaAceptada && profileExpanded"
+      class="m-0 mb-2 mt-2 border-0 border-b border-border-subtle py-6 last:border-b-0">
+      <legend class="m-0 flex w-full items-center gap-2.5 p-0 font-mono text-13 font-medium tracking-tight text-text">
+        <span class="font-mono text-11 tracking-wide text-accent">05</span>
+        Perfil laboral
+      </legend>
+      <p class="mb-4 text-13 font-light text-text-muted">
+        Completa todos los campos para agregar tu perfil laboral.
+      </p>
+
+      <div class="relative mb-4">
+        <label for="salary" class="mb-2 block font-mono text-11 tracking-wide text-text-subtle lowercase">
+          sueldo mensual líquido en pesos chilenos <span class="text-accent">*</span>
+        </label>
+        <div class="relative">
+          <span class="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-15 text-text-subtle">$</span>
+          <input id="salary" :value="salaryDisplay" type="text" inputmode="numeric" required placeholder="Ej: 1.500.000"
+            maxlength="11" :class="`${fieldInput} pl-7`" @input="onSalaryInput" />
+        </div>
+      </div>
+
+      <div class="relative mb-4">
+        <label for="good-things" class="mb-2 block font-mono text-11 tracking-wide text-text-subtle lowercase">
+          aspectos positivos de la empresa <span class="text-accent">*</span>
+        </label>
+        <textarea id="good-things" v-model="form.goodThings" rows="2" required :maxlength="MAX_PROFILE_TEXT_LENGTH"
+          placeholder="Buen ambiente, proyectos interesantes..."
+          :class="`${fieldInput} min-h-16 resize-y text-14 leading-relaxed`" />
+      </div>
+
+      <div class="relative mb-4">
+        <label for="bad-things" class="mb-2 block font-mono text-11 tracking-wide text-text-subtle lowercase">
+          aspectos negativos <span class="text-accent">*</span>
+        </label>
+        <textarea id="bad-things" v-model="form.badThings" rows="2" required :maxlength="MAX_PROFILE_TEXT_LENGTH"
+          placeholder="Horas extra, poca flexibilidad..."
+          :class="`${fieldInput} min-h-16 resize-y text-14 leading-relaxed`" />
+      </div>
+
+      <div class="relative mb-4">
+        <label for="benefits" class="mb-2 block font-mono text-11 tracking-wide text-text-subtle lowercase">
+          beneficios <span class="text-accent">*</span>
+        </label>
+        <textarea id="benefits" v-model="form.benefits" rows="2" required :maxlength="MAX_PROFILE_TEXT_LENGTH"
+          placeholder="Seguro de salud, días extra, remoto..."
+          :class="`${fieldInput} min-h-16 resize-y text-14 leading-relaxed`" />
+      </div>
+
+      <div class="mt-5">
+        <p class="mb-3 font-mono text-11 tracking-wide text-text-subtle lowercase">
+          valoraciones (1-5) <span class="text-accent">*</span>
+        </p>
+        <div class="flex flex-col gap-3.5">
+          <div v-for="rk in ratingKeys" :key="rk" class="flex items-center justify-between gap-3">
+            <span class="text-13 font-light text-text-muted">{{ RATING_LABELS[rk] }}</span>
+            <div class="flex gap-1">
+              <button v-for="n in 5" :key="n" type="button" :aria-label="`${RATING_LABELS[rk]}: ${n}`"
+                class="flex size-8 cursor-pointer items-center justify-center rounded-md border text-13 font-medium transition-colors duration-150"
+                :class="(form as any)[ratingFormMap[rk]] === n
+                  ? 'border-accent bg-accent/15 text-accent'
+                  : 'border-border bg-bg text-text-subtle hover:border-text-muted hover:text-text'"
+                @click="setRating(rk, n)">
+                {{ n }}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </fieldset>

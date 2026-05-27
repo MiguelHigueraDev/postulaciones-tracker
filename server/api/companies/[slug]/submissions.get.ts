@@ -70,7 +70,7 @@ export default defineEventHandler(async (event): Promise<PaginatedSubmissions> =
   let request = supabase
     .from("submissions")
     .select(
-      "id, industry, position, application_month, response_time, stages_reached, last_stage, result, comment, created_at",
+      "id, industry, position, application_month, response_time, stages_reached, last_stage, result, comment, created_at, workplace_profiles(salary, good_things, bad_things, benefits, rating_work_environment, rating_work_life_balance, rating_career_opportunities, rating_compensation_benefits)",
     )
     .eq("company_id", company.id)
     .order("created_at", { ascending: false })
@@ -94,7 +94,11 @@ export default defineEventHandler(async (event): Promise<PaginatedSubmissions> =
     });
   }
 
-  const rows = (data ?? []) as CompanySubmission[];
+  const rawRows = (data ?? []) as (CompanySubmission & { workplace_profiles?: CompanySubmission["workplace_profile"] })[];
+  const rows: CompanySubmission[] = rawRows.map(({ workplace_profiles, ...rest }) => ({
+    ...rest,
+    workplace_profile: workplace_profiles ?? null,
+  }));
   const hasMore = rows.length > limit;
   const submissions = hasMore ? rows.slice(0, limit) : rows;
 

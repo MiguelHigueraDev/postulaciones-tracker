@@ -8,6 +8,17 @@ import {
 
 const MAX_PAGE_SIZE = 50;
 
+type WorkplaceProfileRow = {
+  salary: number | null;
+  good_things: string | null;
+  bad_things: string | null;
+  benefits: string | null;
+  rating_work_environment: number | null;
+  rating_work_life_balance: number | null;
+  rating_career_opportunities: number | null;
+  rating_compensation_benefits: number | null;
+} | null;
+
 type SubmissionRow = {
   id: string;
   industry: string;
@@ -20,6 +31,7 @@ type SubmissionRow = {
   comment: string | null;
   created_at: string;
   companies: { name: string; name_normalized: string } | null;
+  workplace_profiles: WorkplaceProfileRow;
 };
 
 function ilikePattern(q: string): string {
@@ -40,7 +52,7 @@ export default defineEventHandler(
     const supabase = await serverSupabaseClient(event);
 
     const selectFields =
-      "id, industry, position, application_month, response_time, stages_reached, last_stage, result, comment, created_at, companies(name, name_normalized)";
+      "id, industry, position, application_month, response_time, stages_reached, last_stage, result, comment, created_at, companies(name, name_normalized), workplace_profiles(salary, good_things, bad_things, benefits, rating_work_environment, rating_work_life_balance, rating_career_opportunities, rating_compensation_benefits)";
 
     let matchingCompanyIds: string[] | null = null;
 
@@ -135,6 +147,7 @@ export default defineEventHandler(
         created_at: row.created_at,
         company_name: row.companies?.name ?? "—",
         company_slug: row.companies?.name_normalized ?? "",
+        workplace_profile: row.workplace_profiles ?? null,
       }),
     );
 
