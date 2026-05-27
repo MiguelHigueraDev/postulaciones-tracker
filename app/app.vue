@@ -1,7 +1,7 @@
 <script setup lang="ts">
 useHead({
   titleTemplate: (title) =>
-    title ? `${title} — postulaciones-tracker` : "postulaciones-tracker",
+    title ? `${title} — me-postulé` : "me-postulé",
 });
 </script>
 
@@ -13,7 +13,7 @@ useHead({
     </main>
     <footer class="mt-20 border-t border-border-subtle px-6 py-5">
       <div class="mx-auto flex max-w-304 items-center gap-3 text-xs">
-        <span class="font-mono text-xs text-accent">postulaciones-tracker</span>
+        <span class="font-mono text-xs text-accent">me-postulé</span>
         <span class="text-border">/</span>
         <NuxtLink to="/privacidad"
           class="text-text-muted no-underline transition-colors duration-150 hover:text-accent">

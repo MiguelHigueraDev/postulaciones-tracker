@@ -2,7 +2,7 @@
 useSeoMeta({
   title: "Política de privacidad",
   description:
-    "Cómo tratamos los datos en postulaciones-tracker, incluido el uso de Cloudflare Turnstile.",
+    "Cómo tratamos los datos en me-postulé, incluido el uso de Cloudflare Turnstile.",
 });
 </script>
 
@@ -30,7 +30,7 @@ useSeoMeta({
       <section>
         <h2>1. Responsable</h2>
         <p>
-          <strong>postulaciones-tracker</strong> es un proyecto comunitario sin registro de
+          <strong>me-postulé</strong> es un proyecto comunitario sin registro de
           usuarios. Si tienes dudas sobre esta política, puedes contactarnos a través de los
           canales publicados en el
           <a href="https://github.com/MiguelHigueraDev/postulaciones-tracker" target="_blank"

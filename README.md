@@ -1,4 +1,4 @@
-# Postulaciones Tracker
+# me-postulé
 
 Plataforma comunitaria para compartir y consultar datos reales de procesos de selección en empresas tech de Chile.
 

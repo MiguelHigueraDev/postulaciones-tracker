@@ -1,9 +1,9 @@
-export function parsePtQueryCommand(
+export function parseMpQueryCommand(
   input: string,
 ): { company: string } | null {
   const trimmed = input.trim();
   const match = trimmed.match(
-    /^pt\s+query\s+--company\s+(?:"([^"]*)"|'([^']*)'|(\S+))\s*$/i,
+    /^mp\s+query\s+--company\s+(?:"([^"]*)"|'([^']*)'|(\S+))\s*$/i,
   );
   if (!match) return null;
 

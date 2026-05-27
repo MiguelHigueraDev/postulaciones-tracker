@@ -8,11 +8,11 @@ const navLinks = [{ to: "/resultados", label: "Resultados" }];
       <NuxtLink to="/" class="flex shrink-0 items-center gap-0 no-underline">
         <span class="font-mono text-base leading-none text-text-subtle">[</span>
         <span class="px-0.5 font-mono text-sm font-medium tracking-tight text-accent">
-          pt
+          mp
         </span>
         <span class="font-mono text-base leading-none text-text-subtle">]</span>
         <span class="ml-3 hidden font-mono text-13 tracking-tight text-text-muted sm:inline">
-          postulaciones-tracker
+          me-postulé
         </span>
       </NuxtLink>
 

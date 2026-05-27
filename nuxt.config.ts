@@ -6,7 +6,7 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   app: {
     head: {
-      title: "postulaciones-tracker",
+      title: "me-postulé",
       meta: [
         {
           name: "description",
