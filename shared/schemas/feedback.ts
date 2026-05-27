@@ -85,6 +85,8 @@ export const MONTHS = [
   "Diciembre",
 ] as const;
 
+export const MIN_APPLICATION_YEAR = 2000;
+
 export const MAX_COMPANY_NAME_LENGTH = 120;
 export const MAX_POSITION_LENGTH = 120;
 export const MAX_COMMENT_LENGTH = 1000;
@@ -125,7 +127,7 @@ const applicationMonthSchema = z
       .refine((val) => {
         const year = Number(val.split(" ").pop());
         const current = new Date().getFullYear();
-        return year >= current - 2 && year <= current;
+        return year >= MIN_APPLICATION_YEAR && year <= current;
       }, "El año de postulación es inválido"),
   );
 

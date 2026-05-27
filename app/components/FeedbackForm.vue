@@ -12,13 +12,17 @@ import {
   COMMENT_LENGTH_WARNING_OFFSET,
   RATING_LABELS,
   feedbackSchema,
+  MIN_APPLICATION_YEAR,
   type RatingKey,
 } from "~~/shared/schemas/feedback";
 
 const config = useRuntimeConfig();
 
 const currentYear = new Date().getFullYear();
-const YEARS = Array.from({ length: 3 }, (_, i) => currentYear - i);
+const YEARS = Array.from(
+  { length: currentYear - MIN_APPLICATION_YEAR + 1 },
+  (_, i) => currentYear - i,
+);
 
 const form = reactive({
   companyName: "",
