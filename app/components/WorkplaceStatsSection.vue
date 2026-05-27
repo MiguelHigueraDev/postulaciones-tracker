@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { CountEntry, WorkplaceStats } from "~~/shared/utils/companyStats";
+import { formatCompactSalary } from "~~/shared/utils/formatSalary";
 import { MODALITY_OPTIONS } from "~~/shared/schemas/feedback";
 
 const props = defineProps<{
@@ -39,10 +40,6 @@ const MODALITY_ORDER = [...MODALITY_OPTIONS];
 
 const fieldSelect =
   "block w-full max-w-xs appearance-none rounded-md border border-border bg-surface px-3 py-2 font-mono text-13 text-text transition-[border-color,box-shadow] duration-150 focus:border-accent focus:outline-none focus:shadow-[0_0_0_3px_rgba(129,140,248,0.12)] cursor-pointer bg-[url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2344446a' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E\")] bg-auto bg-position-[right_0.875rem_center] bg-no-repeat pr-10";
-
-function formatSalary(value: number): string {
-  return `$${value.toLocaleString("es-CL")}`;
-}
 
 function ratingColor(value: number): string {
   if (value >= 4.0) return "#34d399";
@@ -266,7 +263,7 @@ onMounted(() => {
               <span
                 class="font-mono text-[1.375rem] leading-none font-semibold tracking-tight text-accent"
               >
-                {{ formatSalary(displayedWorkplace.salary.median) }}
+                {{ formatCompactSalary(displayedWorkplace.salary.median) }}
               </span>
               <span class="font-mono text-11 text-text-subtle"> mediana </span>
             </div>
@@ -279,7 +276,7 @@ onMounted(() => {
                   min
                 </span>
                 <span class="font-mono text-13 text-text-muted">
-                  {{ formatSalary(displayedWorkplace.salary.min) }}
+                  {{ formatCompactSalary(displayedWorkplace.salary.min) }}
                 </span>
               </div>
               <div class="h-6 w-px bg-border-subtle" />
@@ -291,7 +288,7 @@ onMounted(() => {
                   max
                 </span>
                 <span class="font-mono text-13 text-text-muted">
-                  {{ formatSalary(displayedWorkplace.salary.max) }}
+                  {{ formatCompactSalary(displayedWorkplace.salary.max) }}
                 </span>
               </div>
             </div>
