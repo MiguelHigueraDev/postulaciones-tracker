@@ -8,7 +8,6 @@ import {
   MODALITY_OPTIONS,
   MAX_COMMENT_LENGTH,
   MAX_COMPANY_NAME_LENGTH,
-  MAX_POSITION_LENGTH,
   MAX_PROFILE_TEXT_LENGTH,
   COMMENT_LENGTH_WARNING_OFFSET,
   RATING_LABELS,
@@ -265,8 +264,13 @@ async function handleSubmit() {
         <label for="position" class="mb-2 block font-mono text-11 tracking-wide text-text-subtle lowercase">
           cargo <span class="text-accent">*</span>
         </label>
-        <input id="position" v-model="form.position" type="text" required :maxlength="MAX_POSITION_LENGTH"
-          placeholder="Backend Developer, Analista de datos..." :class="fieldInput" />
+        <PositionTypeahead
+          v-model="form.position"
+          input-id="position"
+          :show-label="false"
+          required
+          :input-class="fieldInput"
+        />
       </div>
 
       <div class="mb-4 grid grid-cols-2 gap-3.5">

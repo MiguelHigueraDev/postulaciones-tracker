@@ -39,6 +39,37 @@ export const RESULT_OPTIONS = [
 
 export const MODALITY_OPTIONS = ["Remoto", "Híbrido", "Presencial"] as const;
 
+export const POSITION_OPTIONS = [
+  "Android Developer",
+  "Analista de datos",
+  "Arquitecto de Software",
+  "Arquitecto de Soluciones",
+  "Backend Developer",
+  "Científico de datos",
+  "Ciberseguridad",
+  "Cloud Engineer",
+  "Data Engineer",
+  "DevOps Engineer",
+  "Embedded Developer",
+  "Engineering Manager",
+  "Frontend Developer",
+  "Full-stack Developer",
+  "iOS Developer",
+  "Ingeniero de Machine Learning",
+  "Ingeniero de Software",
+  "Ingeniero QA",
+  "Mobile Developer",
+  "Product Manager",
+  "Product Owner",
+  "QA Engineer",
+  "Scrum Master",
+  "Site Reliability Engineer",
+  "Software Engineer",
+  "Tech Lead",
+  "UI Designer",
+  "UX Designer",
+] as const;
+
 export const MONTHS = [
   "Enero",
   "Febrero",
