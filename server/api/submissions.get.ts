@@ -13,6 +13,7 @@ type WorkplaceProfileRow = {
   good_things: string | null;
   bad_things: string | null;
   benefits: string | null;
+  modality: string | null;
   rating_work_environment: number | null;
   rating_work_life_balance: number | null;
   rating_career_opportunities: number | null;
@@ -52,7 +53,7 @@ export default defineEventHandler(
     const supabase = await serverSupabaseClient(event);
 
     const selectFields =
-      "id, industry, position, application_month, response_time, stages_reached, last_stage, result, comment, created_at, companies(name, name_normalized), workplace_profiles(salary, good_things, bad_things, benefits, rating_work_environment, rating_work_life_balance, rating_career_opportunities, rating_compensation_benefits)";
+      "id, industry, position, application_month, response_time, stages_reached, last_stage, result, comment, created_at, companies(name, name_normalized), workplace_profiles(salary, good_things, bad_things, benefits, modality, rating_work_environment, rating_work_life_balance, rating_career_opportunities, rating_compensation_benefits)";
 
     let matchingCompanyIds: string[] | null = null;
 

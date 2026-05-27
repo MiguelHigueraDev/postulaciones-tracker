@@ -15,7 +15,8 @@ const profileFields = computed(() => {
   const wp = props.submission?.workplace_profile;
   if (!wp) return [];
   return [
-    { label: "Salario", value: wp.salary != null ? formatSalary(wp.salary) : null },
+    { label: "Sueldo mensual líquido", value: wp.salary != null ? formatSalary(wp.salary) : null },
+    { label: "Modalidad", value: wp.modality },
     { label: "Aspectos positivos", value: wp.good_things },
     { label: "Aspectos negativos", value: wp.bad_things },
     { label: "Beneficios", value: wp.benefits },
@@ -87,67 +88,37 @@ const fields = computed(() => {
 
 <template>
   <Teleport to="body">
-    <div
-      v-if="submission"
-      class="fixed inset-0 z-50 flex items-end justify-center p-4 sm:items-center sm:p-6"
-      @click.self="emit('close')"
-    >
-      <div
-        class="absolute inset-0 bg-bg/80 backdrop-blur-[2px]"
-        aria-hidden="true"
-        @click="emit('close')"
-      />
+    <div v-if="submission" class="fixed inset-0 z-50 flex items-end justify-center p-4 sm:items-center sm:p-6"
+      @click.self="emit('close')">
+      <div class="absolute inset-0 bg-bg/80 backdrop-blur-[2px]" aria-hidden="true" @click="emit('close')" />
 
-      <div
-        ref="dialogRef"
-        role="dialog"
-        aria-modal="true"
-        :aria-labelledby="submission ? 'submission-detail-title' : undefined"
-        tabindex="-1"
-        class="relative z-10 flex max-h-[min(90vh,40rem)] w-full max-w-lg flex-col overflow-hidden rounded-card border border-border bg-surface shadow-[0_24px_48px_rgba(0,0,0,0.5)]"
-      >
-        <header
-          class="flex shrink-0 items-start justify-between gap-4 border-b border-border-subtle px-5 py-4"
-        >
+      <div ref="dialogRef" role="dialog" aria-modal="true"
+        :aria-labelledby="submission ? 'submission-detail-title' : undefined" tabindex="-1"
+        class="relative z-10 flex max-h-[min(90vh,40rem)] w-full max-w-lg flex-col overflow-hidden rounded-card border border-border bg-surface shadow-[0_24px_48px_rgba(0,0,0,0.5)]">
+        <header class="flex shrink-0 items-start justify-between gap-4 border-b border-border-subtle px-5 py-4">
           <div class="min-w-0 flex-1">
             <p class="m-0 mb-1 font-mono text-11 tracking-widest text-text-subtle uppercase">
               Registro
             </p>
-            <h2
-              id="submission-detail-title"
-              class="m-0 text-17 leading-snug font-medium text-text"
-            >
+            <h2 id="submission-detail-title" class="m-0 text-17 leading-snug font-medium text-text">
               {{ submission.position }}
             </h2>
             <p class="m-0 mt-1 text-13 font-light text-text-muted">
-              <NuxtLink
-                v-if="submission.company_slug"
+              <NuxtLink v-if="submission.company_slug"
                 :to="`/resultados/${encodeURIComponent(submission.company_slug)}`"
                 class="text-text-muted no-underline transition-colors duration-150 hover:text-accent"
-                @click="emit('close')"
-              >
+                @click="emit('close')">
                 {{ submission.company_name }}
               </NuxtLink>
               <span v-else>{{ submission.company_name }}</span>
             </p>
           </div>
 
-          <button
-            type="button"
+          <button type="button"
             class="flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-md border border-border bg-surface-alt text-text-muted transition-colors duration-150 hover:border-text-muted hover:text-text"
-            aria-label="Cerrar"
-            @click="emit('close')"
-          >
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              aria-hidden="true"
-            >
+            aria-label="Cerrar" @click="emit('close')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" aria-hidden="true">
               <line x1="18" y1="6" x2="6" y2="18" />
               <line x1="6" y1="6" x2="18" y2="18" />
             </svg>
@@ -161,22 +132,14 @@ const fields = computed(() => {
               color: getResultStyle(submission.result).color,
               backgroundColor: getResultStyle(submission.result).bg,
               borderColor: getResultStyle(submission.result).border,
-            }"
-          >
-            <span
-              class="size-1.5 shrink-0 rounded-full"
-              :style="{ backgroundColor: getResultStyle(submission.result).dot }"
-              aria-hidden="true"
-            />
+            }">
+            <span class="size-1.5 shrink-0 rounded-full"
+              :style="{ backgroundColor: getResultStyle(submission.result).dot }" aria-hidden="true" />
             {{ getResultStyle(submission.result).label }}
           </span>
 
           <dl class="m-0 flex flex-col gap-3">
-            <div
-              v-for="field in fields"
-              :key="field.label"
-              class="grid grid-cols-[6.5rem_1fr] gap-3 text-13"
-            >
+            <div v-for="field in fields" :key="field.label" class="grid grid-cols-[6.5rem_1fr] gap-3 text-13">
               <dt class="font-mono text-11 text-text-subtle lowercase">
                 {{ field.label }}
               </dt>
@@ -186,10 +149,7 @@ const fields = computed(() => {
             </div>
           </dl>
 
-          <div
-            v-if="submission.comment"
-            class="mt-4 border-t border-border-subtle pt-4"
-          >
+          <div v-if="submission.comment" class="mt-4 border-t border-border-subtle pt-4">
             <p class="m-0 mb-2 font-mono text-11 tracking-widest text-text-subtle uppercase">
               Comentario
             </p>
@@ -198,20 +158,13 @@ const fields = computed(() => {
             </p>
           </div>
 
-          <div
-            v-if="hasProfile"
-            class="mt-4 border-t border-border-subtle pt-4"
-          >
+          <div v-if="hasProfile" class="mt-4 border-t border-border-subtle pt-4">
             <p class="m-0 mb-3 font-mono text-11 tracking-widest text-text-subtle uppercase">
               Perfil laboral
             </p>
 
             <dl v-if="profileFields.length" class="m-0 mb-3 flex flex-col gap-2.5">
-              <div
-                v-for="pf in profileFields"
-                :key="pf.label"
-                class="text-13"
-              >
+              <div v-for="pf in profileFields" :key="pf.label" class="text-13">
                 <dt class="mb-0.5 font-mono text-11 text-text-subtle lowercase">
                   {{ pf.label }}
                 </dt>
@@ -222,20 +175,13 @@ const fields = computed(() => {
             </dl>
 
             <div v-if="profileRatings.length" class="flex flex-col gap-2">
-              <div
-                v-for="pr in profileRatings"
-                :key="pr.label"
-                class="flex items-center justify-between gap-3 text-13"
-              >
+              <div v-for="pr in profileRatings" :key="pr.label" class="flex items-center justify-between gap-3 text-13">
                 <span class="font-light text-text-muted">{{ pr.label }}</span>
                 <div class="flex gap-0.5">
-                  <span
-                    v-for="n in 5" :key="n"
-                    class="inline-flex size-5 items-center justify-center rounded text-11 font-medium"
-                    :class="n <= pr.value
+                  <span v-for="n in 5" :key="n"
+                    class="inline-flex size-5 items-center justify-center rounded text-11 font-medium" :class="n <= pr.value
                       ? 'bg-accent/15 text-accent'
-                      : 'bg-surface-alt text-text-subtle/40'"
-                  >{{ n }}</span>
+                      : 'bg-surface-alt text-text-subtle/40'">{{ n }}</span>
                 </div>
               </div>
             </div>

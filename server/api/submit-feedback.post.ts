@@ -82,6 +82,7 @@ export default defineEventHandler(async (event) => {
     p_good_things: input.p_good_things ?? undefined,
     p_bad_things: input.p_bad_things ?? undefined,
     p_benefits: input.p_benefits ?? undefined,
+    p_modality: input.p_modality ?? undefined,
     p_rating_work_environment: input.p_rating_work_environment ?? undefined,
     p_rating_work_life_balance: input.p_rating_work_life_balance ?? undefined,
     p_rating_career_opportunities: input.p_rating_career_opportunities ?? undefined,

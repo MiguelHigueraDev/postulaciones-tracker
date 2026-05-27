@@ -70,7 +70,7 @@ export default defineEventHandler(async (event): Promise<PaginatedSubmissions> =
   let request = supabase
     .from("submissions")
     .select(
-      "id, industry, position, application_month, response_time, stages_reached, last_stage, result, comment, created_at, workplace_profiles(salary, good_things, bad_things, benefits, rating_work_environment, rating_work_life_balance, rating_career_opportunities, rating_compensation_benefits)",
+      "id, industry, position, application_month, response_time, stages_reached, last_stage, result, comment, created_at, workplace_profiles(salary, good_things, bad_things, benefits, modality, rating_work_environment, rating_work_life_balance, rating_career_opportunities, rating_compensation_benefits)",
     )
     .eq("company_id", company.id)
     .order("created_at", { ascending: false })

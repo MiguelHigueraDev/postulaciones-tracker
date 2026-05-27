@@ -93,6 +93,7 @@ export type Database = {
           good_things: string | null
           bad_things: string | null
           benefits: string | null
+          modality: string | null
           rating_work_environment: number | null
           rating_work_life_balance: number | null
           rating_career_opportunities: number | null
@@ -106,6 +107,7 @@ export type Database = {
           good_things?: string | null
           bad_things?: string | null
           benefits?: string | null
+          modality?: string | null
           rating_work_environment?: number | null
           rating_work_life_balance?: number | null
           rating_career_opportunities?: number | null
@@ -119,6 +121,7 @@ export type Database = {
           good_things?: string | null
           bad_things?: string | null
           benefits?: string | null
+          modality?: string | null
           rating_work_environment?: number | null
           rating_work_life_balance?: number | null
           rating_career_opportunities?: number | null
@@ -180,6 +183,7 @@ export type Database = {
           p_good_things?: string
           p_bad_things?: string
           p_benefits?: string
+          p_modality?: string
           p_rating_work_environment?: number
           p_rating_work_life_balance?: number
           p_rating_career_opportunities?: number

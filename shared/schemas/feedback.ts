@@ -37,6 +37,8 @@ export const RESULT_OPTIONS = [
   "Oferta - Rechazada",
 ] as const;
 
+export const MODALITY_OPTIONS = ["Remoto", "Híbrido", "Presencial"] as const;
+
 export const MONTHS = [
   "Enero",
   "Febrero",
@@ -178,6 +180,7 @@ export const feedbackSchema = z
       "aspectos negativos",
     ),
     p_benefits: optionalSanitizedText(MAX_PROFILE_TEXT_LENGTH, "beneficios"),
+    p_modality: z.enum(MODALITY_OPTIONS).nullable().default(null),
     p_rating_work_environment: ratingSchema,
     p_rating_work_life_balance: ratingSchema,
     p_rating_career_opportunities: ratingSchema,
@@ -191,6 +194,7 @@ export const feedbackSchema = z
         data.p_good_things != null &&
         data.p_bad_things != null &&
         data.p_benefits != null &&
+        data.p_modality != null &&
         data.p_rating_work_environment != null &&
         data.p_rating_work_life_balance != null &&
         data.p_rating_career_opportunities != null &&

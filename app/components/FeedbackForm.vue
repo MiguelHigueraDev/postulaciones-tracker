@@ -5,6 +5,7 @@ import {
   LAST_STAGE_OPTIONS,
   RESULT_OPTIONS,
   MONTHS,
+  MODALITY_OPTIONS,
   MAX_COMMENT_LENGTH,
   MAX_COMPANY_NAME_LENGTH,
   MAX_POSITION_LENGTH,
@@ -32,6 +33,7 @@ const form = reactive({
   result: "",
   comment: "",
   salary: null as number | null,
+  modality: "",
   goodThings: "",
   badThings: "",
   benefits: "",
@@ -171,6 +173,7 @@ function buildPayload() {
     p_comment: form.comment || null,
     p_include_profile: profile,
     p_salary: profile ? form.salary : null,
+    p_modality: profile ? form.modality || null : null,
     p_good_things: profile ? form.goodThings || null : null,
     p_bad_things: profile ? form.badThings || null : null,
     p_benefits: profile ? form.benefits || null : null,
@@ -213,7 +216,7 @@ async function handleSubmit() {
     companyName: "", industry: "", position: "",
     applicationMonth: "", applicationYear: currentYear,
     responseTime: "", stagesReached: 0, lastStage: "", result: "", comment: "",
-    salary: null, goodThings: "", badThings: "", benefits: "",
+    salary: null, modality: "", goodThings: "", badThings: "", benefits: "",
     ratingWorkEnvironment: null, ratingWorkLifeBalance: null,
     ratingCareerOpportunities: null, ratingCompensationBenefits: null,
   });
@@ -398,6 +401,16 @@ async function handleSubmit() {
           <input id="salary" :value="salaryDisplay" type="text" inputmode="numeric" required placeholder="Ej: 1.500.000"
             maxlength="11" :class="`${fieldInput} pl-7`" @input="onSalaryInput" />
         </div>
+      </div>
+
+      <div class="relative mb-4">
+        <label for="modality" class="mb-2 block font-mono text-11 tracking-wide text-text-subtle lowercase">
+          modalidad <span class="text-accent">*</span>
+        </label>
+        <select id="modality" v-model="form.modality" required :class="fieldSelect">
+          <option value="" disabled>Selecciona una modalidad</option>
+          <option v-for="opt in MODALITY_OPTIONS" :key="opt" :value="opt">{{ opt }}</option>
+        </select>
       </div>
 
       <div class="relative mb-4">

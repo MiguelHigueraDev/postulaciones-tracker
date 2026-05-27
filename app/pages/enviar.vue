@@ -58,6 +58,7 @@ useSeoMeta({
           <ul
             class="m-0 flex list-none flex-col gap-1.5 p-0 [&_li]:flex [&_li]:items-center [&_li]:gap-2 [&_li]:text-sm [&_li]:font-light [&_li]:text-text-muted [&_li]:before:font-mono [&_li]:before:text-xs [&_li]:before:text-text-subtle [&_li]:before:content-['—']">
             <li>Sueldo líquido (CLP)</li>
+            <li>Modalidad</li>
             <li>Aspectos positivos</li>
             <li>Aspectos negativos</li>
             <li>Beneficios</li>

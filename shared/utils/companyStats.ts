@@ -6,6 +6,7 @@ export interface WorkplaceProfile {
   good_things: string | null;
   bad_things: string | null;
   benefits: string | null;
+  modality: string | null;
   rating_work_environment: number | null;
   rating_work_life_balance: number | null;
   rating_career_opportunities: number | null;
