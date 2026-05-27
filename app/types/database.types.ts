@@ -168,6 +168,36 @@ export type Database = {
           }
         } | null
       }
+      get_global_stats: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          total: number
+          results: { key: string; count: number }[]
+          response_times: { key: string; count: number }[]
+          stages: {
+            average: number | string
+            min: number
+            max: number
+          }
+          last_stages: { key: string; count: number }[]
+          industries: { key: string; count: number }[]
+          positions: { key: string; count: number }[]
+          workplace: {
+            count: number
+            salary_avg: number | null
+            salary_min: number | null
+            salary_max: number | null
+            salary_median: number | null
+            salary_count: number
+            avg_work_environment: number | string | null
+            avg_work_life_balance: number | string | null
+            avg_career_opportunities: number | string | null
+            avg_compensation_benefits: number | string | null
+            ratings_count: number
+            modalities: { key: string; count: number }[]
+          } | null
+        }
+      }
       submit_feedback: {
         Args: {
           p_application_month: string

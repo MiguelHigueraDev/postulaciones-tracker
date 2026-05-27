@@ -4,7 +4,7 @@ import { getResultStyle } from "~~/shared/constants/resultStyles";
 
 defineProps<{
   companyName: string;
-  companySlug: string;
+  companySlug?: string;
   stats: CompanyStats;
   submissionCount: number;
 }>();
@@ -37,10 +37,14 @@ defineProps<{
       class="rounded-lg border border-border-subtle bg-surface px-4 py-16 text-center"
     >
       <p class="m-0 mb-2 font-display text-base font-bold text-text-muted">
-        Sin datos para esta empresa
+        {{ companySlug ? "Sin datos para esta empresa" : "Sin datos aún" }}
       </p>
       <p class="m-0 mb-4 text-sm text-text-subtle">
-        Aún no hay feedback publicado. Sé el primero en compartir tu experiencia.
+        {{
+          companySlug
+            ? "Aún no hay feedback publicado. Sé el primero en compartir tu experiencia."
+            : "Aún no hay feedback publicado. Sé el primero en compartir tu experiencia con la comunidad."
+        }}
       </p>
       <NuxtLink
         to="/enviar"
@@ -213,6 +217,7 @@ defineProps<{
       />
 
       <CompanySubmissionsList
+        v-if="companySlug"
         :company-name="companyName"
         :company-slug="companySlug"
         :total-count="submissionCount"

@@ -180,6 +180,10 @@ function buildWorkplaceStats(
   };
 }
 
+export interface GlobalStatsResponse {
+  stats: CompanyStats;
+}
+
 export function buildCompanyStats(raw: RawCompanyStatsPayload): CompanyStats {
   const total = raw.total;
 

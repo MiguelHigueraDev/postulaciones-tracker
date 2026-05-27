@@ -1,7 +1,15 @@
 <script setup lang="ts">
 import type { CompanyOption } from "~/components/CompanySearch.vue";
+import type { GlobalStatsResponse } from "~~/shared/utils/companyStats";
 
 const dropdownOpen = ref(false);
+
+const { data, error, pending } = await useAsyncData("global-stats", () =>
+  $fetch<GlobalStatsResponse>("/api/stats"),
+);
+
+const stats = computed(() => data.value?.stats ?? null);
+const submissionCount = computed(() => stats.value?.total ?? 0);
 
 function onSelect(company: CompanyOption) {
   return navigateTo(`/resultados/${encodeURIComponent(company.name_normalized)}`);
@@ -43,36 +51,47 @@ useSeoMeta({
         @dropdown-open="dropdownOpen = $event"
       />
       <p class="mt-3 mb-0 text-sm font-light text-text-subtle">
-        Selecciona una empresa para ver estadísticas detalladas de sus procesos de selección.
+        Promedios de todas las empresas abajo, o busca una para ver el detalle.
       </p>
     </div>
 
     <div v-show="!dropdownOpen">
       <div
+        v-if="pending"
         class="flex flex-col items-center gap-2 rounded-lg border border-border-subtle bg-surface px-4 py-16 text-center"
       >
-        <div class="mb-1 text-text-subtle" aria-hidden="true">
-          <svg
-            width="28"
-            height="28"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-            <polyline points="9 22 9 12 15 12 15 22" />
-          </svg>
+        <div class="mb-2 flex gap-1.5">
+          <span
+            class="size-1.75 rounded-full bg-border animate-loading-dot"
+          />
+          <span
+            class="size-1.75 rounded-full bg-border animate-loading-dot [animation-delay:0.2s]"
+          />
+          <span
+            class="size-1.75 rounded-full bg-border animate-loading-dot [animation-delay:0.4s]"
+          />
         </div>
+        <p class="m-0 text-sm text-text-subtle">Cargando datos...</p>
+      </div>
+
+      <div
+        v-else-if="error"
+        class="flex flex-col items-center gap-2 rounded-lg border border-border-subtle bg-surface px-4 py-16 text-center"
+      >
         <p class="m-0 font-display text-base font-bold text-text-muted">
-          Busca una empresa
+          Error al cargar
         </p>
-        <p class="m-0 max-w-88 text-sm text-text-subtle">
-          Usa el buscador para explorar tiempos de respuesta, resultados y etapas por empresa.
+        <p class="m-0 text-sm text-text-subtle">
+          No pudimos obtener los datos. Intenta de nuevo.
         </p>
       </div>
+
+      <CompanyStatsPanel
+        v-else-if="stats"
+        company-name="Todas las empresas"
+        :stats="stats"
+        :submission-count="submissionCount"
+      />
     </div>
   </div>
 </template>
