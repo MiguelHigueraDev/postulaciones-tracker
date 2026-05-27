@@ -165,6 +165,20 @@ export type Database = {
             last_stages: { key: string; count: number }[]
             industries: { key: string; count: number }[]
             positions: { key: string; count: number }[]
+            workplace: {
+              count: number
+              salary_avg: number | null
+              salary_min: number | null
+              salary_max: number | null
+              salary_median: number | null
+              salary_count: number
+              avg_work_environment: number | string | null
+              avg_work_life_balance: number | string | null
+              avg_career_opportunities: number | string | null
+              avg_compensation_benefits: number | string | null
+              ratings_count: number
+              modalities: { key: string; count: number }[]
+            } | null
           }
         } | null
       }
@@ -197,6 +211,29 @@ export type Database = {
             modalities: { key: string; count: number }[]
           } | null
         }
+      }
+      get_workplace_stats: {
+        Args: {
+          p_name_normalized?: string | null
+          p_position?: string | null
+        }
+        Returns: {
+          positions: { key: string; count: number }[]
+          workplace: {
+            count: number
+            salary_avg: number | null
+            salary_min: number | null
+            salary_max: number | null
+            salary_median: number | null
+            salary_count: number
+            avg_work_environment: number | string | null
+            avg_work_life_balance: number | string | null
+            avg_career_opportunities: number | string | null
+            avg_compensation_benefits: number | string | null
+            ratings_count: number
+            modalities: { key: string; count: number }[]
+          } | null
+        } | null
       }
       submit_feedback: {
         Args: {

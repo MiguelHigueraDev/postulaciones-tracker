@@ -139,7 +139,7 @@ function toNum(val: number | string | null): number | null {
   return Number.isNaN(n) ? null : n;
 }
 
-function buildWorkplaceStats(
+export function buildWorkplaceStats(
   raw: RawWorkplacePayload | null,
 ): WorkplaceStats | null {
   if (!raw || raw.count === 0) return null;

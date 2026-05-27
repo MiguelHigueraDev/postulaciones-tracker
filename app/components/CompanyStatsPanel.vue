@@ -214,6 +214,8 @@ defineProps<{
       <WorkplaceStatsSection
         v-if="stats.workplace"
         :workplace="stats.workplace"
+        :positions="stats.positions"
+        :company-slug="companySlug"
       />
 
       <CompanySubmissionsList
