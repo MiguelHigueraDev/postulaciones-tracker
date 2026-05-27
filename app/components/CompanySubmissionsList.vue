@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type {
   CompanySubmission,
+  GlobalSubmission,
   PaginatedSubmissions,
   SubmissionCursor,
 } from "~~/shared/utils/companyStats";
@@ -8,9 +9,28 @@ import { SUBMISSIONS_PAGE_SIZE } from "~~/shared/utils/companyStats";
 import { getResultStyle } from "~~/shared/constants/resultStyles";
 
 const props = defineProps<{
+  companyName: string;
   companySlug: string;
   totalCount: number;
 }>();
+
+const selectedSubmission = ref<GlobalSubmission | null>(null);
+
+function toGlobalSubmission(submission: CompanySubmission): GlobalSubmission {
+  return {
+    ...submission,
+    company_name: props.companyName,
+    company_slug: props.companySlug,
+  };
+}
+
+function openDetail(submission: CompanySubmission) {
+  selectedSubmission.value = toGlobalSubmission(submission);
+}
+
+function closeDetail() {
+  selectedSubmission.value = null;
+}
 
 const submissions = ref<CompanySubmission[]>([]);
 const nextCursor = ref<SubmissionCursor | null>(null);
@@ -161,7 +181,8 @@ onUnmounted(() => {
     <div v-else ref="scrollRoot"
       class="flex min-w-0 flex-col gap-3 md:flex-row md:snap-x md:snap-proximity md:overflow-x-auto md:overscroll-x-contain md:pb-2 md:[scrollbar-color:var(--color-border)_transparent] md:[-webkit-overflow-scrolling:touch] md:[&::-webkit-scrollbar]:h-1.5 md:[&::-webkit-scrollbar-thumb]:rounded-full md:[&::-webkit-scrollbar-thumb]:bg-border">
       <article v-for="submission in submissions" :key="submission.id"
-        class="flex flex-col gap-3.5 rounded-lg border border-border-subtle bg-surface px-4.5 py-4 md:max-h-88 md:min-w-0 md:flex-[0_0_18.5rem] md:snap-start md:overflow-y-auto">
+        class="flex cursor-pointer flex-col gap-3.5 rounded-lg border border-border-subtle bg-surface px-4.5 py-4 transition-colors duration-150 hover:border-border hover:bg-surface-alt md:max-h-88 md:min-w-0 md:flex-[0_0_18.5rem] md:snap-start md:overflow-y-auto"
+        @click="openDetail(submission)">
         <header class="flex items-start justify-between gap-3">
           <h4 class="m-0 text-15 leading-snug font-medium text-text">
             {{ submission.position }}
@@ -239,5 +260,10 @@ onUnmounted(() => {
         Reintentar
       </button>
     </p>
+
+    <SubmissionDetailModal
+      :submission="selectedSubmission"
+      @close="closeDetail"
+    />
   </section>
 </template>

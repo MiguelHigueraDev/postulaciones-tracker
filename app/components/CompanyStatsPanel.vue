@@ -207,7 +207,13 @@ defineProps<{
         </div>
       </section>
 
+      <WorkplaceStatsSection
+        v-if="stats.workplace"
+        :workplace="stats.workplace"
+      />
+
       <CompanySubmissionsList
+        :company-name="companyName"
         :company-slug="companySlug"
         :total-count="submissionCount"
       />
