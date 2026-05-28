@@ -4,6 +4,10 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
+  routeRules: {
+    "/resultados": { redirect: { to: "/reseñas", statusCode: 301 } },
+    "/resultados/**": { redirect: { to: "/reseñas/**", statusCode: 301 } },
+  },
   app: {
     head: {
       title: "me-postulé",

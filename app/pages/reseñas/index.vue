@@ -12,11 +12,11 @@ const stats = computed(() => data.value?.stats ?? null);
 const submissionCount = computed(() => stats.value?.total ?? 0);
 
 function onSelect(company: CompanyOption) {
-  return navigateTo(`/resultados/${encodeURIComponent(company.name_normalized)}`);
+  return navigateTo(`/reseñas/${encodeURIComponent(company.name_normalized)}`);
 }
 
 useSeoMeta({
-  title: "Resultados",
+  title: "Reseñas",
   description:
     "Feedback colectivo anónimo sobre procesos de selección en empresas tech de Chile.",
 });
@@ -33,10 +33,10 @@ useSeoMeta({
           inicio
         </NuxtLink>
         <span class="text-text-subtle">/</span>
-        <span class="text-accent">resultados</span>
+        <span class="text-accent">reseñas</span>
       </div>
       <h1 class="m-0 mb-2 font-display text-32 font-extrabold tracking-tight text-text">
-        Resultados
+        Reseñas
       </h1>
       <p class="m-0 font-mono text-13 tracking-wide text-text-subtle">
         Feedback colectivo anónimo · empresas en Chile

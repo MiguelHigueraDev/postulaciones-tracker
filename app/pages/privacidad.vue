@@ -63,7 +63,7 @@ useSeoMeta({
           <li>
             <strong>Limitación por IP:</strong> contamos solicitudes por dirección IP en memoria
             durante aproximadamente un minuto (máximo 5 envíos por ventana). Esa IP no se guarda
-            en la base de datos ni se muestra en los resultados públicos.
+            en la base de datos ni se muestra en las reseñas públicas.
           </li>
           <li>
             <strong>Cloudflare Turnstile:</strong> en la página de envío usamos Turnstile para

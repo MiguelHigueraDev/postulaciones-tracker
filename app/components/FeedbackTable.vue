@@ -335,7 +335,7 @@ function onRowClick(submission: GlobalSubmission, event: MouseEvent) {
               <td class="overflow-hidden px-4 py-3.5 align-middle text-sm font-medium whitespace-nowrap text-text">
                 <NuxtLink
                   v-if="s.company_slug"
-                  :to="`/resultados/${encodeURIComponent(s.company_slug)}`"
+                  :to="`/reseñas/${encodeURIComponent(s.company_slug)}`"
                   class="text-text no-underline transition-colors duration-150 hover:text-accent"
                 >
                   {{ s.company_name }}

@@ -25,7 +25,7 @@ useSeoMeta({
         </p>
 
         <div class="flex flex-wrap items-center gap-3">
-          <NuxtLink to="/resultados"
+          <NuxtLink to="/reseñas"
             class="btn-primary inline-flex items-center gap-2 rounded-md bg-accent px-5 py-2.5 text-15 font-medium tracking-tight text-bg no-underline transition-colors duration-150 hover:bg-accent-hover">
             Ver datos
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"

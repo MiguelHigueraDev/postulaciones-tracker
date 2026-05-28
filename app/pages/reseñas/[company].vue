@@ -33,13 +33,13 @@ const submissionCount = computed(() => stats.value?.total ?? 0);
 function onSelect(selected: CompanyOption) {
   if (selected.name_normalized === slug.value) return;
   return navigateTo(
-    `/resultados/${encodeURIComponent(selected.name_normalized)}`,
+    `/reseñas/${encodeURIComponent(selected.name_normalized)}`,
   );
 }
 
 useSeoMeta({
   title: () => {
-    if (pending.value) return "Resultados";
+    if (pending.value) return "Reseñas";
     if (error.value || !company.value) return "Empresa no encontrada";
     return company.value.name;
   },
@@ -64,10 +64,10 @@ useSeoMeta({
         </NuxtLink>
         <span class="text-text-subtle">/</span>
         <NuxtLink
-          to="/resultados"
+          to="/reseñas"
           class="text-text-muted no-underline transition-colors duration-150 hover:text-text"
         >
-          resultados
+          reseñas
         </NuxtLink>
         <template v-if="company">
           <span class="text-text-subtle">/</span>
@@ -75,7 +75,7 @@ useSeoMeta({
         </template>
       </div>
       <h1 class="m-0 mb-2 font-display text-32 font-extrabold tracking-tight text-text">
-        Resultados
+        Reseñas
       </h1>
       <p class="m-0 font-mono text-13 tracking-wide text-text-subtle">
         Estadísticas por empresa · feedback anónimo
@@ -120,10 +120,10 @@ useSeoMeta({
         No pudimos obtener los datos. Intenta de nuevo.
       </p>
       <NuxtLink
-        to="/resultados"
+        to="/reseñas"
         class="mt-3 text-sm text-accent no-underline hover:text-accent-hover"
       >
-        ← Volver a resultados
+        ← Volver a reseñas
       </NuxtLink>
     </div>
 
@@ -138,10 +138,10 @@ useSeoMeta({
         No hay datos para «{{ slug }}». Prueba buscando otra empresa.
       </p>
       <NuxtLink
-        to="/resultados"
+        to="/reseñas"
         class="mt-3 text-sm text-accent no-underline hover:text-accent-hover"
       >
-        ← Volver a resultados
+        ← Volver a reseñas
       </NuxtLink>
     </div>
 

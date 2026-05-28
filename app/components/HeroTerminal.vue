@@ -18,7 +18,7 @@ function submit() {
 
   error.value = "";
   return navigateTo(
-    `/resultados/${encodeURIComponent(parsed.company)}`,
+    `/reseñas/${encodeURIComponent(parsed.company)}`,
   );
 }
 
