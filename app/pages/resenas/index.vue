@@ -12,7 +12,7 @@ const stats = computed(() => data.value?.stats ?? null);
 const submissionCount = computed(() => stats.value?.total ?? 0);
 
 function onSelect(company: CompanyOption) {
-  return navigateTo(`/reseñas/${encodeURIComponent(company.name_normalized)}`);
+  return navigateTo(`/resenas/${encodeURIComponent(company.name_normalized)}`);
 }
 
 useSeoMeta({

@@ -105,7 +105,7 @@ const fields = computed(() => {
             </h2>
             <p class="m-0 mt-1 text-13 font-light text-text-muted">
               <NuxtLink v-if="submission.company_slug"
-                :to="`/reseñas/${encodeURIComponent(submission.company_slug)}`"
+                :to="`/resenas/${encodeURIComponent(submission.company_slug)}`"
                 class="text-text-muted no-underline transition-colors duration-150 hover:text-accent"
                 @click="emit('close')">
                 {{ submission.company_name }}

@@ -33,7 +33,7 @@ const submissionCount = computed(() => stats.value?.total ?? 0);
 function onSelect(selected: CompanyOption) {
   if (selected.name_normalized === slug.value) return;
   return navigateTo(
-    `/reseñas/${encodeURIComponent(selected.name_normalized)}`,
+    `/resenas/${encodeURIComponent(selected.name_normalized)}`,
   );
 }
 
@@ -64,7 +64,7 @@ useSeoMeta({
         </NuxtLink>
         <span class="text-text-subtle">/</span>
         <NuxtLink
-          to="/reseñas"
+          to="/resenas"
           class="text-text-muted no-underline transition-colors duration-150 hover:text-text"
         >
           reseñas
@@ -120,7 +120,7 @@ useSeoMeta({
         No pudimos obtener los datos. Intenta de nuevo.
       </p>
       <NuxtLink
-        to="/reseñas"
+        to="/resenas"
         class="mt-3 text-sm text-accent no-underline hover:text-accent-hover"
       >
         ← Volver a reseñas
@@ -138,7 +138,7 @@ useSeoMeta({
         No hay datos para «{{ slug }}». Prueba buscando otra empresa.
       </p>
       <NuxtLink
-        to="/reseñas"
+        to="/resenas"
         class="mt-3 text-sm text-accent no-underline hover:text-accent-hover"
       >
         ← Volver a reseñas

@@ -5,8 +5,10 @@ export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
   routeRules: {
-    "/resultados": { redirect: { to: "/reseñas", statusCode: 301 } },
-    "/resultados/**": { redirect: { to: "/reseñas/**", statusCode: 301 } },
+    "/resultados": { redirect: { to: "/resenas", statusCode: 301 } },
+    "/resultados/**": { redirect: { to: "/resenas/**", statusCode: 301 } },
+    "/reseñas": { redirect: { to: "/resenas", statusCode: 301 } },
+    "/reseñas/**": { redirect: { to: "/resenas/**", statusCode: 301 } },
   },
   app: {
     head: {
