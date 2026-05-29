@@ -1,4 +1,9 @@
 <script setup lang="ts">
+definePageMeta({
+  viewTransition: false,
+  pageTransition: false,
+});
+
 useSeoMeta({
   title: "Admin login",
   robots: "noindex, nofollow",

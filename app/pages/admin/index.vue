@@ -1,6 +1,8 @@
 <script setup lang="ts">
 definePageMeta({
   middleware: "admin",
+  viewTransition: false,
+  pageTransition: false,
 });
 
 useSeoMeta({

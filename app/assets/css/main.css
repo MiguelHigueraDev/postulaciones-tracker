@@ -153,4 +153,49 @@
   ::-webkit-scrollbar-thumb:hover {
     background: var(--color-text-subtle);
   }
+
+  header,
+  footer {
+    view-transition-name: none;
+  }
+
+  main {
+    view-transition-name: main;
+  }
+}
+
+@keyframes vt-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes vt-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+::view-transition-old(main),
+::view-transition-new(main) {
+  animation-duration: 0.28s;
+  animation-timing-function: ease-out;
+}
+
+::view-transition-old(main) {
+  animation-name: vt-fade-out;
+}
+
+::view-transition-new(main) {
+  animation-name: vt-fade-in;
+}
+
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 0.28s ease-out;
+}
+
+.page-enter-from,
+.page-leave-to {
+  opacity: 0;
 }
