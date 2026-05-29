@@ -56,8 +56,11 @@ export function useAdminReviews() {
   watch(search, () => {
     if (searchTimeout) clearTimeout(searchTimeout);
     searchTimeout = setTimeout(() => {
-      page.value = 1;
-      fetchReviews();
+      if (page.value !== 1) {
+        page.value = 1;
+      } else {
+        fetchReviews();
+      }
     }, 300);
   });
 

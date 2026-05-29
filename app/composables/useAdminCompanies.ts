@@ -77,8 +77,11 @@ export function useAdminCompanies() {
   watch(search, () => {
     if (searchTimeout) clearTimeout(searchTimeout);
     searchTimeout = setTimeout(() => {
-      page.value = 1;
-      fetchCompanies();
+      if (page.value !== 1) {
+        page.value = 1;
+      } else {
+        fetchCompanies();
+      }
     }, 300);
   });
 
@@ -165,9 +168,21 @@ export function useAdminCompanies() {
       logoFile.value = null;
       logoMessage.value = "Logo actualizado.";
       await fetchCompanies();
-    } catch {
+    } catch (err: unknown) {
       logoMessageIsError.value = true;
-      logoMessage.value = "No se pudo subir el logo.";
+      const status =
+        err && typeof err === "object" && "statusCode" in err
+          ? (err as { statusCode?: number }).statusCode
+          : undefined;
+      if (status === 400) {
+        const dataMessage =
+          err && typeof err === "object" && "data" in err
+            ? (err as { data?: { message?: string } }).data?.message
+            : undefined;
+        logoMessage.value = dataMessage ?? "No se pudo subir el logo.";
+      } else {
+        logoMessage.value = "No se pudo subir el logo.";
+      }
     } finally {
       logoUploading.value = false;
     }
