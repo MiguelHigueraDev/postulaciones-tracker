@@ -27,6 +27,7 @@ const props = withDefaults(
 
 defineEmits<{
   "update:modelValue": [value: string];
+  "option-select": [value: string];
   "dropdown-open": [open: boolean];
 }>();
 </script>
@@ -43,6 +44,7 @@ defineEmits<{
     :input-class="props.inputClass"
     :max-length="MAX_POSITION_LENGTH"
     @update:model-value="$emit('update:modelValue', $event)"
+    @option-select="$emit('option-select', $event)"
     @dropdown-open="$emit('dropdown-open', $event)"
   />
 </template>

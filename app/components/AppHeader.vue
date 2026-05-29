@@ -1,5 +1,8 @@
 <script setup lang="ts">
-const navLinks = [{ to: "/resenas", label: "Reseñas" }];
+const navLinks = [
+  { to: "/resenas", label: "Reseñas" },
+  { to: "/cargos", label: "Cargos" },
+];
 </script>
 
 <template>

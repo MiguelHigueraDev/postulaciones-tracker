@@ -41,6 +41,8 @@ export interface WorkplaceStats {
     min: number | null;
     max: number | null;
     median: number | null;
+    p25?: number | null;
+    p75?: number | null;
   };
   ratings: {
     count: number;
@@ -85,6 +87,8 @@ export interface RawWorkplacePayload {
   salary_min: number | null;
   salary_max: number | null;
   salary_median: number | null;
+  salary_p25?: number | null;
+  salary_p75?: number | null;
   salary_count: number;
   avg_work_environment: number | string | null;
   avg_work_life_balance: number | string | null;
@@ -167,6 +171,8 @@ export function buildWorkplaceStats(
       min: toNum(raw.salary_min),
       max: toNum(raw.salary_max),
       median: toNum(raw.salary_median),
+      p25: toNum(raw.salary_p25 ?? null),
+      p75: toNum(raw.salary_p75 ?? null),
     },
     ratings: {
       count: raw.ratings_count,
