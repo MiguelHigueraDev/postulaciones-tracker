@@ -1,9 +1,18 @@
 <script setup lang="ts">
+import type { CompanyOverviewItem } from "~~/shared/types/company";
+
 useSeoMeta({
   title: "Transparencia en el hiring",
   description:
     "Datos reales de procesos de selección en empresas tech de Chile. Tiempos de respuesta, etapas y resultados, aportados de forma anónima.",
 });
+
+const { data: companies, pending } = await useAsyncData(
+  "companies-overview",
+  () => $fetch<CompanyOverviewItem[]>("/api/companies/overview"),
+);
+
+const hasCompanies = computed(() => (companies.value?.length ?? 0) > 0);
 </script>
 
 <template>
@@ -42,6 +51,68 @@ useSeoMeta({
       </div>
 
       <HeroTerminal />
+    </section>
+
+
+    <!-- Companies grid -->
+    <section v-if="pending || hasCompanies" class="mb-12">
+      <div class="mb-5 flex items-end justify-between gap-4">
+        <h2 class="m-0 font-display text-xl font-bold tracking-tight text-text">
+          Empresas con más reseñas
+        </h2>
+        <NuxtLink
+          to="/resenas"
+          class="inline-flex shrink-0 items-center gap-1.5 font-mono text-xs tracking-wide text-text-muted no-underline transition-colors duration-150 hover:text-text"
+        >
+          Ver todas
+          <svg
+            width="12"
+            height="12"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <line x1="5" y1="12" x2="19" y2="12" />
+            <polyline points="12 5 19 12 12 19" />
+          </svg>
+        </NuxtLink>
+      </div>
+
+      <div
+        v-if="pending"
+        class="grid grid-cols-1 gap-px overflow-hidden rounded-card border border-border bg-border sm:grid-cols-2 900:grid-cols-3"
+      >
+        <div
+          v-for="n in 10"
+          :key="n"
+          class="h-26 animate-pulse bg-surface"
+          aria-hidden="true"
+        />
+      </div>
+
+      <div
+        v-else
+        class="grid grid-cols-1 gap-px overflow-hidden rounded-card border border-border bg-border sm:grid-cols-2 900:grid-cols-3"
+      >
+        <CompanyCard
+          v-for="company in companies"
+          :key="company.id"
+          :company="company"
+        />
+      </div>
+
+      <div class="mt-6 flex justify-center">
+        <NuxtLink
+          to="/resenas"
+          class="inline-flex items-center gap-2 rounded-md border border-border bg-transparent px-5 py-2.5 text-15 font-normal text-text-muted no-underline transition-colors duration-150 hover:border-text-muted hover:bg-surface-alt hover:text-text"
+        >
+          Ver todas las empresas
+        </NuxtLink>
+      </div>
     </section>
 
 

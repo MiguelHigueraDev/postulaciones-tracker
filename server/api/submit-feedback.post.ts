@@ -2,6 +2,7 @@ import { createError, defineEventHandler, getRequestIP, readBody } from "h3";
 import { serverSupabaseServiceRole } from "#supabase/server";
 import { feedbackSubmitSchema } from "~~/shared/schemas/feedback";
 import { verifyTurnstileToken } from "~~/server/utils/verifyTurnstile";
+import { invalidateCompaniesOverview } from "~~/server/utils/companiesOverviewCache";
 
 const rateLimit = new Map<string, { count: number; resetAt: number }>();
 
@@ -95,6 +96,8 @@ export default defineEventHandler(async (event) => {
       message: "Error al guardar el feedback.",
     });
   }
+
+  await invalidateCompaniesOverview();
 
   return { id: data };
 });

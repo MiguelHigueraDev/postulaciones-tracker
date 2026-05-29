@@ -143,6 +143,20 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_companies_overview: {
+        Args: {
+          p_limit?: number
+        }
+        Returns: {
+          id: string
+          name: string
+          name_normalized: string
+          review_count: number
+          avg_rating: number | string | null
+          accept_rate: number | string | null
+          ghost_rate: number | string | null
+        }[]
+      }
       get_company_stats: {
         Args: {
           p_name_normalized: string
