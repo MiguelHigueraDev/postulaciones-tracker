@@ -16,6 +16,7 @@ interface RawOverviewRow {
   id: string;
   name: string;
   name_normalized: string;
+  logo_url: string | null;
   review_count: number | string | null;
   avg_rating: number | string | null;
   accept_rate: number | string | null;
@@ -31,6 +32,7 @@ function normalizeRows(rows: RawOverviewRow[]): CompanyOverviewItem[] {
     id: row.id,
     name: row.name,
     name_normalized: row.name_normalized,
+    logo_url: row.logo_url,
     review_count: Number(row.review_count ?? 0),
     avg_rating: toNumberOrNull(row.avg_rating),
     accept_rate: toNumberOrNull(row.accept_rate),
