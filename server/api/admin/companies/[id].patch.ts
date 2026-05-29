@@ -116,7 +116,11 @@ export default defineEventHandler(async (event): Promise<AdminCompany> => {
     });
   }
 
-  await invalidateCompaniesOverview();
+  try {
+    await invalidateCompaniesOverview();
+  } catch (error) {
+    console.error("Failed to invalidate companies overview cache", error);
+  }
 
   return updated;
 });

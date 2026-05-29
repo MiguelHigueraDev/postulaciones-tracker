@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { AdminCompany, AdminSubmission } from "~~/shared/types/admin";
+import { slugifyCompanyName } from "~~/shared/utils/companySlug";
 
 definePageMeta({
   middleware: "admin",
@@ -173,6 +174,12 @@ const companyNameUnchanged = computed(
     !selectedCompany.value ||
     companyName.value.trim() === selectedCompany.value.name,
 );
+
+const nameNormalizedPreview = computed(() => {
+  const trimmed = companyName.value.trim();
+  if (trimmed) return slugifyCompanyName(trimmed);
+  return selectedCompany.value?.name_normalized ?? "";
+});
 
 watch(activeTab, (tab) => {
   if (tab === "reviews" && reviews.value.length === 0) {
@@ -522,7 +529,7 @@ async function logout() {
               class="rounded-md border border-border bg-surface px-3 py-2 text-sm text-text outline-none transition-colors duration-150 focus:border-accent"
             />
             <span class="font-mono text-[10px] text-text-subtle">
-              Slug: {{ selectedCompany.name_normalized }}
+              Slug: {{ nameNormalizedPreview }}
             </span>
           </label>
 
