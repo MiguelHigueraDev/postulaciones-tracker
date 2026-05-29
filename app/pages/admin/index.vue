@@ -14,7 +14,7 @@ const supabase = useSupabaseClient();
 
 const REVIEWS_PAGE_SIZE = 30;
 
-const activeTab = ref<"reviews" | "logos">("reviews");
+const activeTab = ref<"reviews" | "companies">("reviews");
 
 const reviewSearch = ref("");
 const reviewPage = ref(1);
@@ -32,6 +32,10 @@ const companyTotalPages = ref(0);
 const companiesLoading = ref(false);
 const companiesError = ref(false);
 const selectedCompanyId = ref<string | null>(null);
+const companyName = ref("");
+const companySaving = ref(false);
+const companyMessage = ref("");
+const companyMessageIsError = ref(false);
 const logoFile = ref<File | null>(null);
 const logoUploading = ref(false);
 const logoRemoving = ref(false);
@@ -120,6 +124,11 @@ async function fetchCompanies() {
     } else if (!selectedCompanyId.value && data.companies.length > 0) {
       selectedCompanyId.value = data.companies[0]!.id;
     }
+
+    const selected = data.companies.find(
+      (c) => c.id === selectedCompanyId.value,
+    );
+    companyName.value = selected?.name ?? "";
   } catch {
     companiesError.value = true;
     companies.value = [];
@@ -149,11 +158,27 @@ watch(companySearch, () => {
 
 watch(companyPage, fetchCompanies);
 
+watch(selectedCompanyId, () => {
+  const company = companies.value.find((c) => c.id === selectedCompanyId.value);
+  companyName.value = company?.name ?? "";
+  companyMessage.value = "";
+  companyMessageIsError.value = false;
+  logoMessage.value = "";
+  logoMessageIsError.value = false;
+  logoFile.value = null;
+});
+
+const companyNameUnchanged = computed(
+  () =>
+    !selectedCompany.value ||
+    companyName.value.trim() === selectedCompany.value.name,
+);
+
 watch(activeTab, (tab) => {
   if (tab === "reviews" && reviews.value.length === 0) {
     fetchReviews();
   }
-  if (tab === "logos" && companies.value.length === 0) {
+  if (tab === "companies" && companies.value.length === 0) {
     fetchCompanies();
   }
 });
@@ -192,6 +217,42 @@ async function deleteReview(id: string) {
     alert("No se pudo eliminar la reseña.");
   } finally {
     deletingId.value = null;
+  }
+}
+
+async function saveCompany() {
+  if (!selectedCompany.value) return;
+
+  const name = companyName.value.trim();
+  if (!name || companyNameUnchanged.value) return;
+
+  companySaving.value = true;
+  companyMessage.value = "";
+  companyMessageIsError.value = false;
+
+  try {
+    await $fetch<AdminCompany>(
+      `/api/admin/companies/${selectedCompany.value.id}`,
+      {
+        method: "PATCH",
+        body: { name },
+      },
+    );
+
+    companyMessage.value = "Empresa actualizada.";
+    await fetchCompanies();
+  } catch (err: unknown) {
+    companyMessageIsError.value = true;
+    const status =
+      err && typeof err === "object" && "statusCode" in err
+        ? (err as { statusCode?: number }).statusCode
+        : undefined;
+    companyMessage.value =
+      status === 409
+        ? "Ya existe otra empresa con ese nombre."
+        : "No se pudo actualizar la empresa.";
+  } finally {
+    companySaving.value = false;
   }
 }
 
@@ -268,7 +329,7 @@ async function logout() {
           Moderación
         </h1>
         <p class="m-0 font-mono text-xs tracking-wide text-text-subtle">
-          Eliminar reseñas y gestionar logos
+          Eliminar reseñas y gestionar empresas
         </p>
       </div>
       <button
@@ -297,13 +358,13 @@ async function logout() {
         type="button"
         class="border-b-2 px-3 py-2 font-mono text-xs tracking-wide transition-colors duration-150"
         :class="
-          activeTab === 'logos'
+          activeTab === 'companies'
             ? 'border-accent text-text'
             : 'border-transparent text-text-muted hover:text-text'
         "
-        @click="activeTab = 'logos'"
+        @click="activeTab = 'companies'"
       >
-        Logos
+        Empresas
       </button>
     </div>
 
@@ -450,9 +511,43 @@ async function logout() {
         </div>
 
         <div v-if="selectedCompany" class="rounded-md border border-border bg-surface p-4">
-          <h2 class="m-0 mb-4 font-display text-lg font-semibold text-text">
-            {{ selectedCompany.name }}
-          </h2>
+          <label class="mb-4 flex flex-col gap-1.5">
+            <span class="font-mono text-[10px] tracking-wider text-text-subtle uppercase">
+              Nombre
+            </span>
+            <input
+              v-model="companyName"
+              type="text"
+              maxlength="120"
+              class="rounded-md border border-border bg-surface px-3 py-2 text-sm text-text outline-none transition-colors duration-150 focus:border-accent"
+            />
+            <span class="font-mono text-[10px] text-text-subtle">
+              Slug: {{ selectedCompany.name_normalized }}
+            </span>
+          </label>
+
+          <div class="mb-4 flex flex-wrap gap-2">
+            <button
+              type="button"
+              class="rounded-md bg-accent px-3 py-2 text-sm font-medium text-bg transition-colors duration-150 hover:bg-accent-hover disabled:opacity-50"
+              :disabled="
+                companySaving ||
+                !companyName.trim() ||
+                companyNameUnchanged
+              "
+              @click="saveCompany"
+            >
+              {{ companySaving ? "Guardando…" : "Guardar cambios" }}
+            </button>
+          </div>
+
+          <p
+            v-if="companyMessage"
+            class="mb-4 text-sm"
+            :class="companyMessageIsError ? 'text-negative' : 'text-positive'"
+          >
+            {{ companyMessage }}
+          </p>
 
           <div class="mb-4 flex items-center gap-3">
             <span

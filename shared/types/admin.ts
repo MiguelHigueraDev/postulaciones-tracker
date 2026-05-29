@@ -32,3 +32,7 @@ export interface AdminCompaniesPage {
   pageSize: number;
   totalPages: number;
 }
+
+export interface AdminCompanyUpdateBody {
+  name: string;
+}
