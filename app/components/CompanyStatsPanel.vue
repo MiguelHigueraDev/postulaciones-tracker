@@ -2,12 +2,30 @@
 import type { CompanyStats } from "~~/shared/utils/companyStats";
 import { getResultStyle } from "~~/shared/constants/resultStyles";
 
-defineProps<{
+const props = defineProps<{
   companyName: string;
   companySlug?: string;
+  companyLogoUrl?: string | null;
   stats: CompanyStats;
   submissionCount: number;
 }>();
+
+const logoFailed = ref(false);
+
+const showLogo = computed(
+  () => Boolean(props.companyLogoUrl) && !logoFailed.value,
+);
+
+const monogram = computed(
+  () => props.companyName.trim().charAt(0).toUpperCase() || "?",
+);
+
+watch(
+  () => props.companyLogoUrl,
+  () => {
+    logoFailed.value = false;
+  },
+);
 </script>
 
 <template>
@@ -15,7 +33,21 @@ defineProps<{
     <header
       class="flex flex-wrap items-start justify-between gap-6 border-b border-border-subtle pb-6"
     >
-      <div>
+      <div class="flex items-center gap-4">
+        <span
+          v-if="companySlug"
+          class="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-md border border-border bg-surface-alt font-display text-xl font-bold text-text-muted"
+          aria-hidden="true"
+        >
+          <img
+            v-if="showLogo"
+            :src="companyLogoUrl!"
+            :alt="`${companyName} logo`"
+            class="size-full object-cover"
+            @error="logoFailed = true"
+          />
+          <template v-else>{{ monogram }}</template>
+        </span>
         <h2 class="m-0 font-display text-28 font-extrabold tracking-tight text-text">
           {{ companyName }}
         </h2>

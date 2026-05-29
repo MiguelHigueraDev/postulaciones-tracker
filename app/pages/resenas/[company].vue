@@ -13,6 +13,7 @@ interface CompanyPageResponse {
     id: string;
     name: string;
     name_normalized: string;
+    logo_url: string | null;
   } | null;
   stats: CompanyStats | null;
 }
@@ -149,6 +150,7 @@ useSeoMeta({
       v-else
       :company-name="company.name"
       :company-slug="company.name_normalized"
+      :company-logo-url="company.logo_url"
       :stats="stats"
       :submission-count="submissionCount"
     />
