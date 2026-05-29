@@ -1,14 +1,14 @@
 import { createError, defineEventHandler, getQuery } from "h3";
 import { serverSupabaseServiceRole } from "#supabase/server";
+import {
+  ilikePattern,
+  postgrestImatchFilter,
+} from "~~/server/utils/ilikePattern";
 import { requireAdmin } from "~~/server/utils/requireAdmin";
 import type { AdminSubmissionsPage } from "~~/shared/types/admin";
 
 const DEFAULT_PAGE_SIZE = 30;
 const MAX_PAGE_SIZE = 30;
-
-function ilikePattern(q: string): string {
-  return `%${q}%`;
-}
 
 type SubmissionRow = {
   id: string;
@@ -41,7 +41,7 @@ export default defineEventHandler(async (event): Promise<AdminSubmissionsPage> =
     const { data: companies, error: companiesError } = await supabase
       .from("companies")
       .select("id")
-      .ilike("name", ilikePattern(q));
+      .filter("name", "imatch", ilikePattern(q));
 
     if (companiesError) {
       throw createError({
@@ -56,11 +56,10 @@ export default defineEventHandler(async (event): Promise<AdminSubmissionsPage> =
   function applySearch<T extends { or: (filter: string) => T }>(request: T) {
     if (!q) return request;
 
-    const pattern = ilikePattern(q);
     const filters = [
-      `position.ilike.${pattern}`,
-      `industry.ilike.${pattern}`,
-      `comment.ilike.${pattern}`,
+      postgrestImatchFilter("position", q),
+      postgrestImatchFilter("industry", q),
+      postgrestImatchFilter("comment", q),
     ];
 
     if (matchingCompanyIds && matchingCompanyIds.length > 0) {

@@ -42,7 +42,9 @@ NUXT_ADMIN_USER_ID=
 
 4. Asegúrate de que `SUPABASE_SECRET_KEY` esté configurada (localmente y en Vercel). Las mutaciones admin (eliminar reseñas, subir logos) usan la secret key del servidor vía `serverSupabaseServiceRole`; nunca se expone al cliente.
 
-5. Aplica la migración `supabase/migrations/20260602000000_admin_moderation.sql` (columna `logo_url`, bucket `company-logos`, RPCs actualizados).
+5. Aplica ambas migraciones en orden:
++   - `supabase/migrations/20260602000000_admin_moderation.sql` (columna `logo_url`, bucket `company-logos`, RPCs actualizados)
++   - `supabase/migrations/20260602000001_admin_service_role_grants.sql` (permisos del service role para operaciones admin)
 
 ## Desarrollo
 

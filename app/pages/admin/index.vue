@@ -129,7 +129,7 @@ async function fetchCompanies() {
   }
 }
 
-watch(reviewSearch, (value) => {
+watch(reviewSearch, () => {
   if (reviewSearchTimeout) clearTimeout(reviewSearchTimeout);
   reviewSearchTimeout = setTimeout(() => {
     reviewPage.value = 1;
@@ -139,7 +139,7 @@ watch(reviewSearch, (value) => {
 
 watch(reviewPage, fetchReviews);
 
-watch(companySearch, (value) => {
+watch(companySearch, () => {
   if (companySearchTimeout) clearTimeout(companySearchTimeout);
   companySearchTimeout = setTimeout(() => {
     companyPage.value = 1;
@@ -212,7 +212,7 @@ async function uploadLogo() {
     const formData = new FormData();
     formData.append("logo", logoFile.value);
 
-    const result = await $fetch<{ logo_url: string }>(
+    await $fetch<{ logo_url: string }>(
       `/api/admin/companies/${selectedCompany.value.id}/logo`,
       {
         method: "POST",
@@ -224,10 +224,6 @@ async function uploadLogo() {
     logoFile.value = null;
     logoMessage.value = "Logo actualizado.";
     await fetchCompanies();
-    const updated = companies.value.find((c) => c.id === selectedCompany.value!.id);
-    if (updated) {
-      updated.logo_url = result.logo_url;
-    }
   } catch {
     logoMessageIsError.value = true;
     logoMessage.value = "No se pudo subir el logo.";

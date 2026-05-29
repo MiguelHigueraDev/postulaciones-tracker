@@ -83,6 +83,35 @@ export default defineEventHandler(async (event) => {
     });
   }
 
+  const { data: existingObjects, error: listError } = await supabase.storage
+    .from(LOGO_BUCKET)
+    .list(companyId);
+
+  if (listError) {
+    throw createError({
+      statusCode: 500,
+      message: "No pudimos subir el logo.",
+    });
+  }
+
+  const logoPaths =
+    existingObjects
+      ?.filter((obj) => obj.name.startsWith("logo."))
+      .map((obj) => `${companyId}/${obj.name}`) ?? [];
+
+  if (logoPaths.length > 0) {
+    const { error: removeError } = await supabase.storage
+      .from(LOGO_BUCKET)
+      .remove(logoPaths);
+
+    if (removeError) {
+      throw createError({
+        statusCode: 500,
+        message: "No pudimos subir el logo.",
+      });
+    }
+  }
+
   const storagePath = `${companyId}/logo.${extension}`;
 
   const { error: uploadError } = await supabase.storage
