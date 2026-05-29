@@ -18,18 +18,21 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          logo_url: string | null
           name: string
           name_normalized: string
         }
         Insert: {
           created_at?: string
           id?: string
+          logo_url?: string | null
           name: string
           name_normalized: string
         }
         Update: {
           created_at?: string
           id?: string
+          logo_url?: string | null
           name?: string
           name_normalized?: string
         }
@@ -151,6 +154,7 @@ export type Database = {
           id: string
           name: string
           name_normalized: string
+          logo_url: string | null
           review_count: number
           avg_rating: number | string | null
           accept_rate: number | string | null
@@ -166,6 +170,7 @@ export type Database = {
             id: string
             name: string
             name_normalized: string
+            logo_url: string | null
           }
           stats: {
             total: number

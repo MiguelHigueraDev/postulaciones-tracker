@@ -13,6 +13,19 @@ const monogram = computed(
   () => props.company.name.trim().charAt(0).toUpperCase() || "?",
 );
 
+const logoFailed = ref(false);
+
+const showLogo = computed(
+  () => Boolean(props.company.logo_url) && !logoFailed.value,
+);
+
+watch(
+  () => props.company.logo_url,
+  () => {
+    logoFailed.value = false;
+  },
+);
+
 const reviewLabel = computed(() =>
   props.company.review_count === 1
     ? "1 reseña"
@@ -36,10 +49,17 @@ function percentLabel(value: number | null | undefined): string {
   >
     <div class="flex items-center gap-3">
       <span
-        class="flex size-10 shrink-0 items-center justify-center rounded-md border border-border bg-surface-alt font-display text-lg font-bold text-text-muted transition-colors duration-150 group-hover:border-text-subtle"
+        class="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-md border border-border bg-surface-alt font-display text-lg font-bold text-text-muted transition-colors duration-150 group-hover:border-text-subtle"
         aria-hidden="true"
       >
-        {{ monogram }}
+        <img
+          v-if="showLogo"
+          :src="company.logo_url!"
+          :alt="`${company.name} logo`"
+          class="size-full object-cover"
+          @error="logoFailed = true"
+        />
+        <template v-else>{{ monogram }}</template>
       </span>
       <span class="flex min-w-0 flex-1 flex-col">
         <span
