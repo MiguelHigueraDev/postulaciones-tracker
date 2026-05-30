@@ -27,10 +27,14 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  await Promise.all([
-    invalidateCompaniesOverview(),
-    invalidateCompaniesDirectory(),
-  ]);
+  try {
+    await Promise.all([
+      invalidateCompaniesOverview(),
+      invalidateCompaniesDirectory(),
+    ]);
+  } catch (error) {
+    console.error("Failed to invalidate companies caches after submission delete", error);
+  }
 
   return { ok: true };
 });

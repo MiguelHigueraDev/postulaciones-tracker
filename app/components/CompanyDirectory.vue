@@ -56,7 +56,10 @@ function compareNullableDesc(
   a: number | null,
   b: number | null,
 ): number {
-  return compareNullableAsc(b, a);
+  if (a == null && b == null) return 0;
+  if (a == null) return 1;
+  if (b == null) return -1;
+  return b - a;
 }
 
 const filteredCompanies = computed(() => {
@@ -110,6 +113,13 @@ let searchTimeout: ReturnType<typeof setTimeout> | null = null;
 watch(searchInput, () => {
   if (searchTimeout) clearTimeout(searchTimeout);
   searchTimeout = setTimeout(syncRouteQuery, 300);
+});
+
+onBeforeUnmount(() => {
+  if (searchTimeout) {
+    clearTimeout(searchTimeout);
+    searchTimeout = null;
+  }
 });
 
 watch(sortBy, syncRouteQuery);
@@ -357,6 +367,13 @@ function clearSearch() {
 .directory-grid-item {
   animation: directory-item-in 0.45s ease-out both;
   animation-delay: var(--item-delay, 0ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .directory-grid-item {
+    animation: none;
+    animation-delay: 0;
+  }
 }
 
 @keyframes directory-item-in {

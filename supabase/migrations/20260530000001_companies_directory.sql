@@ -1,3 +1,7 @@
+-- Speeds company-scoped submission filters in directory/overview avg_rating subqueries.
+CREATE INDEX IF NOT EXISTS idx_submissions_company_id
+  ON public.submissions (company_id);
+
 -- Full company directory: same metrics as overview, only companies with reviews, no limit.
 CREATE OR REPLACE FUNCTION public.get_companies_directory()
 RETURNS TABLE (

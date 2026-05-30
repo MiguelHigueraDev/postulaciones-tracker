@@ -147,10 +147,14 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  await Promise.all([
-    invalidateCompaniesOverview(),
-    invalidateCompaniesDirectory(),
-  ]);
+  try {
+    await Promise.all([
+      invalidateCompaniesOverview(),
+      invalidateCompaniesDirectory(),
+    ]);
+  } catch (error) {
+    console.error("Failed to invalidate companies caches after logo upload", error);
+  }
 
   return { logo_url: logoUrl };
 });
