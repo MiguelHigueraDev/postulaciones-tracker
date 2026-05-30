@@ -68,7 +68,7 @@ useSeoMeta({
           to="/resenas"
           class="text-text-muted no-underline transition-colors duration-150 hover:text-text"
         >
-          reseñas
+          directorio
         </NuxtLink>
         <template v-if="company">
           <span class="text-text-subtle">/</span>
