@@ -1,4 +1,5 @@
 import type { AdminSubmission } from "~~/shared/types/admin";
+import { fetchResult } from "~~/shared/utils/fetchResult";
 
 const PAGE_SIZE = 30;
 
@@ -26,31 +27,36 @@ export function useAdminReviews() {
     loading.value = true;
     error.value = false;
 
-    try {
-      const params = new URLSearchParams({
-        page: String(page.value),
-        limit: String(PAGE_SIZE),
-      });
-      const q = search.value.trim();
-      if (q) params.set("q", q);
+    const params = new URLSearchParams({
+      page: String(page.value),
+      limit: String(PAGE_SIZE),
+    });
+    const q = search.value.trim();
+    if (q) params.set("q", q);
 
-      const data = await $fetch<{
+    const result = await fetchResult(() =>
+      $fetch<{
         submissions: AdminSubmission[];
         total: number;
         totalPages: number;
-      }>(`/api/admin/submissions?${params}`);
+      }>(`/api/admin/submissions?${params}`),
+    );
 
-      reviews.value = data.submissions;
-      total.value = data.total;
-      totalPages.value = data.totalPages;
-    } catch {
-      error.value = true;
-      reviews.value = [];
-      total.value = 0;
-      totalPages.value = 0;
-    } finally {
-      loading.value = false;
-    }
+    result.match({
+      ok: (data) => {
+        reviews.value = data.submissions;
+        total.value = data.total;
+        totalPages.value = data.totalPages;
+      },
+      err: () => {
+        error.value = true;
+        reviews.value = [];
+        total.value = 0;
+        totalPages.value = 0;
+      },
+    });
+
+    loading.value = false;
   }
 
   watch(search, () => {
@@ -86,17 +92,23 @@ export function useAdminReviews() {
 
     deletingId.value = id;
 
-    try {
-      await $fetch(`/api/admin/submissions/${id}`, { method: "DELETE" });
-      await fetchReviews();
-      if (reviews.value.length === 0 && page.value > 1) {
-        page.value--;
-      }
-    } catch {
-      alert("No se pudo eliminar la reseña.");
-    } finally {
-      deletingId.value = null;
-    }
+    const result = await fetchResult(() =>
+      $fetch(`/api/admin/submissions/${id}`, { method: "DELETE" }),
+    );
+
+    await result.match({
+      ok: async () => {
+        await fetchReviews();
+        if (reviews.value.length === 0 && page.value > 1) {
+          page.value--;
+        }
+      },
+      err: async () => {
+        alert("No se pudo eliminar la reseña.");
+      },
+    });
+
+    deletingId.value = null;
   }
 
   return {

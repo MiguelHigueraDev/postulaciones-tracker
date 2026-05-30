@@ -1,5 +1,6 @@
 import type { AdminCompany } from "~~/shared/types/admin";
 import { slugifyCompanyName } from "~~/shared/utils/companySlug";
+import { fetchResult } from "~~/shared/utils/fetchResult";
 
 export function useAdminCompanies() {
   const search = ref("");
@@ -39,39 +40,44 @@ export function useAdminCompanies() {
     loading.value = true;
     error.value = false;
 
-    try {
-      const params = new URLSearchParams({
-        page: String(page.value),
-      });
-      const q = search.value.trim();
-      if (q) params.set("q", q);
+    const params = new URLSearchParams({
+      page: String(page.value),
+    });
+    const q = search.value.trim();
+    if (q) params.set("q", q);
 
-      const data = await $fetch<{
+    const result = await fetchResult(() =>
+      $fetch<{
         companies: AdminCompany[];
         totalPages: number;
-      }>(`/api/admin/companies?${params}`);
+      }>(`/api/admin/companies?${params}`),
+    );
 
-      companies.value = data.companies;
-      totalPages.value = data.totalPages;
+    result.match({
+      ok: (data) => {
+        companies.value = data.companies;
+        totalPages.value = data.totalPages;
 
-      if (
-        selectedId.value &&
-        !data.companies.some((c) => c.id === selectedId.value)
-      ) {
-        selectedId.value = data.companies[0]?.id ?? null;
-      } else if (!selectedId.value && data.companies.length > 0) {
-        selectedId.value = data.companies[0]!.id;
-      }
+        if (
+          selectedId.value &&
+          !data.companies.some((c) => c.id === selectedId.value)
+        ) {
+          selectedId.value = data.companies[0]?.id ?? null;
+        } else if (!selectedId.value && data.companies.length > 0) {
+          selectedId.value = data.companies[0]!.id;
+        }
 
-      const current = data.companies.find((c) => c.id === selectedId.value);
-      name.value = current?.name ?? "";
-    } catch {
-      error.value = true;
-      companies.value = [];
-      totalPages.value = 0;
-    } finally {
-      loading.value = false;
-    }
+        const current = data.companies.find((c) => c.id === selectedId.value);
+        name.value = current?.name ?? "";
+      },
+      err: () => {
+        error.value = true;
+        companies.value = [];
+        totalPages.value = 0;
+      },
+    });
+
+    loading.value = false;
   }
 
   watch(search, () => {
@@ -113,30 +119,28 @@ export function useAdminCompanies() {
     message.value = "";
     messageIsError.value = false;
 
-    try {
-      await $fetch<AdminCompany>(
-        `/api/admin/companies/${selected.value.id}`,
-        {
-          method: "PATCH",
-          body: { name: trimmed },
-        },
-      );
+    const result = await fetchResult(() =>
+      $fetch<AdminCompany>(`/api/admin/companies/${selected.value!.id}`, {
+        method: "PATCH",
+        body: { name: trimmed },
+      }),
+    );
 
-      message.value = "Empresa actualizada.";
-      await fetchCompanies();
-    } catch (err: unknown) {
-      messageIsError.value = true;
-      const status =
-        err && typeof err === "object" && "statusCode" in err
-          ? (err as { statusCode?: number }).statusCode
-          : undefined;
-      message.value =
-        status === 409
-          ? "Ya existe otra empresa con ese nombre."
-          : "No se pudo actualizar la empresa.";
-    } finally {
-      saving.value = false;
-    }
+    await result.match({
+      ok: async () => {
+        message.value = "Empresa actualizada.";
+        await fetchCompanies();
+      },
+      err: async (err) => {
+        messageIsError.value = true;
+        message.value =
+          err.statusCode === 409
+            ? "Ya existe otra empresa con ese nombre."
+            : "No se pudo actualizar la empresa.";
+      },
+    });
+
+    saving.value = false;
   }
 
   function onLogoSelected(event: Event) {
@@ -152,40 +156,39 @@ export function useAdminCompanies() {
     logoMessage.value = "";
     logoMessageIsError.value = false;
 
-    try {
-      const formData = new FormData();
-      formData.append("logo", logoFile.value);
+    const companyId = selected.value.id;
+    const file = logoFile.value;
 
-      await $fetch<{ logo_url: string }>(
-        `/api/admin/companies/${selected.value.id}/logo`,
+    const result = await fetchResult(() => {
+      const formData = new FormData();
+      formData.append("logo", file);
+
+      return $fetch<{ logo_url: string }>(
+        `/api/admin/companies/${companyId}/logo`,
         {
           method: "POST",
           body: formData,
         },
       );
+    });
 
-      selectedId.value = selected.value.id;
-      logoFile.value = null;
-      logoMessage.value = "Logo actualizado.";
-      await fetchCompanies();
-    } catch (err: unknown) {
-      logoMessageIsError.value = true;
-      const status =
-        err && typeof err === "object" && "statusCode" in err
-          ? (err as { statusCode?: number }).statusCode
-          : undefined;
-      if (status === 400) {
-        const dataMessage =
-          err && typeof err === "object" && "data" in err
-            ? (err as { data?: { message?: string } }).data?.message
-            : undefined;
-        logoMessage.value = dataMessage ?? "No se pudo subir el logo.";
-      } else {
-        logoMessage.value = "No se pudo subir el logo.";
-      }
-    } finally {
-      logoUploading.value = false;
-    }
+    await result.match({
+      ok: async () => {
+        selectedId.value = companyId;
+        logoFile.value = null;
+        logoMessage.value = "Logo actualizado.";
+        await fetchCompanies();
+      },
+      err: async (err) => {
+        logoMessageIsError.value = true;
+        logoMessage.value =
+          err.statusCode === 400
+            ? err.message || "No se pudo subir el logo."
+            : "No se pudo subir el logo.";
+      },
+    });
+
+    logoUploading.value = false;
   }
 
   async function removeLogo() {
@@ -196,18 +199,26 @@ export function useAdminCompanies() {
     logoMessage.value = "";
     logoMessageIsError.value = false;
 
-    try {
-      await $fetch(`/api/admin/companies/${selected.value.id}/logo`, {
+    const companyId = selected.value.id;
+
+    const result = await fetchResult(() =>
+      $fetch(`/api/admin/companies/${companyId}/logo`, {
         method: "DELETE",
-      });
-      logoMessage.value = "Logo eliminado.";
-      await fetchCompanies();
-    } catch {
-      logoMessageIsError.value = true;
-      logoMessage.value = "No se pudo eliminar el logo.";
-    } finally {
-      logoRemoving.value = false;
-    }
+      }),
+    );
+
+    await result.match({
+      ok: async () => {
+        logoMessage.value = "Logo eliminado.";
+        await fetchCompanies();
+      },
+      err: async () => {
+        logoMessageIsError.value = true;
+        logoMessage.value = "No se pudo eliminar el logo.";
+      },
+    });
+
+    logoRemoving.value = false;
   }
 
   return {

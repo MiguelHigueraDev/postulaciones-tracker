@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Result, TaggedError } from "better-result";
 import {
   INDUSTRY_OPTIONS,
   RESPONSE_TIME_OPTIONS,
@@ -15,6 +16,19 @@ import {
   MIN_APPLICATION_YEAR,
   type RatingKey,
 } from "~~/shared/schemas/feedback";
+import { fetchResult } from "~~/shared/utils/fetchResult";
+
+class TurnstileLoadError extends TaggedError("TurnstileLoadError")<{
+  message: string;
+  cause: unknown;
+}>() {
+  constructor(args: { cause: unknown }) {
+    super({
+      cause: args.cause,
+      message: "No pudimos cargar la verificación de seguridad. Recarga la página.",
+    });
+  }
+}
 
 const config = useRuntimeConfig();
 
@@ -132,13 +146,19 @@ function resetTurnstile() {
 
 onMounted(async () => {
   if (!config.public.turnstileSiteKey) return;
-  try {
-    await loadTurnstileScript();
-    renderTurnstile();
-  } catch {
+
+  const result = await Result.tryPromise({
+    try: async () => {
+      await loadTurnstileScript();
+      renderTurnstile();
+    },
+    catch: (cause) => new TurnstileLoadError({ cause }),
+  });
+
+  if (result.isErr()) {
     resultModal.value = {
       type: "error",
-      message: "No pudimos cargar la verificación de seguridad. Recarga la página.",
+      message: result.error.message,
     };
   }
 });
@@ -192,8 +212,8 @@ async function handleSubmit() {
   isSubmitting.value = true;
   resultModal.value = null;
 
-  try {
-    await $fetch("/api/submit-feedback", {
+  const result = await fetchResult(() =>
+    $fetch("/api/submit-feedback", {
       method: "POST",
       body: {
         ...buildPayload(),
@@ -201,11 +221,13 @@ async function handleSubmit() {
         _hp: honeypot.value,
         _formElapsedMs: Date.now() - formStartedAt.value,
       },
-    });
-  } catch (err: any) {
+    }),
+  );
+
+  if (result.isErr()) {
     isSubmitting.value = false;
     resetTurnstile();
-    showResult("error", err?.data?.message || "Error al enviar. Intenta de nuevo.");
+    showResult("error", result.error.message || "Error al enviar. Intenta de nuevo.");
     return;
   }
 

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { fetchResult } from "~~/shared/utils/fetchResult";
 definePageMeta({
   middleware: "admin",
   viewTransition: false,
@@ -14,9 +15,8 @@ const supabase = useSupabaseClient();
 const activeTab = ref<"reviews" | "companies">("reviews");
 
 async function verifyAdminAccess() {
-  try {
-    await $fetch("/api/admin/me");
-  } catch {
+  const result = await fetchResult(() => $fetch("/api/admin/me"));
+  if (result.isErr()) {
     await supabase.auth.signOut();
     await navigateTo("/admin/login");
   }

@@ -1,7 +1,6 @@
 import { createError, defineEventHandler, getRouterParam } from "h3";
 import { serverSupabaseServiceRole } from "#supabase/server";
-import { invalidateCompaniesDirectory } from "~~/server/utils/companiesDirectoryCache";
-import { invalidateCompaniesOverview } from "~~/server/utils/companiesOverviewCache";
+import { invalidateCompaniesCaches } from "~~/server/utils/invalidateCompaniesCaches";
 import { LOGO_BUCKET } from "~~/server/utils/companyLogo";
 import { requireAdmin } from "~~/server/utils/requireAdmin";
 
@@ -76,14 +75,7 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  try {
-    await Promise.all([
-      invalidateCompaniesOverview(),
-      invalidateCompaniesDirectory(),
-    ]);
-  } catch (error) {
-    console.error("Failed to invalidate companies caches after logo delete", error);
-  }
+  await invalidateCompaniesCaches("logo delete");
 
   return { ok: true };
 });
