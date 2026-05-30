@@ -49,6 +49,9 @@ export default defineNuxtConfig({
   css: ["./app/assets/css/main.css"],
   vite: {
     plugins: [tailwindcss()],
+    optimizeDeps: {
+      include: ["better-result", "zod/v4"],
+    },
   },
   supabase: {
     redirectOptions: {

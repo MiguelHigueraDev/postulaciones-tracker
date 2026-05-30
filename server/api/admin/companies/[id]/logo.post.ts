@@ -5,8 +5,7 @@ import {
   readMultipartFormData,
 } from "h3";
 import { serverSupabaseServiceRole } from "#supabase/server";
-import { invalidateCompaniesDirectory } from "~~/server/utils/companiesDirectoryCache";
-import { invalidateCompaniesOverview } from "~~/server/utils/companiesOverviewCache";
+import { invalidateCompaniesCaches } from "~~/server/utils/invalidateCompaniesCaches";
 import {
   ALLOWED_MIME_TYPES,
   LOGO_BUCKET,
@@ -147,14 +146,7 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  try {
-    await Promise.all([
-      invalidateCompaniesOverview(),
-      invalidateCompaniesDirectory(),
-    ]);
-  } catch (error) {
-    console.error("Failed to invalidate companies caches after logo upload", error);
-  }
+  await invalidateCompaniesCaches("logo upload");
 
   return { logo_url: logoUrl };
 });

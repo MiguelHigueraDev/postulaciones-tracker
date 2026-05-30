@@ -1,7 +1,6 @@
 import { createError, defineEventHandler, getRouterParam } from "h3";
 import { serverSupabaseServiceRole } from "#supabase/server";
-import { invalidateCompaniesDirectory } from "~~/server/utils/companiesDirectoryCache";
-import { invalidateCompaniesOverview } from "~~/server/utils/companiesOverviewCache";
+import { invalidateCompaniesCaches } from "~~/server/utils/invalidateCompaniesCaches";
 import { requireAdmin } from "~~/server/utils/requireAdmin";
 
 export default defineEventHandler(async (event) => {
@@ -27,14 +26,7 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  try {
-    await Promise.all([
-      invalidateCompaniesOverview(),
-      invalidateCompaniesDirectory(),
-    ]);
-  } catch (error) {
-    console.error("Failed to invalidate companies caches after submission delete", error);
-  }
+  await invalidateCompaniesCaches("submission delete");
 
   return { ok: true };
 });

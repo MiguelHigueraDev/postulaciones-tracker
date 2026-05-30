@@ -5,8 +5,7 @@ import {
   readBody,
 } from "h3";
 import { serverSupabaseServiceRole } from "#supabase/server";
-import { invalidateCompaniesDirectory } from "~~/server/utils/companiesDirectoryCache";
-import { invalidateCompaniesOverview } from "~~/server/utils/companiesOverviewCache";
+import { invalidateCompaniesCaches } from "~~/server/utils/invalidateCompaniesCaches";
 import { requireAdmin } from "~~/server/utils/requireAdmin";
 import type { AdminCompany, AdminCompanyUpdateBody } from "~~/shared/types/admin";
 import { slugifyCompanyName } from "~~/shared/utils/companySlug";
@@ -117,14 +116,7 @@ export default defineEventHandler(async (event): Promise<AdminCompany> => {
     });
   }
 
-  try {
-    await Promise.all([
-      invalidateCompaniesOverview(),
-      invalidateCompaniesDirectory(),
-    ]);
-  } catch (error) {
-    console.error("Failed to invalidate companies overview cache", error);
-  }
+  await invalidateCompaniesCaches("company patch");
 
   return updated;
 });

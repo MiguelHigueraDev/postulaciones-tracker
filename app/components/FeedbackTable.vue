@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { getResultStyle } from "~~/shared/constants/resultStyles";
+import { fetchResult } from "~~/shared/utils/fetchResult";
 import type {
   GlobalSubmission,
   PaginatedAllSubmissions,
@@ -38,31 +39,33 @@ async function fetchSubmissions() {
   isLoading.value = true;
   loadError.value = false;
 
-  try {
-    const params = new URLSearchParams({ page: String(page.value) });
-    const q = debouncedSearch.value.trim();
-    if (q) params.set("q", q);
+  const params = new URLSearchParams({ page: String(page.value) });
+  const q = debouncedSearch.value.trim();
+  if (q) params.set("q", q);
 
-    const data = await $fetch<PaginatedAllSubmissions>(
-      `/api/submissions?${params}`,
-    );
+  const result = await fetchResult(() =>
+    $fetch<PaginatedAllSubmissions>(`/api/submissions?${params}`),
+  );
 
-    submissions.value = data.submissions;
-    total.value = data.total;
-    totalPages.value = data.totalPages;
+  await result.match({
+    ok: async (data) => {
+      submissions.value = data.submissions;
+      total.value = data.total;
+      totalPages.value = data.totalPages;
 
-    if (data.totalPages > 0 && page.value > data.totalPages) {
-      page.value = data.totalPages;
-      return;
-    }
-  } catch {
-    loadError.value = true;
-    submissions.value = [];
-    total.value = 0;
-    totalPages.value = 0;
-  } finally {
-    isLoading.value = false;
-  }
+      if (data.totalPages > 0 && page.value > data.totalPages) {
+        page.value = data.totalPages;
+      }
+    },
+    err: () => {
+      loadError.value = true;
+      submissions.value = [];
+      total.value = 0;
+      totalPages.value = 0;
+    },
+  });
+
+  isLoading.value = false;
 }
 
 watch([page, debouncedSearch], fetchSubmissions, { immediate: true });

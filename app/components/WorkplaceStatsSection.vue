@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { CountEntry, WorkplaceStats } from "~~/shared/utils/companyStats";
 import { formatCompactSalary } from "~~/shared/utils/formatSalary";
+import { fetchResult } from "~~/shared/utils/fetchResult";
 import { MODALITY_OPTIONS } from "~~/shared/schemas/feedback";
 
 const props = defineProps<{
@@ -63,32 +64,37 @@ function sortedModalities(modalities: WorkplaceStats["modalities"]) {
 async function fetchWorkplaceStats(position?: string) {
   if (position) isLoading.value = true;
 
-  try {
-    const params = new URLSearchParams();
-    if (props.companySlug) params.set("company", props.companySlug);
-    if (position) params.set("position", position);
+  const params = new URLSearchParams();
+  if (props.companySlug) params.set("company", props.companySlug);
+  if (position) params.set("position", position);
 
-    const data = await $fetch<{
+  const result = await fetchResult(() =>
+    $fetch<{
       positions: CountEntry[];
       workplace: WorkplaceStats | null;
-    }>(`/api/workplace-stats?${params}`);
+    }>(`/api/workplace-stats?${params}`),
+  );
 
-    positionOptions.value = data.positions.map(({ key, count }) => ({
-      key,
-      count,
-      percent: 0,
-    }));
+  result.match({
+    ok: (data) => {
+      positionOptions.value = data.positions.map(({ key, count }) => ({
+        key,
+        count,
+        percent: 0,
+      }));
 
-    if (position) {
-      filteredWorkplace.value = data.workplace;
-    } else {
-      filteredWorkplace.value = undefined;
-    }
-  } catch {
-    if (position) filteredWorkplace.value = null;
-  } finally {
-    if (position) isLoading.value = false;
-  }
+      if (position) {
+        filteredWorkplace.value = data.workplace;
+      } else {
+        filteredWorkplace.value = undefined;
+      }
+    },
+    err: () => {
+      if (position) filteredWorkplace.value = null;
+    },
+  });
+
+  if (position) isLoading.value = false;
 }
 
 watch(selectedPosition, (position) => {

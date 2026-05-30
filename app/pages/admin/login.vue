@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { fetchResult } from "~~/shared/utils/fetchResult";
 definePageMeta({
   viewTransition: false,
   pageTransition: false,
@@ -23,13 +24,11 @@ watch(
   async (currentUser) => {
     if (!currentUser) return;
 
-    try {
-      await $fetch("/api/admin/me");
+    const result = await fetchResult(() => $fetch("/api/admin/me"));
+    if (result.isOk()) {
       const redirect =
         typeof route.query.redirect === "string" ? route.query.redirect : "/admin";
       await navigateTo(redirect);
-    } catch {
-      // Ignore stale client sessions; login form handles fresh sign-in.
     }
   },
   { immediate: true },
@@ -39,36 +38,38 @@ async function onSubmit() {
   errorMessage.value = "";
   isSubmitting.value = true;
 
-  try {
-    const { error } = await supabase.auth.signInWithPassword({
-      email: email.value.trim(),
-      password: password.value,
-    });
+  const { error: signInError } = await supabase.auth.signInWithPassword({
+    email: email.value.trim(),
+    password: password.value,
+  });
 
-    if (error) {
-      errorMessage.value = "Credenciales inválidas.";
-      return;
-    }
+  if (signInError) {
+    errorMessage.value = "Credenciales inválidas.";
+    isSubmitting.value = false;
+    return;
+  }
 
-    const { data: sessionData, error: sessionError } =
-      await supabase.auth.getSession();
+  const { data: sessionData, error: sessionError } =
+    await supabase.auth.getSession();
 
-    if (sessionError || !sessionData.session) {
-      errorMessage.value = "No pudimos iniciar sesión. Intenta de nuevo.";
-      return;
-    }
+  if (sessionError || !sessionData.session) {
+    errorMessage.value = "No pudimos iniciar sesión. Intenta de nuevo.";
+    isSubmitting.value = false;
+    return;
+  }
 
-    await $fetch("/api/admin/me");
-
-    const redirect =
-      typeof route.query.redirect === "string" ? route.query.redirect : "/admin";
-    await navigateTo(redirect);
-  } catch {
+  const adminCheck = await fetchResult(() => $fetch("/api/admin/me"));
+  if (adminCheck.isErr()) {
     await supabase.auth.signOut();
     errorMessage.value = "Esta cuenta no tiene acceso de administrador.";
-  } finally {
     isSubmitting.value = false;
+    return;
   }
+
+  const redirect =
+    typeof route.query.redirect === "string" ? route.query.redirect : "/admin";
+  await navigateTo(redirect);
+  isSubmitting.value = false;
 }
 </script>
 

@@ -5,6 +5,7 @@ import type {
   PaginatedSubmissions,
   SubmissionCursor,
 } from "~~/shared/utils/companyStats";
+import { fetchResult } from "~~/shared/utils/fetchResult";
 import { SUBMISSIONS_PAGE_SIZE } from "~~/shared/utils/companyStats";
 import { getResultStyle } from "~~/shared/constants/resultStyles";
 
@@ -48,32 +49,37 @@ async function fetchPage(cursor?: SubmissionCursor) {
   isLoading.value = true;
   loadError.value = false;
 
-  try {
-    const params = new URLSearchParams({
-      limit: String(SUBMISSIONS_PAGE_SIZE),
-    });
+  const params = new URLSearchParams({
+    limit: String(SUBMISSIONS_PAGE_SIZE),
+  });
 
-    if (cursor) {
-      params.set("cursorCreatedAt", cursor.createdAt);
-      params.set("cursorId", cursor.id);
-    }
-
-    const data = await $fetch<PaginatedSubmissions>(
-      `/api/companies/${encodeURIComponent(props.companySlug)}/submissions?${params}`,
-    );
-
-    if (cursor) {
-      submissions.value = [...submissions.value, ...data.submissions];
-    } else {
-      submissions.value = data.submissions;
-    }
-
-    nextCursor.value = data.nextCursor;
-  } catch {
-    loadError.value = true;
-  } finally {
-    isLoading.value = false;
+  if (cursor) {
+    params.set("cursorCreatedAt", cursor.createdAt);
+    params.set("cursorId", cursor.id);
   }
+
+  const result = await fetchResult(() =>
+    $fetch<PaginatedSubmissions>(
+      `/api/companies/${encodeURIComponent(props.companySlug)}/submissions?${params}`,
+    ),
+  );
+
+  result.match({
+    ok: (data) => {
+      if (cursor) {
+        submissions.value = [...submissions.value, ...data.submissions];
+      } else {
+        submissions.value = data.submissions;
+      }
+
+      nextCursor.value = data.nextCursor;
+    },
+    err: () => {
+      loadError.value = true;
+    },
+  });
+
+  isLoading.value = false;
 }
 
 async function loadMore() {
