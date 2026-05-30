@@ -2,6 +2,7 @@ import { createError, defineEventHandler, getRequestIP, readBody } from "h3";
 import { serverSupabaseServiceRole } from "#supabase/server";
 import { feedbackSubmitSchema } from "~~/shared/schemas/feedback";
 import { verifyTurnstileToken } from "~~/server/utils/verifyTurnstile";
+import { invalidateCompaniesDirectory } from "~~/server/utils/companiesDirectoryCache";
 import { invalidateCompaniesOverview } from "~~/server/utils/companiesOverviewCache";
 
 const rateLimit = new Map<string, { count: number; resetAt: number }>();
@@ -97,7 +98,10 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  await invalidateCompaniesOverview();
+  await Promise.all([
+    invalidateCompaniesOverview(),
+    invalidateCompaniesDirectory(),
+  ]);
 
   return { id: data };
 });

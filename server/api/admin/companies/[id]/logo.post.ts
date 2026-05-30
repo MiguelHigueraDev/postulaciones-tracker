@@ -5,6 +5,7 @@ import {
   readMultipartFormData,
 } from "h3";
 import { serverSupabaseServiceRole } from "#supabase/server";
+import { invalidateCompaniesDirectory } from "~~/server/utils/companiesDirectoryCache";
 import { invalidateCompaniesOverview } from "~~/server/utils/companiesOverviewCache";
 import {
   ALLOWED_MIME_TYPES,
@@ -146,7 +147,10 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  await invalidateCompaniesOverview();
+  await Promise.all([
+    invalidateCompaniesOverview(),
+    invalidateCompaniesDirectory(),
+  ]);
 
   return { logo_url: logoUrl };
 });

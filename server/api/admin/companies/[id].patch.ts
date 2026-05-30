@@ -5,6 +5,7 @@ import {
   readBody,
 } from "h3";
 import { serverSupabaseServiceRole } from "#supabase/server";
+import { invalidateCompaniesDirectory } from "~~/server/utils/companiesDirectoryCache";
 import { invalidateCompaniesOverview } from "~~/server/utils/companiesOverviewCache";
 import { requireAdmin } from "~~/server/utils/requireAdmin";
 import type { AdminCompany, AdminCompanyUpdateBody } from "~~/shared/types/admin";
@@ -117,7 +118,10 @@ export default defineEventHandler(async (event): Promise<AdminCompany> => {
   }
 
   try {
-    await invalidateCompaniesOverview();
+    await Promise.all([
+      invalidateCompaniesOverview(),
+      invalidateCompaniesDirectory(),
+    ]);
   } catch (error) {
     console.error("Failed to invalidate companies overview cache", error);
   }
