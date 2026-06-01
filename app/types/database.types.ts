@@ -157,6 +157,11 @@ export type Database = {
           avg_rating: number | string | null
           accept_rate: number | string | null
           ghost_rate: number | string | null
+          offer_rate: number | string | null
+          avg_stages: number | string | null
+          avg_response_days: number | string | null
+          remote_rate: number | string | null
+          avg_salary: number | string | null
         }[]
       }
       get_companies_overview: {
@@ -172,6 +177,11 @@ export type Database = {
           avg_rating: number | string | null
           accept_rate: number | string | null
           ghost_rate: number | string | null
+          offer_rate: number | string | null
+          avg_stages: number | string | null
+          avg_response_days: number | string | null
+          remote_rate: number | string | null
+          avg_salary: number | string | null
         }[]
       }
       get_company_stats: {

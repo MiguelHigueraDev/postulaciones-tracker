@@ -13,4 +13,9 @@ export interface CompanyOverviewItem {
   avg_rating: number | null;
   accept_rate: number | null;
   ghost_rate: number | null;
+  offer_rate: number | null;
+  avg_stages: number | null;
+  avg_response_days: number | null;
+  remote_rate: number | null;
+  avg_salary: number | null;
 }

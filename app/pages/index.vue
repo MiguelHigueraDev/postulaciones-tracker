@@ -89,7 +89,7 @@ const hasCompanies = computed(() => (companies.value?.length ?? 0) > 0);
         <div
           v-for="n in 10"
           :key="n"
-          class="h-26 animate-pulse bg-surface"
+          class="h-44 animate-pulse bg-surface"
           aria-hidden="true"
         />
       </div>

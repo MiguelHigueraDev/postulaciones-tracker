@@ -30,7 +30,7 @@ const SORT_OPTIONS: { value: CompanyDirectorySort; label: string }[] = [
   { value: "reviews", label: "Más reseñas" },
   { value: "name", label: "Nombre (A–Z)" },
   { value: "ghost", label: "Menor ghost %" },
-  { value: "accept", label: "Mayor % acepta" },
+  { value: "accept", label: "Mayor % ofertas" },
   { value: "rating", label: "Mejor rating" },
 ];
 
@@ -77,7 +77,7 @@ const filteredCompanies = computed(() => {
       case "ghost":
         return compareNullableAsc(a.ghost_rate, b.ghost_rate);
       case "accept":
-        return compareNullableDesc(a.accept_rate, b.accept_rate);
+        return compareNullableDesc(a.offer_rate, b.offer_rate);
       case "rating":
         return compareNullableDesc(a.avg_rating, b.avg_rating);
       case "reviews":
@@ -262,7 +262,7 @@ function clearSearch() {
       <div
         v-for="n in 12"
         :key="n"
-        class="h-28 animate-pulse bg-surface"
+        class="h-44 animate-pulse bg-surface"
         aria-hidden="true"
       />
     </div>
