@@ -19,6 +19,11 @@ interface RawDirectoryRow {
   avg_rating: number | string | null;
   accept_rate: number | string | null;
   ghost_rate: number | string | null;
+  offer_rate: number | string | null;
+  avg_stages: number | string | null;
+  avg_response_days: number | string | null;
+  remote_rate: number | string | null;
+  avg_salary: number | string | null;
 }
 
 function toNumberOrNull(value: number | string | null): number | null {
@@ -35,6 +40,11 @@ function normalizeRows(rows: RawDirectoryRow[]): CompanyOverviewItem[] {
     avg_rating: toNumberOrNull(row.avg_rating),
     accept_rate: toNumberOrNull(row.accept_rate),
     ghost_rate: toNumberOrNull(row.ghost_rate),
+    offer_rate: toNumberOrNull(row.offer_rate),
+    avg_stages: toNumberOrNull(row.avg_stages),
+    avg_response_days: toNumberOrNull(row.avg_response_days),
+    remote_rate: toNumberOrNull(row.remote_rate),
+    avg_salary: toNumberOrNull(row.avg_salary),
   }));
 }
 

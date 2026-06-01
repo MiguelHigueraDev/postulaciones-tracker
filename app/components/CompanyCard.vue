@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import type { CompanyOverviewItem } from "~~/shared/types/company";
+import { formatAvgResponseDays } from "~~/shared/utils/formatResponseTime";
+import { formatCompactSalary } from "~~/shared/utils/formatSalary";
 
 const props = defineProps<{
   company: CompanyOverviewItem;
@@ -37,6 +39,24 @@ const ratingLabel = computed(() => {
   return value == null || Number.isNaN(value) ? null : value.toFixed(1);
 });
 
+const responseLabel = computed(() =>
+  formatAvgResponseDays(props.company.avg_response_days),
+);
+
+const stagesLabel = computed(() => {
+  const value = props.company.avg_stages;
+  if (value == null || Number.isNaN(value)) return null;
+  return value % 1 === 0 ? String(value) : value.toFixed(1);
+});
+
+const salaryLabel = computed(() => {
+  const value = props.company.avg_salary;
+  if (value == null || Number.isNaN(value)) return null;
+  return formatCompactSalary(value);
+});
+
+const showWorkplaceStrip = computed(() => salaryLabel.value != null);
+
 function percentLabel(value: number | null | undefined): string {
   return value == null || Number.isNaN(value) ? "—" : `${Math.round(value)}%`;
 }
@@ -45,7 +65,7 @@ function percentLabel(value: number | null | undefined): string {
 <template>
   <NuxtLink
     :to="to"
-    class="group flex flex-col gap-4 bg-surface p-6 no-underline transition-colors duration-150 hover:bg-surface-alt"
+    class="group flex min-h-44 flex-col gap-4 bg-surface p-7 no-underline transition-colors duration-150 hover:bg-surface-alt"
   >
     <div class="flex items-center gap-3">
       <span
@@ -74,7 +94,7 @@ function percentLabel(value: number | null | undefined): string {
       </span>
     </div>
 
-    <div class="grid grid-cols-3 gap-2 border-t border-border pt-3">
+    <div class="grid grid-cols-3 gap-x-3 gap-y-4 border-t border-border pt-4">
       <div class="flex flex-col gap-1">
         <span
           class="font-mono text-[10px] tracking-wider text-text-subtle uppercase"
@@ -106,10 +126,10 @@ function percentLabel(value: number | null | undefined): string {
       <div class="flex flex-col gap-1">
         <span
           class="font-mono text-[10px] tracking-wider text-text-subtle uppercase"
-          >Acepta</span
+          >Ofertas</span
         >
         <span class="text-sm font-medium text-positive">
-          {{ percentLabel(company.accept_rate) }}
+          {{ percentLabel(company.offer_rate) }}
         </span>
       </div>
 
@@ -120,6 +140,53 @@ function percentLabel(value: number | null | undefined): string {
         >
         <span class="text-sm font-medium text-ghost">
           {{ percentLabel(company.ghost_rate) }}
+        </span>
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <span
+          class="font-mono text-[10px] tracking-wider text-text-subtle uppercase"
+          >Respuesta</span
+        >
+        <span class="text-sm font-medium text-text">
+          <template v-if="responseLabel">{{ responseLabel }}</template>
+          <span v-else class="text-text-subtle">—</span>
+        </span>
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <span
+          class="font-mono text-[10px] tracking-wider text-text-subtle uppercase"
+          >Etapas</span
+        >
+        <span class="text-sm font-medium text-text">
+          <template v-if="stagesLabel">{{ stagesLabel }}</template>
+          <span v-else class="text-text-subtle">—</span>
+        </span>
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <span
+          class="font-mono text-[10px] tracking-wider text-text-subtle uppercase"
+          >Remoto</span
+        >
+        <span class="text-sm font-medium text-text">
+          {{ percentLabel(company.remote_rate) }}
+        </span>
+      </div>
+    </div>
+
+    <div
+      v-if="showWorkplaceStrip"
+      class="border-t border-border pt-3"
+    >
+      <div class="flex flex-col gap-1">
+        <span
+          class="font-mono text-[10px] tracking-wider text-text-subtle uppercase"
+          >Sueldo</span
+        >
+        <span class="text-sm font-medium text-text">
+          {{ salaryLabel }}
         </span>
       </div>
     </div>
