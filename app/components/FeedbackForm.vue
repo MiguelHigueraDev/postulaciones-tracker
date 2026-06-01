@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { Result, TaggedError } from "better-result";
 import {
-  INDUSTRY_OPTIONS,
   RESPONSE_TIME_OPTIONS,
   LAST_STAGE_OPTIONS,
   RESULT_OPTIONS,
@@ -40,7 +39,6 @@ const YEARS = Array.from(
 
 const form = reactive({
   companyName: "",
-  industry: "",
   position: "",
   applicationMonth: "",
   applicationYear: currentYear,
@@ -186,7 +184,6 @@ function buildPayload() {
   const profile = includeProfile.value;
   return {
     p_company_name: form.companyName,
-    p_industry: form.industry,
     p_position: form.position,
     p_application_month: `${form.applicationMonth} ${form.applicationYear}`,
     p_response_time: form.responseTime,
@@ -213,7 +210,7 @@ async function handleSubmit() {
   resultModal.value = null;
 
   const result = await fetchResult(() =>
-    $fetch("/api/submit-feedback", {
+    $fetch<{ id: string }>("/api/submit-feedback", {
       method: "POST",
       body: {
         ...buildPayload(),
@@ -238,7 +235,7 @@ async function handleSubmit() {
   salaryDisplay.value = "";
   profileExpanded.value = false;
   Object.assign(form, {
-    companyName: "", industry: "", position: "",
+    companyName: "", position: "",
     applicationMonth: "", applicationYear: currentYear,
     responseTime: "", stagesReached: 0, lastStage: "", result: "", comment: "",
     salary: null, modality: "", goodThings: "", badThings: "", benefits: "",
@@ -267,16 +264,6 @@ async function handleSubmit() {
         <CompanySearch v-model="form.companyName" input-id="company" :show-label="false" required
           :maxlength="MAX_COMPANY_NAME_LENGTH" placeholder="Nombre de la empresa" />
       </div>
-
-      <div class="relative mb-4 last:mb-0">
-        <label for="industry" class="mb-2 block font-mono text-11 tracking-wide text-text-subtle lowercase">
-          rubro <span class="text-accent">*</span>
-        </label>
-        <select id="industry" v-model="form.industry" required :class="fieldSelect">
-          <option value="" disabled>Selecciona un rubro</option>
-          <option v-for="opt in INDUSTRY_OPTIONS" :key="opt" :value="opt">{{ opt }}</option>
-        </select>
-      </div>
     </fieldset>
 
     <!-- Section: Postulación -->
@@ -290,13 +277,8 @@ async function handleSubmit() {
         <label for="position" class="mb-2 block font-mono text-11 tracking-wide text-text-subtle lowercase">
           cargo <span class="text-accent">*</span>
         </label>
-        <PositionTypeahead
-          v-model="form.position"
-          input-id="position"
-          :show-label="false"
-          required
-          :input-class="fieldInput"
-        />
+        <PositionTypeahead v-model="form.position" input-id="position" :show-label="false" required
+          :input-class="fieldInput" />
       </div>
 
       <div class="mb-4 grid grid-cols-2 gap-3.5">

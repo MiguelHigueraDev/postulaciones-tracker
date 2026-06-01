@@ -14,6 +14,9 @@ export const INDUSTRY_OPTIONS = [
   "Otro",
 ] as const;
 
+/** All new submissions are stored under this industry. */
+export const DEFAULT_FEEDBACK_INDUSTRY = "Tech" as const;
+
 export const RESPONSE_TIME_OPTIONS = [
   "Sí - en menos de 1 semana",
   "Sí - en 1-2 semanas",
@@ -24,7 +27,7 @@ export const RESPONSE_TIME_OPTIONS = [
 export const LAST_STAGE_OPTIONS = [
   "Después de filtro RRHH",
   "Después de prueba o assessment",
-  "Después de entrevista técnica",
+  "Después de entrevista",
   "Después de entrevista final",
   "Tuve respuesta hasta el final",
 ] as const;
@@ -184,7 +187,6 @@ export const feedbackSchema = z
       "El nombre de empresa es requerido",
       "nombre de empresa",
     ),
-    p_industry: z.enum(INDUSTRY_OPTIONS),
     p_position: sanitizedPlainText(
       MAX_POSITION_LENGTH,
       "El cargo es requerido",
