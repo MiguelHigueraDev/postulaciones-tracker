@@ -1,6 +1,9 @@
 import { createError, defineEventHandler, getRequestIP, readBody } from "h3";
 import { serverSupabaseServiceRole } from "#supabase/server";
-import { feedbackSubmitSchema } from "~~/shared/schemas/feedback";
+import {
+  DEFAULT_FEEDBACK_INDUSTRY,
+  feedbackSubmitSchema,
+} from "~~/shared/schemas/feedback";
 import { verifyTurnstileToken } from "~~/server/utils/verifyTurnstile";
 import { invalidateCompaniesDirectory } from "~~/server/utils/companiesDirectoryCache";
 import { invalidateCompaniesOverview } from "~~/server/utils/companiesOverviewCache";
@@ -72,7 +75,7 @@ export default defineEventHandler(async (event) => {
 
   const { data, error } = await client.rpc("submit_feedback", {
     p_company_name: input.p_company_name,
-    p_industry: input.p_industry,
+    p_industry: DEFAULT_FEEDBACK_INDUSTRY,
     p_position: input.p_position,
     p_application_month: input.p_application_month,
     p_response_time: input.p_response_time,

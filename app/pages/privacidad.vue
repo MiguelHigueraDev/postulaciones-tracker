@@ -42,7 +42,7 @@ useSeoMeta({
         <h2>2. Qué recopilamos</h2>
         <p>
           Al enviar feedback solo pedimos información sobre tu experiencia de postulación:
-          empresa, rubro, cargo, mes de postulación, tiempos de respuesta, etapas del proceso,
+          empresa, cargo, mes de postulación, tiempos de respuesta, etapas del proceso,
           resultado y un comentario opcional. No pedimos nombre, correo, teléfono ni otros
           datos que te identifiquen directamente.
         </p>
@@ -148,7 +148,7 @@ useSeoMeta({
         <div
           class="rounded-card border border-border bg-surface px-6 py-7 [&_h3]:m-0 [&_h3]:mb-1 [&_h3]:font-display [&_h3]:text-xl [&_h3]:font-bold [&_h3]:text-text [&_h4]:mt-6 [&_h4]:mb-2 [&_h4]:font-mono [&_h4]:text-11 [&_h4]:font-medium [&_h4]:tracking-wide [&_h4]:text-accent [&_h4]:uppercase [&_h4:first-of-type]:mt-0 [&_li]:text-sm [&_p]:text-sm">
           <h3>Turnstile Privacy Addendum</h3>
-          <p class="!mb-6 text-13 text-text-subtle">
+          <p class="mb-6! text-13 text-text-subtle">
             <em>Last updated: JUNE 18, 2025</em>
           </p>
 
