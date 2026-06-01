@@ -1,5 +1,7 @@
 -- Extend directory/overview RPCs with offer rate, process averages, and workplace aggregates.
 
+DROP FUNCTION IF EXISTS public.get_companies_directory();
+
 CREATE OR REPLACE FUNCTION public.get_companies_directory()
 RETURNS TABLE (
   id uuid,
