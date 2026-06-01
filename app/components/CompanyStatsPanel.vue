@@ -26,11 +26,6 @@ const monogram = computed(
   () => props.companyName.trim().charAt(0).toUpperCase() || "?",
 );
 
-const hasRubrosCargos = computed(
-  () =>
-    props.stats.industries.length > 0 || props.stats.positions.length > 0,
-);
-
 watch(
   () => props.companyLogoUrl,
   () => {
