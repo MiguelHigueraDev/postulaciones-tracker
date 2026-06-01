@@ -23,7 +23,7 @@ const hasCompanies = computed(() => (companies.value?.length ?? 0) > 0);
       <div class="flex flex-col col-span-2">
 
         <h1
-          class="m-0 mb-6 font-display text-4xl md:text-6xl leading-none font-extrabold tracking-tight text-text max-w-200">
+          class="m-0 mb-6 font-display text-4xl md:text-6xl leading-tight font-extrabold tracking-tight text-text max-w-200">
           Transparencia<br />en el hiring.
         </h1>
 
