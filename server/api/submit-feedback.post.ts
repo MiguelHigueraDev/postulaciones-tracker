@@ -83,6 +83,7 @@ export default defineEventHandler(async (event) => {
     p_last_stage: input.p_last_stage ?? undefined,
     p_result: input.p_result,
     p_comment: input.p_comment ?? undefined,
+    p_work_experience_comment: input.p_work_experience_comment ?? undefined,
     p_salary: input.p_salary ?? undefined,
     p_good_things: input.p_good_things ?? undefined,
     p_bad_things: input.p_bad_things ?? undefined,

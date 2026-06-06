@@ -198,6 +198,7 @@ export const feedbackSchema = z
     p_last_stage: z.enum(LAST_STAGE_OPTIONS).nullable().default(null),
     p_result: z.enum(RESULT_OPTIONS),
     p_comment: commentSchema,
+    p_work_experience_comment: commentSchema,
     p_include_profile: z.boolean().default(false),
     p_salary: z
       .number()
@@ -236,6 +237,14 @@ export const feedbackSchema = z
         data.p_rating_compensation_benefits != null
       );
     }, PROFILE_REQUIRED_MSG),
+  )
+  .check(
+    z.refine(
+      (data) =>
+        data.p_work_experience_comment == null ||
+        data.p_result === "Oferta - Aceptada",
+      "El comentario sobre la experiencia laboral solo aplica a ofertas aceptadas",
+    ),
   );
 
 export type FeedbackInput = z.infer<typeof feedbackSchema>;

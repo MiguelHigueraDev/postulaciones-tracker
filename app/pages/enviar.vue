@@ -63,6 +63,7 @@ useSeoMeta({
             <li>Aspectos negativos</li>
             <li>Beneficios</li>
             <li>Valoraciones 1–5 (ambiente, equilibrio, carrera, compensación)</li>
+            <li>Comentario sobre cómo es trabajar en la empresa (hasta 1.000 caracteres)</li>
           </ul>
         </div>
       </div>
