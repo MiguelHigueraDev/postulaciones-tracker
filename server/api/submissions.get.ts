@@ -14,6 +14,7 @@ type WorkplaceProfileRow = {
   bad_things: string | null;
   benefits: string | null;
   modality: string | null;
+  work_experience_comment: string | null;
   rating_work_environment: number | null;
   rating_work_life_balance: number | null;
   rating_career_opportunities: number | null;
@@ -52,8 +53,25 @@ export default defineEventHandler(
 
     const supabase = await serverSupabaseClient(event);
 
-    const selectFields =
-      "id, industry, position, application_month, response_time, stages_reached, last_stage, result, comment, created_at, companies(name, name_normalized), workplace_profiles(salary, good_things, bad_things, benefits, modality, rating_work_environment, rating_work_life_balance, rating_career_opportunities, rating_compensation_benefits)";
+    const selectFields = [
+      "id",
+      "industry",
+      "position",
+      "application_month",
+      "response_time",
+      "stages_reached",
+      "last_stage",
+      "result",
+      "comment",
+      "created_at",
+      "companies(name, name_normalized)",
+      "workplace_profiles("
+        + "salary, good_things, bad_things, benefits, modality, "
+        + "work_experience_comment, rating_work_environment, "
+        + "rating_work_life_balance, rating_career_opportunities, "
+        + "rating_compensation_benefits"
+        + ")",
+    ].join(", ");
 
     let matchingCompanyIds: string[] | null = null;
 
@@ -134,7 +152,9 @@ export default defineEventHandler(
       });
     }
 
-    const submissions: GlobalSubmission[] = ((data ?? []) as SubmissionRow[]).map(
+    const submissions: GlobalSubmission[] = (
+      (data ?? []) as unknown as SubmissionRow[]
+    ).map(
       (row) => ({
         id: row.id,
         industry: row.industry,

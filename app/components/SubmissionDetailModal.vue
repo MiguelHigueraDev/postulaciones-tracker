@@ -20,6 +20,7 @@ const profileFields = computed(() => {
     { label: "Aspectos positivos", value: wp.good_things },
     { label: "Aspectos negativos", value: wp.bad_things },
     { label: "Beneficios", value: wp.benefits },
+    { label: "Experiencia laboral", value: wp.work_experience_comment },
   ].filter((f) => f.value);
 });
 

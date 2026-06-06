@@ -47,6 +47,7 @@ const form = reactive({
   lastStage: "",
   result: "",
   comment: "",
+  workExperienceComment: "",
   salary: null as number | null,
   modality: "",
   goodThings: "",
@@ -60,9 +61,27 @@ const form = reactive({
 
 const isOfertaAceptada = computed(() => form.result === "Oferta - Aceptada");
 const profileExpanded = ref(false);
+const salaryDisplay = ref("");
+
+function resetProfileFields() {
+  form.workExperienceComment = "";
+  form.salary = null;
+  salaryDisplay.value = "";
+  form.modality = "";
+  form.goodThings = "";
+  form.badThings = "";
+  form.benefits = "";
+  form.ratingWorkEnvironment = null;
+  form.ratingWorkLifeBalance = null;
+  form.ratingCareerOpportunities = null;
+  form.ratingCompensationBenefits = null;
+}
 
 watch(isOfertaAceptada, (val) => {
-  if (!val) profileExpanded.value = false;
+  if (!val) {
+    profileExpanded.value = false;
+    resetProfileFields();
+  }
 });
 
 const ratingKeys: RatingKey[] = [
@@ -83,8 +102,6 @@ function formatSalaryDisplay(value: number | null): string {
   if (value === null) return "";
   return value.toLocaleString("es-CL");
 }
-
-const salaryDisplay = ref("");
 
 function onSalaryInput(event: Event) {
   const raw = (event.target as HTMLInputElement).value.replace(/\D/g, "");
@@ -191,6 +208,9 @@ function buildPayload() {
     p_last_stage: form.lastStage || null,
     p_result: form.result,
     p_comment: form.comment || null,
+    p_work_experience_comment: profile
+      ? form.workExperienceComment || null
+      : null,
     p_include_profile: profile,
     p_salary: profile ? form.salary : null,
     p_modality: profile ? form.modality || null : null,
@@ -238,6 +258,7 @@ async function handleSubmit() {
     companyName: "", position: "",
     applicationMonth: "", applicationYear: currentYear,
     responseTime: "", stagesReached: 0, lastStage: "", result: "", comment: "",
+    workExperienceComment: "",
     salary: null, modality: "", goodThings: "", badThings: "", benefits: "",
     ratingWorkEnvironment: null, ratingWorkLifeBalance: null,
     ratingCareerOpportunities: null, ratingCompensationBenefits: null,
@@ -362,7 +383,7 @@ async function handleSubmit() {
           comentario
         </label>
         <textarea id="comment" v-model="form.comment" rows="3" :maxlength="MAX_COMMENT_LENGTH"
-          placeholder="Describe brevemente tu experiencia..."
+          placeholder="Describe brevemente tu experiencia de postulación..."
           :class="`${fieldInput} min-h-22 resize-y text-14 leading-relaxed`" />
         <div class="mt-1.5 text-right font-mono text-11 text-text-subtle">
           <span :class="{ 'text-yield': form.comment.length > MAX_COMMENT_LENGTH - COMMENT_LENGTH_WARNING_OFFSET }">
@@ -470,6 +491,24 @@ async function handleSubmit() {
               </button>
             </div>
           </div>
+        </div>
+      </div>
+
+      <div class="relative mt-5 border-t border-border-subtle pt-5">
+        <label for="work-experience-comment"
+          class="mb-2 block font-mono text-11 tracking-wide text-text-subtle lowercase">
+          ¿cómo es trabajar en la empresa?
+          <span class="text-xs font-normal text-text-subtle">(opcional)</span>
+        </label>
+        <textarea id="work-experience-comment" v-model="form.workExperienceComment" rows="3"
+          :maxlength="MAX_COMMENT_LENGTH"
+          placeholder="Comparte cómo es el día a día, el ambiente, el liderazgo..."
+          :class="`${fieldInput} min-h-22 resize-y text-14 leading-relaxed`" />
+        <div class="mt-1.5 text-right font-mono text-11 text-text-subtle">
+          <span
+            :class="{ 'text-yield': form.workExperienceComment.length > MAX_COMMENT_LENGTH - COMMENT_LENGTH_WARNING_OFFSET }">
+            {{ form.workExperienceComment.length }}/{{ MAX_COMMENT_LENGTH }}
+          </span>
         </div>
       </div>
     </fieldset>

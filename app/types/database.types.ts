@@ -97,6 +97,7 @@ export type Database = {
           bad_things: string | null
           benefits: string | null
           modality: string | null
+          work_experience_comment: string | null
           rating_work_environment: number | null
           rating_work_life_balance: number | null
           rating_career_opportunities: number | null
@@ -111,6 +112,7 @@ export type Database = {
           bad_things?: string | null
           benefits?: string | null
           modality?: string | null
+          work_experience_comment?: string | null
           rating_work_environment?: number | null
           rating_work_life_balance?: number | null
           rating_career_opportunities?: number | null
@@ -125,6 +127,7 @@ export type Database = {
           bad_things?: string | null
           benefits?: string | null
           modality?: string | null
+          work_experience_comment?: string | null
           rating_work_environment?: number | null
           rating_work_life_balance?: number | null
           rating_career_opportunities?: number | null
@@ -347,6 +350,7 @@ export type Database = {
           p_rating_work_life_balance?: number
           p_rating_career_opportunities?: number
           p_rating_compensation_benefits?: number
+          p_work_experience_comment?: string
         }
         Returns: string
       }
