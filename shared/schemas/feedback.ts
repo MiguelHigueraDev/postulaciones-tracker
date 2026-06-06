@@ -224,17 +224,30 @@ export const feedbackSchema = z
   })
   .check(
     z.refine((data) => {
-      if (!data.p_include_profile) return true;
+      if (data.p_include_profile) {
+        return (
+          data.p_salary != null &&
+          data.p_good_things != null &&
+          data.p_bad_things != null &&
+          data.p_benefits != null &&
+          data.p_modality != null &&
+          data.p_rating_work_environment != null &&
+          data.p_rating_work_life_balance != null &&
+          data.p_rating_career_opportunities != null &&
+          data.p_rating_compensation_benefits != null
+        );
+      }
       return (
-        data.p_salary != null &&
-        data.p_good_things != null &&
-        data.p_bad_things != null &&
-        data.p_benefits != null &&
-        data.p_modality != null &&
-        data.p_rating_work_environment != null &&
-        data.p_rating_work_life_balance != null &&
-        data.p_rating_career_opportunities != null &&
-        data.p_rating_compensation_benefits != null
+        data.p_salary == null &&
+        data.p_good_things == null &&
+        data.p_bad_things == null &&
+        data.p_benefits == null &&
+        data.p_modality == null &&
+        data.p_rating_work_environment == null &&
+        data.p_rating_work_life_balance == null &&
+        data.p_rating_career_opportunities == null &&
+        data.p_rating_compensation_benefits == null &&
+        data.p_work_experience_comment == null
       );
     }, PROFILE_REQUIRED_MSG),
   )
@@ -242,8 +255,8 @@ export const feedbackSchema = z
     z.refine(
       (data) =>
         data.p_work_experience_comment == null ||
-        data.p_result === "Oferta - Aceptada",
-      "El comentario sobre la experiencia laboral solo aplica a ofertas aceptadas",
+        (data.p_result === "Oferta - Aceptada" && data.p_include_profile),
+      "El comentario sobre la experiencia laboral solo aplica a ofertas aceptadas con perfil laboral",
     ),
   );
 

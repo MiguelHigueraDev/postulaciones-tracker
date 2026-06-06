@@ -61,11 +61,26 @@ const form = reactive({
 
 const isOfertaAceptada = computed(() => form.result === "Oferta - Aceptada");
 const profileExpanded = ref(false);
+const salaryDisplay = ref("");
+
+function resetProfileFields() {
+  form.workExperienceComment = "";
+  form.salary = null;
+  salaryDisplay.value = "";
+  form.modality = "";
+  form.goodThings = "";
+  form.badThings = "";
+  form.benefits = "";
+  form.ratingWorkEnvironment = null;
+  form.ratingWorkLifeBalance = null;
+  form.ratingCareerOpportunities = null;
+  form.ratingCompensationBenefits = null;
+}
 
 watch(isOfertaAceptada, (val) => {
   if (!val) {
     profileExpanded.value = false;
-    form.workExperienceComment = "";
+    resetProfileFields();
   }
 });
 
@@ -87,8 +102,6 @@ function formatSalaryDisplay(value: number | null): string {
   if (value === null) return "";
   return value.toLocaleString("es-CL");
 }
-
-const salaryDisplay = ref("");
 
 function onSalaryInput(event: Event) {
   const raw = (event.target as HTMLInputElement).value.replace(/\D/g, "");

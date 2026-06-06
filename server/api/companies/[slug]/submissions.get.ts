@@ -10,9 +10,14 @@ import {
   type CompanySubmission,
   type PaginatedSubmissions,
   type SubmissionCursor,
+  type WorkplaceProfile,
 } from "~~/shared/utils/companyStats";
 
 const MAX_PAGE_SIZE = 50;
+
+type CompanySubmissionRow = Omit<CompanySubmission, "workplace_profile"> & {
+  workplace_profiles: WorkplaceProfile | null;
+};
 
 function quoteFilterValue(value: string): string {
   return `"${value.replace(/"/g, '\\"')}"`;
@@ -70,7 +75,24 @@ export default defineEventHandler(async (event): Promise<PaginatedSubmissions> =
   let request = supabase
     .from("submissions")
     .select(
-      "id, industry, position, application_month, response_time, stages_reached, last_stage, result, comment, created_at, workplace_profiles(salary, good_things, bad_things, benefits, modality, work_experience_comment, rating_work_environment, rating_work_life_balance, rating_career_opportunities, rating_compensation_benefits)",
+      [
+        "id",
+        "industry",
+        "position",
+        "application_month",
+        "response_time",
+        "stages_reached",
+        "last_stage",
+        "result",
+        "comment",
+        "created_at",
+        "workplace_profiles("
+          + "salary, good_things, bad_things, benefits, modality, "
+          + "work_experience_comment, rating_work_environment, "
+          + "rating_work_life_balance, rating_career_opportunities, "
+          + "rating_compensation_benefits"
+          + ")",
+      ].join(", "),
     )
     .eq("company_id", company.id)
     .order("created_at", { ascending: false })
@@ -94,8 +116,9 @@ export default defineEventHandler(async (event): Promise<PaginatedSubmissions> =
     });
   }
 
-  const rawRows = (data ?? []) as (CompanySubmission & { workplace_profiles?: CompanySubmission["workplace_profile"] })[];
-  const rows: CompanySubmission[] = rawRows.map(({ workplace_profiles, ...rest }) => ({
+  const rows: CompanySubmission[] = (
+    (data ?? []) as unknown as CompanySubmissionRow[]
+  ).map(({ workplace_profiles, ...rest }) => ({
     ...rest,
     workplace_profile: workplace_profiles ?? null,
   }));
